@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wildlife_mis
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: public
+        jdbc:
+          batch_size: 100
+        format_sql: true
+        generate_statistics: false
+        order_inserts: true
+        order_updates: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#file:
+#  upload:
+#    directory: ..\wildlife\src\main\resources\static\uploads
+server:
+  port : 8082
+#wildLife:
+#  app:
+#    jwtSecret: spring
