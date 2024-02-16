@@ -90,7 +90,7 @@ public class AuthenticationController {
 
 //        System.out.println("Time of token expiration"+new Date(System.currentTimeMillis() + 60 * 1000));
 //        if (bucket.tryConsume(1)) {
-
+            log.info("login {}",loginRequestDTO);
             ApiResponse<?> apiResponse = authenticationService.userLogin(loginRequestDTO, request, response);
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 

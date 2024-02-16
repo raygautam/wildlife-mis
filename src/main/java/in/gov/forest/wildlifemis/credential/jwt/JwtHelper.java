@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class JwtHelper {
     //    public static final long JWT_TOKEN_VALIDITY =  60;
 //    private String secret = "afafasfafafasfasfasfafacasdasfasxASFACASDFACASDFASFASFDAFASFASDAADSCSDFADCVSGCFVADXCcadwavfsfarvf";
 //    @Value("${wildLife.app.jwtSecret}")
-    private final String jwtSecret="forest-wildlife-mis";
+    private final String jwtSecret="forestwildlifemis5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -78,19 +80,36 @@ public class JwtHelper {
     //   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claims, String subject) {
 //        Key signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        SecretKey secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+
+//        SecretKey secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+//        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+//                .signWith(secret,SignatureAlgorithm.HS512).compact();
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(secret,SignatureAlgorithm.HS512).compact();
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512) // <-- This can be helpful to you
+                .compact();
+
 //        Key signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
 //        return Jwts.builder()
 //                .setClaims(claims)
 //                .setSubject(subject)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() +5 * 60 * 60 * 1000))
-//                .signWith(signingKey, SignatureAlgorithm.HS512)
-//                .compact();
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis()+1000*60*2))
+//                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+
     }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = this.jwtSecret.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
 
     //validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
@@ -114,7 +133,10 @@ public class JwtHelper {
 //            .compact();
   }
 
-
+//    private Key getSignKey() {
+//        byte[] keyBytes= Decoders.BASE64.decode(jwtSecret);
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 
 
 }

@@ -4,6 +4,10 @@ package in.gov.forest.wildlifemis.credential.jwt;
 //import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 //import in.gov.forest.wildlifemis.exception.Error;
 //import in.gov.forest.wildlifemis.exception.JwtCustomException;
+import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImpl;
+import in.gov.forest.wildlifemis.exception.AccessDeniedException;
+import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.exception.JwtCustomException;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -38,10 +42,10 @@ import java.time.Duration;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
-//    @Autowired
-//    private JwtHelper jwtHelper;
-//    @Autowired
-//    private AppUserServiceImpl userDetailsService;
+    @Autowired
+    private JwtHelper jwtHelper;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
 //    @Autowired
 //    private AuditTrailRepository auditTrailRepository;
@@ -57,23 +61,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        String usrName = request.getHeader("userName");
-        logger.info("Successfully authenticated user  " +
-                usrName);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+            username = jwtHelper.getUsernameFromToken(token);
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtHelper.validateToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
         filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected boolean shouldNotFilterAsyncDispatch() {
-        return false;
-    }
 
-    @Override
-    protected boolean shouldNotFilterErrorDispatch() {
-        return false;
-    }
+
 
 
 //    @Override
@@ -139,26 +148,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //            }else {
 //                throw  new AccessDeniedException("error-message.access-denied");
 //            }
-//
-////            try {
-////                RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
-////                String requestBody = requestWrapper.getRequestBody();
-////                filterChain.doFilter(requestWrapper, response);
-////                AuditTrail auditTrail=AuditTrail.builder()
-////                        .url(request.getRequestURI())
-////                        .userName(request.getRemoteUser())
-////                        .payload(requestBody.isEmpty() ?"[]":requestBody)
-////                        .ipAddress(request.getRemoteAddr())
-////                        .userAgent(request.getHeader("User-Agent"))
-////                        .requestOn(LocalDateTime.now())
-////                        .httpMethod(request.getMethod())
-////                        .statusCode(response.getStatus())
-////                        .build();
-////                auditTrailRepository.save(auditTrail);
-////            } catch (Exception e) {
-////                logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
-////                e.printStackTrace();
-////            }
+
+//            try {
+//                RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
+//                String requestBody = requestWrapper.getRequestBody();
+//                filterChain.doFilter(requestWrapper, response);
+//                AuditTrail auditTrail=AuditTrail.builder()
+//                        .url(request.getRequestURI())
+//                        .userName(request.getRemoteUser())
+//                        .payload(requestBody.isEmpty() ?"[]":requestBody)
+//                        .ipAddress(request.getRemoteAddr())
+//                        .userAgent(request.getHeader("User-Agent"))
+//                        .requestOn(LocalDateTime.now())
+//                        .httpMethod(request.getMethod())
+//                        .statusCode(response.getStatus())
+//                        .build();
+//                auditTrailRepository.save(auditTrail);
+//            } catch (Exception e) {
+//                logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
+//                e.printStackTrace();
+//            }
+
 //        } else {
 //            response.getWriter().write("Too many requests. Please try again later.");
 //            response.setStatus(429);// HTTP 429 Too Many Requests

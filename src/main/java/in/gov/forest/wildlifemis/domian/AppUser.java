@@ -23,18 +23,18 @@ public class AppUser {
     private String userName;
     private String password;
     private String name;
-    private Boolean isActive;
+    private Boolean isActive; //default value true
     @Column(name = "account_non_locked")
-    private Boolean accountNonLocked;
+    private Boolean accountNonLocked; ////default value true
 
     @Column(name = "failed_attempt")
-    private Integer failedAttempt;
+    private Integer failedAttempt; //default value 0
 
     @Column(name = "lock_time")
-    private Date lockTime;
+    private Date lockTime; // null
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
 //    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -1,9 +1,6 @@
 package in.gov.forest.wildlifemis.domian;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -20,7 +17,12 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(unique = true)
     private String name;
+
+    public Role(String s) {
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -36,4 +38,5 @@ public class Role {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
+
 }

@@ -15,9 +15,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -31,25 +36,29 @@ public class AuthenticationService {
     @Autowired
     private JwtHelper helper;
 
-    public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUserName(),
-                        loginRequestDTO.getPassword()));
-//                        bCryptPasswordEncoder.encode(loginRequest.getPassword())));
-//        ApiResponse apiResponse = new ApiResponse();
-//        ApiResponse<String> apiResponse= new ApiResponse<>();
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
-        if(authentication.isAuthenticated()){
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//        try{
-//            log.info("userDetails {}", userDetails);
-            String jwt = helper.generateToken(userDetails);
-//            log.info("jwt {}", jwt);
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList();
-//            log.info("roles {}", roles);
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+
+    public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+//        if(loginRequestDTO.getUserName()==null || loginRequestDTO.getUserName()=="" && loginRequestDTO.getPassword()==null){
+//            throw new IllegalArgumentException("username or password cannot be empty");
+//        }else{
+        log.info("password {}",loginRequestDTO);
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequestDTO.getUserName(),
+                           loginRequestDTO.getPassword()));
+
+            if(authentication.isAuthenticated()){
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+//                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+                UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
+                String jwt = helper.generateToken(userDetails);
+//                List<String> roles = userDetails.getAuthorities().stream()
+//                        .map(GrantedAuthority::getAuthority)
+//                        .toList();
 
 //            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 //            log.info("roles {}", roles);
@@ -66,33 +75,33 @@ public class AuthenticationService {
 ////                            .rangeName(userDetails.getRangeName())
 ////                            .isActive(userDetails.getActive())
 //                    .build();
-            ApiResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .error(null)
-                    .data(
-                            JwtResponse.builder()
-                                    .token(jwt)
-                                    .type("Bearer")
-                                    .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
-                                    .id(userDetails.getId())
-                                    .username(userDetails.getUsername())
-                                    .roles(roles)
+               return ApiResponse.builder()
+                        .status(HttpStatus.OK.value())
+                        .error(null)
+                        .data(
+                                JwtResponse.builder()
+                                        .token(jwt)
+                                        .type("Bearer")
+                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
+                                        .id(userDetails.getId())
+                                        .username(userDetails.getUsername())
+                                        .roles(Collections.singletonList(userDetails.getAuthorities().toString()))
 //                            .stateName(userDetails.getStateName())
 //                            .divisionName(userDetails.getDivisionName())
 //                            .districtName(userDetails.getDistrictName())
 //                            .rangeName(userDetails.getRangeName())
 //                            .isActive(userDetails.getActive())
-                                    .build()
-                    ).build();
+                                        .build()
+                        ).build();
+            }
+            else {
+                return ApiResponse.builder()
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .error(null)
+                        .data(null)
+                        .build();
+            }
 
-        }else {
-            return ApiResponse.builder()
-                    .status(HttpStatus.UNAUTHORIZED.value())
-                    .error(null)
-                    .data(null)
-                    .build();
-        }
-        return null;
     }
 }
 
