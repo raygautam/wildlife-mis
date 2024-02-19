@@ -1,5 +1,7 @@
 package in.gov.forest.wildlifemis.domian;
 
+import in.gov.forest.wildlifemis.lgdEntities.entities.Division;
+import in.gov.forest.wildlifemis.lgdEntities.entities.Range;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -33,21 +35,21 @@ public class AppUser {
     @Column(name = "lock_time")
     private Date lockTime; // null
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
-//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "service_id", nullable = true)
-//    private Service service;
-//
-//    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "division_id", nullable = true)
-//    private Division division;
-//
-//    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "range_id", nullable = true)
-//    private Range range;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "service_id", nullable = true)
+    private Service service;
+
+    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "division_id", nullable = true)
+    private Division division;
+
+    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "range_id", nullable = true)
+    private Range range;
 
 
     //    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -116,6 +116,12 @@
 			<version>3.1.0</version>
 		</dependency>
 
+<!--		Used for LevenshteinDistance-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.10.0</version>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>jakarta.servlet</groupId>-->
 <!--			<artifactId>jakarta.servlet-api</artifactId>-->

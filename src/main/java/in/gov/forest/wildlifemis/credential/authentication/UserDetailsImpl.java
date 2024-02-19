@@ -2,7 +2,6 @@ package in.gov.forest.wildlifemis.credential.authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.gov.forest.wildlifemis.domian.AppUser;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,16 +28,22 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private final String password;
 
+    private final String serviceName;
+
+    private final String divisionName;
+
+    private final String rangeName;
 //    private final String stateName;
-//    private final String divisionName;
-//    private final String districtName;
-//    private final String rangeName;
+
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String password, List<GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String password, String serviceName, String divisionName, String rangeName, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.serviceName = serviceName;
+        this.divisionName = divisionName;
+        this.rangeName = rangeName;
         this.authorities = authorities;
     }
     @Override
@@ -53,7 +58,10 @@ public class UserDetailsImpl implements UserDetails {
     return new UserDetailsImpl(
             userDetail_t.getId(),
             userDetail_t.getUserName(),
-           userDetail_t.getPassword(),
+            userDetail_t.getPassword(),
+            userDetail_t.getService().getServiceName(),
+            userDetail_t.getDivision().getName(),
+            userDetail_t.getRange().getRangeName(),
             authorities
         );
     }

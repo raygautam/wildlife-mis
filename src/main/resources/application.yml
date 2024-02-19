@@ -16,7 +16,7 @@ spring:
         generate_statistics: false
         order_inserts: true
         order_updates: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
 #logging:
 #  level:
 #    org:
@@ -26,6 +26,14 @@ spring:
 #    directory: ..\wildlife\src\main\resources\static\uploads
 server:
   port : 8082
+
+MACInitializer:
+  value: true
+AppInitializer:
+  value: true
+CoverageLocationForHACAndARWithRangeService:
+  value: true
+
 #wildLife:
 #  app:
 #    jwtSecret: spring
