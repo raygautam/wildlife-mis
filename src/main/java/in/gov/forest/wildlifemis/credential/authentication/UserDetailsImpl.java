@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.gov.forest.wildlifemis.domian.AppUser;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Slf4j
 public class UserDetailsImpl implements UserDetails {
 
     @Serial
@@ -55,13 +57,18 @@ public class UserDetailsImpl implements UserDetails {
     List<GrantedAuthority> authorities = userDetail_t.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-    return new UserDetailsImpl(
+        String serviceName=userDetail_t.getService()!=null && userDetail_t.getService().getServiceName() != null ? userDetail_t.getService().getServiceName() : "";
+        String divisionName= userDetail_t.getDivision()!=null && userDetail_t.getDivision().getName() != null ? userDetail_t.getDivision().getName():"";
+        String rangeName=userDetail_t.getRange()!=null && userDetail_t.getRange().getRangeName() != null ? userDetail_t.getRange().getRangeName():"";
+
+        log.info("");
+        return new UserDetailsImpl(
             userDetail_t.getId(),
             userDetail_t.getUserName(),
             userDetail_t.getPassword(),
-            userDetail_t.getService().getServiceName(),
-            userDetail_t.getDivision().getName(),
-            userDetail_t.getRange().getRangeName(),
+            userDetail_t.getService()!=null ? userDetail_t.getService().getServiceName():null,
+            userDetail_t.getDivision() != null ? userDetail_t.getDivision().getName():null,
+            userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeName():null,
             authorities
         );
     }

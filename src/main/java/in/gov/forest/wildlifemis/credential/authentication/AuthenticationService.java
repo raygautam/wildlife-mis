@@ -3,8 +3,12 @@ package in.gov.forest.wildlifemis.credential.authentication;
 import in.gov.forest.wildlifemis.comman.ApiResponse;
 import in.gov.forest.wildlifemis.comman.JwtResponse;
 import in.gov.forest.wildlifemis.comman.LoginRequestDTO;
+import in.gov.forest.wildlifemis.comman.TokenRefreshRequest;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
+import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
+import in.gov.forest.wildlifemis.exception.Error;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -55,7 +53,7 @@ public class AuthenticationService {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 //                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
-                String jwt = helper.generateToken(userDetails);
+                String jwt = helper.generateToken(userDetails.getUsername());
 //                List<String> roles = userDetails.getAuthorities().stream()
 //                        .map(GrantedAuthority::getAuthority)
 //                        .toList();
@@ -85,12 +83,10 @@ public class AuthenticationService {
                                         .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
                                         .username(userDetails.getUsername())
+                                        .serviceName(userDetails.getServiceName())
+                                        .rangeName(userDetails.getRangeName())
+                                        .divisionName(userDetails.getDivisionName())
                                         .roles(Collections.singletonList(userDetails.getAuthorities().toString()))
-//                            .stateName(userDetails.getStateName())
-//                            .divisionName(userDetails.getDivisionName())
-//                            .districtName(userDetails.getDistrictName())
-//                            .rangeName(userDetails.getRangeName())
-//                            .isActive(userDetails.getActive())
                                         .build()
                         ).build();
             }
@@ -102,6 +98,62 @@ public class AuthenticationService {
                         .build();
             }
 
+    }
+
+
+    public ApiResponse<?> regenerateToken(TokenRefreshRequest tokenRefreshRequest) {
+        try {
+            return refreshTokenService.findByToken(tokenRefreshRequest.getRefreshToken())
+                    .map(refreshTokenService::verifyExpiration)
+                    .map(RefreshToken::getAppUser)
+                    .map(userInfo -> {
+                        String accessToken = helper.generateToken(userInfo.getUserName());
+                        return ApiResponse.builder()
+                                .status(HttpStatus.OK.value())
+                                .error(null)
+                                .data(
+                                        JwtResponse.builder()
+                                                .token(accessToken)
+                                                .type("Bearer")
+                                                .build()
+                                ).build();
+                    }).orElseThrow(() -> new RuntimeException(
+                            "Refresh token is not in database!"));
+        }catch (ExpiredJwtException e) {
+            Error error=new Error(e.getMessage());
+            return ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .error(error)
+                    .data(null)
+                    .build();
+        }
+//        return ApiResponse.builder()
+//                .status(HttpStatus.OK.value())
+//                .error(null)
+//                .data(
+//                        JwtResponse.builder()
+//                                .token(jwt)
+//                               .build()
+//                ).build();
+
+//        String jwtToken = requestMeta.getJwtToken();
+//        String usernameFromToken = jwtUtil.getUsernameFromToken(jwtToken.substring(7));
+//        AppUsers user = this.userRepo.findByUserNameAndIsActive(usernameFromToken,Boolean.TRUE);
+//        UserDetails userDetails = this.userDetailsService.loadUserByUsername(usernameFromToken);
+//        String token = this.jwtUtil.generateToken(userDetails, user);
+//        LoginResponseDTO response = new LoginResponseDTO();
+//        response.setToken(token);
+//
+//        AppUserDTO appUserDTO = new AppUserDTO();
+//
+//        response.setUser( appUserDTO.convertToDTO(user));
+//
+//    //        response.setRole(rolesList.stream().map(roles1 -> roles1.getName()).collect(Collectors.toList()));
+//        // rolesList.forEach((role)-> response.setRole(role.getRolename().substring(5)));
+//
+//        ApiResponse apiResponse = new ApiResponse();
+//        apiResponse.setData(response).setStatus(apiResponse.getStatus());
+//        return apiResponse;
     }
 }
 

@@ -30,12 +30,24 @@ public class RefreshTokenService {
   public RefreshToken createRefreshToken(Long userId) {
     RefreshToken refreshToken = new RefreshToken();
 
-    refreshToken.setId(userRepository.findById(userId).orElseThrow(()->new RuntimeException(userId+" Data not found??")).getId());
-    refreshToken.setExpiryDate(Instant.now().plusMillis(60*60*1000));
-    refreshToken.setToken(UUID.randomUUID().toString());
+//    refreshToken.setId(userRepository.findById(userId).orElseThrow(()->new RuntimeException(userId+" Data not found??")).getId());
+//    refreshToken.setExpiryDate(Instant.now().plusMillis(60*60*1000));
+//    refreshToken.setToken(UUID.randomUUID().toString());
 
-    refreshToken = refreshTokenRepository.save(refreshToken);
-    return refreshToken;
+//    refreshToken = refreshTokenRepository.save(
+//            RefreshToken.builder()
+//                    .appUser(userRepository.getReferenceById(userId))
+//                    .expiryDate(Instant.now().plusMillis(60*60*1000))
+//                    .token(UUID.randomUUID().toString())
+//                    .build()
+//    );
+    return refreshTokenRepository.save(
+            RefreshToken.builder()
+                    .appUser(userRepository.getReferenceById(userId))
+                    .expiryDate(Instant.now().plusMillis(60*60*1000))
+                    .token(UUID.randomUUID().toString())
+                    .build()
+    );
   }
 
 

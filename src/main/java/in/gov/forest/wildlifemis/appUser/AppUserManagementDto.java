@@ -28,10 +28,12 @@ public class AppUserManagementDto {
 //    @NotBlank(message = "Role field not be null and not empty and not blank")
     private Set<Integer> roleId;
 
-//    private Long service;
-//
-//    private Long division;
-//
-//    private Long range;
+    private String service;
+
+    private String division;
+
+    private String range;
 
 }
+//    to convert to Long
+//    Long numberAsLong = Long.parseLong(numberAsString);

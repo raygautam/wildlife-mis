@@ -81,7 +81,8 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                     authz->
-                            authz.requestMatchers("/public/login").permitAll()
+                            authz.requestMatchers("/public/**")
+                                    .permitAll()
                             .anyRequest().authenticated()
                 )
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->

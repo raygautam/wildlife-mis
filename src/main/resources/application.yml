@@ -28,11 +28,12 @@ server:
   port : 8082
 
 MACInitializer:
-  value: true
+  value: false
 AppInitializer:
-  value: true
+  value: false
 CoverageLocationForHACAndARWithRangeService:
-  value: true
+  value: false
+
 
 #wildLife:
 #  app:

@@ -17,11 +17,11 @@ public class JwtResponse {
     private String refreshToken;
     private Long id;
     private String username;
-//    private  String stateName;
-//    private  String divisionName;
-//    private  String serviceName;
-//    private  String rangeName;
-//    private Boolean isActive;
+    private  String divisionName;
+    private  String serviceName;
+    private  String rangeName;
     private List<String> roles;
+//    private Boolean isActive;
+//    private  String stateName;
 }
 

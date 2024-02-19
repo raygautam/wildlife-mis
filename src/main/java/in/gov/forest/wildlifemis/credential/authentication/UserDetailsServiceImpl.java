@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.credential.authentication;
 
+import in.gov.forest.wildlifemis.appUser.AppUserManagementDto;
 import in.gov.forest.wildlifemis.appUser.AppUserManagementRepository;
 import in.gov.forest.wildlifemis.domian.AppUser;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
    AppUser appUser = appUserRepository.findByUserName(username)
            .orElseThrow(() -> new UsernameNotFoundException("user not found " + username));;
     log.info("AppUser : "+appUser);
+
+//      AppUserManagementDto.builder()
+//              .service(appUser.getService().getServiceName())
+//              .roleId(appUser.getRoles())
            return UserDetailsImpl.build(appUser);
   }
 

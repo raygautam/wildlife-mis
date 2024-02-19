@@ -2,16 +2,14 @@ package in.gov.forest.wildlifemis.credential.authentication;
 
 import in.gov.forest.wildlifemis.comman.ApiResponse;
 import in.gov.forest.wildlifemis.comman.LoginRequestDTO;
+import in.gov.forest.wildlifemis.comman.TokenRefreshRequest;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -99,17 +97,17 @@ public class AuthenticationController {
 //        }
     }
 
-//    @GetMapping("/regenerateToken")
-//    public ResponseEntity <ApiResponse> reGenerateToken(){
+    @GetMapping("/public/regenerateToken")
+    public ResponseEntity <?> reGenerateToken(@RequestBody TokenRefreshRequest tokenRefreshRequest){
 //        if(bucket.tryConsume(1)) {
-//
-//            ApiResponse apiResponse = authenticationService.regenerateToken();
-//            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+            ApiResponse<?> apiResponse = authenticationService.regenerateToken(tokenRefreshRequest);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //        }
 //        else {
 //            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
 //        }
-//    }
+    }
 
     /**
      * This is the method to change the password by the super admin wihtout requiring to trigeer an email

@@ -14,6 +14,7 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RefreshToken {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "refreshToken_gen")

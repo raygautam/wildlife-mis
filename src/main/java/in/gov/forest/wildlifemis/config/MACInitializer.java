@@ -7,6 +7,7 @@ import in.gov.forest.wildlifemis.lgdEntities.repository.*;
 import in.gov.forest.wildlifemis.role.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,29 +22,29 @@ import java.util.stream.Stream;
 public class MACInitializer {
     @Value("${MACInitializer.value}")
     private Boolean MACInitializerValue;
-    private final AppUserManagementRepository appUserRepository;
-    private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final StateRepository stateRepository;
-    private final DivisionRepository divisionRepository;
-    private final DistrictRepository districtRepository;
-    private final RangeRepository rangeRepository;
-    private final OperatedBlockRepository operatedBlockRepository;
-    private final BlockRepository blockRepository;
-    private final VillageRepository villageRepository;
+    @Autowired
+    private  AppUserManagementRepository appUserRepository;
+    @Autowired
+    private  RoleRepository roleRepository;
+//    @Autowired
+//    private  BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private  StateRepository stateRepository;
+    @Autowired
+    private  DivisionRepository divisionRepository;
+    @Autowired
+    private  DistrictRepository districtRepository;
+    @Autowired
+    private  RangeRepository rangeRepository;
+    @Autowired
+    private  OperatedBlockRepository operatedBlockRepository;
+    @Autowired
+    private  BlockRepository blockRepository;
+    @Autowired
+    private  VillageRepository villageRepository;
 
-    public MACInitializer(Boolean macInitializerValue, AppUserManagementRepository appUserRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, StateRepository stateRepository, DivisionRepository divisionRepository, DistrictRepository districtRepository, RangeRepository rangeRepository, OperatedBlockRepository operatedBlockRepository, BlockRepository blockRepository, VillageRepository villageRepository) {
-        this.appUserRepository = appUserRepository;
-        this.roleRepository = roleRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.stateRepository = stateRepository;
-        this.divisionRepository = divisionRepository;
-        this.districtRepository = districtRepository;
-        this.rangeRepository = rangeRepository;
-        this.operatedBlockRepository = operatedBlockRepository;
-        this.blockRepository = blockRepository;
-        this.villageRepository = villageRepository;
-    }
+
+
 //    private final CitizenRepository citizenRepository;
 
 //    public MACInitializer(UserDetail_tRepository userDetailTRepository, Role_mRepository role_mRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
