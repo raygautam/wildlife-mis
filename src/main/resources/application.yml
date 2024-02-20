@@ -21,9 +21,16 @@ spring:
 #  level:
 #    org:
 #      springframework : DEBUG
+
+#Local file store location
+file:
+  upload:
+    directory: ..\E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\wildlife-mis\src\main\resources\static\uploads
+
+#Server file store location
 #file:
 #  upload:
-#    directory: ..\wildlife\src\main\resources\static\uploads
+#    directory: /opt/tomcat/webapps/upload
 server:
   port : 8082
 

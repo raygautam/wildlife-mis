@@ -80,8 +80,8 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                    authz->
-                            authz.requestMatchers("/public/**")
+                    auth->
+                            auth.requestMatchers("/public/**","/notification/**")
                                     .permitAll()
                             .anyRequest().authenticated()
                 )

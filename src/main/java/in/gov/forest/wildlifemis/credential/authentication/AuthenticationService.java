@@ -54,25 +54,7 @@ public class AuthenticationService {
 //                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
                 String jwt = helper.generateToken(userDetails.getUsername());
-//                List<String> roles = userDetails.getAuthorities().stream()
-//                        .map(GrantedAuthority::getAuthority)
-//                        .toList();
 
-//            RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-//            log.info("roles {}", roles);
-//            JwtResponse jwtResponse=JwtResponse.builder()
-//                    .token(jwt)
-//                    .type("Bearer")
-////                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
-//                    .id(userDetails.getId())
-//                    .username(userDetails.getUsername())
-//                    .roles(roles)
-////                            .stateName(userDetails.getStateName())
-////                            .divisionName(userDetails.getDivisionName())
-////                            .districtName(userDetails.getDistrictName())
-////                            .rangeName(userDetails.getRangeName())
-////                            .isActive(userDetails.getActive())
-//                    .build();
                return ApiResponse.builder()
                         .status(HttpStatus.OK.value())
                         .error(null)
@@ -127,34 +109,35 @@ public class AuthenticationService {
                     .data(null)
                     .build();
         }
-//        return ApiResponse.builder()
-//                .status(HttpStatus.OK.value())
-//                .error(null)
-//                .data(
-//                        JwtResponse.builder()
-//                                .token(jwt)
-//                               .build()
-//                ).build();
-
-//        String jwtToken = requestMeta.getJwtToken();
-//        String usernameFromToken = jwtUtil.getUsernameFromToken(jwtToken.substring(7));
-//        AppUsers user = this.userRepo.findByUserNameAndIsActive(usernameFromToken,Boolean.TRUE);
-//        UserDetails userDetails = this.userDetailsService.loadUserByUsername(usernameFromToken);
-//        String token = this.jwtUtil.generateToken(userDetails, user);
-//        LoginResponseDTO response = new LoginResponseDTO();
-//        response.setToken(token);
-//
-//        AppUserDTO appUserDTO = new AppUserDTO();
-//
-//        response.setUser( appUserDTO.convertToDTO(user));
-//
-//    //        response.setRole(rolesList.stream().map(roles1 -> roles1.getName()).collect(Collectors.toList()));
-//        // rolesList.forEach((role)-> response.setRole(role.getRolename().substring(5)));
-//
-//        ApiResponse apiResponse = new ApiResponse();
-//        apiResponse.setData(response).setStatus(apiResponse.getStatus());
-//        return apiResponse;
     }
+
+//        public ApiResponse changePassword(ChangePasswordDTO changePasswordDTO) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+//
+//        AppUsers users = userRepo.findByUserNameAndIsActive(changePasswordDTO.getUserName(), Boolean.TRUE);
+//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//
+//        if(Objects.isNull(users)){
+//
+//            throw  new ResourceNotFoundException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.RESOURCE_NOT_FOUND));
+//        }
+////        String decryptPassword = RSAUtil.decrypt(changePasswordDTO.getExistingPassword(), Base64.getEncoder().encodeToString(rsaKeyPairGenerator.getPrivateKey().getEncoded()));
+////        boolean matches = bCryptPasswordEncoder.matches(decryptPassword, users.getPassword());
+//        boolean matches = bCryptPasswordEncoder.matches(changePasswordDTO.getExistingPassword(), users.getPassword());
+//
+//        if(!matches){
+//
+//            throw new UnauthourizedException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.UN_AUTHORIZED));
+//
+//
+//        }
+//
+//        users.setPassword(bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword()));
+//        AppUsers save = userRepo.save(users);
+//        ApiResponse apiResponse = new ApiResponse();
+//        apiResponse.setData(save);
+//
+//        return apiResponse;
+//    }
 }
 
 //
@@ -294,30 +277,3 @@ public class AuthenticationService {
 //
 //    }
 //
-//    public ApiResponse changePassword(ChangePasswordDTO changePasswordDTO) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-//
-//        AppUsers users = userRepo.findByUserNameAndIsActive(changePasswordDTO.getUserName(), Boolean.TRUE);
-//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//
-//        if(Objects.isNull(users)){
-//
-//            throw  new ResourceNotFoundException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.RESOURCE_NOT_FOUND));
-//        }
-////        String decryptPassword = RSAUtil.decrypt(changePasswordDTO.getExistingPassword(), Base64.getEncoder().encodeToString(rsaKeyPairGenerator.getPrivateKey().getEncoded()));
-////        boolean matches = bCryptPasswordEncoder.matches(decryptPassword, users.getPassword());
-//        boolean matches = bCryptPasswordEncoder.matches(changePasswordDTO.getExistingPassword(), users.getPassword());
-//
-//        if(!matches){
-//
-//            throw new UnauthourizedException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.UN_AUTHORIZED));
-//
-//
-//        }
-//
-//        users.setPassword(bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword()));
-//        AppUsers save = userRepo.save(users);
-//        ApiResponse apiResponse = new ApiResponse();
-//        apiResponse.setData(save);
-//
-//        return apiResponse;
-//    }
