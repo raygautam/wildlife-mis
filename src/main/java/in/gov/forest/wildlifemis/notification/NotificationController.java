@@ -3,10 +3,11 @@ package in.gov.forest.wildlifemis.notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,13 +15,23 @@ import java.net.URL;
 @Slf4j
 @RequestMapping("/notification")
 public class NotificationController {
+
+    @Autowired
+    private NotificationServiceInter notificationServiceInter;
     @Autowired
     private ResourceLoader resourceLoader;
 
-    //    @PostMapping("/save")
-//    public ResponseEntity<?> saveNotificationType(@RequestBody NotificationTypeDTO notificationTypeDTO){
-//
-//    }
+    @PostMapping("/save")
+    public ResponseEntity<?> saveNotificationType(MultipartFile file) throws IOException {
+        return ResponseEntity.ok(notificationServiceInter.save(file));
+    }
+    @GetMapping("/{fileName}")
+    public ResponseEntity<?> saveNotificationType(@PathVariable String fileName){
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+fileName+"\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(notificationServiceInter.download(fileName));
+    }
 //
 //    @GetMapping("/get")
 //    public ResponseEntity<?> getNotificationType(){
