@@ -33,7 +33,7 @@ public class NotificationController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/download/{id}")
+    @GetMapping("/downloadPDf/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) {
 //        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
         return notificationServiceInter.downloadPDf(id);
@@ -73,12 +73,12 @@ public class NotificationController {
 //    }
 
 
-    @GetMapping("/path")
-    public ResponseEntity<?> saveNotificationType() throws IOException {
-        URL url;
-        return (ResponseEntity<?>) ResponseEntity.ok(
-                url = resourceLoader.getResource("classpath:").getURL()
-        );
-    }
+//    @GetMapping("/path")
+//    public ResponseEntity<?> saveNotificationType() throws IOException {
+//        URL url;
+//        return (ResponseEntity<?>) ResponseEntity.ok(
+//                url = resourceLoader.getResource("classpath:").getURL()
+//        );
+//    }
 
 }

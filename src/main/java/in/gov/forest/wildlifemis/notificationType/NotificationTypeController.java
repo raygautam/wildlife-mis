@@ -31,6 +31,12 @@ public class NotificationTypeController {
         ApiResponse<?> apiResponse=notificationTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody NotificationTypeDTO notificationTypeDTO) {
+        ApiResponse<?> apiResponse=notificationTypeServiceInter.update(id, notificationTypeDTO);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 //
 //    @GetMapping("/get/{id}")
 //    public ResponseEntity<?> getNotificationType(@PathVariable Long id){

@@ -81,8 +81,11 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                     auth->
-                            auth.requestMatchers("/public/**","/notification/**", "/notification_type/**")
+                            auth
+//                                    .requestMatchers("/notification/downloadPDf/**").permitAll()
+                                    .requestMatchers("/public/**", "/notification/**", "/notification_type/**")
                                     .permitAll()
+//                                    auth.requestMatchers("/notification/download/{id}").permitAll()
                             .anyRequest().authenticated()
                 )
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->

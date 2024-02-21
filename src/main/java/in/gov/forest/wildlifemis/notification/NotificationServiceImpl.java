@@ -3,6 +3,7 @@ package in.gov.forest.wildlifemis.notification;
 import in.gov.forest.wildlifemis.comman.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Notification;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
+import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.ResourceNotFoundException;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,17 +71,22 @@ public class NotificationServiceImpl implements NotificationServiceInter{
 
         String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis();
         File destFile = new File(fileUploadDirectory + File.separator + randomName);
-        file.transferTo(destFile);
+
 
         try {
             Notification notification = Notification.builder()
                     .title(title)
                     .fileName(randomName)
-                    .notificationType(notificationTypeRepository.getReferenceById(notificationTypeId))
-                    .fileUrl(destFile.getAbsolutePath())
+                    .notificationType(
+                            notificationTypeRepository.findById(notificationTypeId)
+                                    .orElseThrow(()-> new DataRetrievalException("error",new Error("You have provided wrong notificationType Id : "+notificationTypeId)))
+                    )
+                    .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
                     .isActive(Boolean.TRUE)
                     .build();
+
+            file.transferTo(destFile);
             // Save notification to the database
             // notificationRepository.save(notification);
 
@@ -116,31 +123,37 @@ public class NotificationServiceImpl implements NotificationServiceInter{
     public ResponseEntity<?> downloadPDf(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("File not found with id: " + id, new Error("error"))
+                        () -> new ResourceNotFoundException("File not found with id: " + id, new Error("File not found with id: " + id))
                 );
-        String fileName=notification.getFileUrl();
+        String fileName=notification.getFileName();
         // Construct the file path
         log.info("fileName {}",fileName);
 
-        Path filePath = Paths.get(String.valueOf(notification));
+        Path filePath = Paths.get(notification.getFileUrl());
         log.info("Path {}",filePath);
 
         // Check if the file exists
         if (!Files.exists(filePath)) {
-            throw new ResourceNotFoundException("File not found: " + filePath,new Error("error"));
+            throw new ResourceNotFoundException("File not found: ",new Error("File not found: "));
         }
 
         // Load the file as a resource
         Resource resource = new FileSystemResource(filePath);
+//        Resource resource = new UrlResource(filePath.toUri());
 
         // Determine the file's content type
 //        String contentType = determineContentType(notification.getFileUrl());
         log.info("image : {}",resource);
         // Create the ResponseEntity with the file's content
+//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+
+        //inline for view and attachment for download
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + notification.getFileName() + "\"")
-                .contentType(MediaType.parseMediaType(String.valueOf(MediaType.APPLICATION_PDF)))
-                .body("resource");
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\""
+                )
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
 //        return ApiResponse.builder()
 //                .data(
 //                        resource

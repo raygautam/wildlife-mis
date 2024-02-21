@@ -36,6 +36,8 @@ public class Notification {
 
     private Boolean isActive;
 
+//    private Boolean archive;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
