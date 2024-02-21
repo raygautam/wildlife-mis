@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 public class WebConfiguration extends WebMvcConfigurationSupport {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
-        registry.addResourceHandler("static/uploads/**")
+        registry.addResourceHandler("static/css/**")
                 .addResourceLocations("classpath:static/uploads/");
     }
 }

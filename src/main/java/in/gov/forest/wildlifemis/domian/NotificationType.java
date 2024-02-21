@@ -37,4 +37,8 @@ public class NotificationType {
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
+
+    public enum Notification_Type{
+        E_Services, Advertisements_and_Results, Announcements, Tenders_And_Notices,
+    }
 }

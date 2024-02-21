@@ -1,5 +1,7 @@
 package in.gov.forest.wildlifemis.notification;
 
+import in.gov.forest.wildlifemis.comman.ApiResponse;
+import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -22,16 +24,38 @@ public class NotificationController {
     private ResourceLoader resourceLoader;
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveNotificationType(MultipartFile file) throws IOException {
-        return ResponseEntity.ok(notificationServiceInter.save(file));
+//    @ContentType(MediaType.MULTIPART_FORM_DATA.APPLICATION_PDF)
+    public ResponseEntity<?> saveNotificationType(@RequestParam("file") MultipartFile file,
+                                                  @RequestParam("notificationTypeId") Long notificationTypeId,
+                                                  @RequestParam("title") String title) throws IOException {
+//        return ResponseEntity.ok().body(file.getOriginalFilename()+", "+title+", "+notificationTypeId);
+        ApiResponse<?> apiResponse=notificationServiceInter.save(file, notificationTypeId, title);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
-    @GetMapping("/{fileName}")
-    public ResponseEntity<?> saveNotificationType(@PathVariable String fileName){
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+fileName+"\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(notificationServiceInter.download(fileName));
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+//        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
+        return notificationServiceInter.downloadPDf(id);
+
     }
+
+//    @GetMapping("/{fileName}")
+//    public ResponseEntity<?> saveNotificationType(@PathVariable String fileName){
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+fileName+"\"")
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .body(notificationServiceInter.download(fileName));
+//    }
+
+
+//    @GetMapping("/delete/{fileName}")
+//    public ResponseEntity<?> getNotificationType(@PathVariable String fileName) throws IOException {
+//        ApiResponse<?> apiResponse=notificationServiceInter.delete(fileName);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//
+//    }
+
 //
 //    @GetMapping("/get")
 //    public ResponseEntity<?> getNotificationType(){

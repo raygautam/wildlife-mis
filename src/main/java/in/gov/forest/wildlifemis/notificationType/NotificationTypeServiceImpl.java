@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationTypeServiceImpl implements NotificationTypeServiceInter{
     @Autowired
-    private NotificationTypeRepository notificationTypeRepository;
+     NotificationTypeRepository notificationTypeRepository;
     @Override
     public ApiResponse<?> save(NotificationTypeDTO notificationTypeDTO) {
         try{
@@ -36,7 +36,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
     public ApiResponse<?> get() {
         try{
             return ApiResponse.builder()
-                    .status(HttpStatus.CREATED.value())
+                    .status(HttpStatus.OK.value())
                     .data(
                            notificationTypeRepository.findAll().stream()
                                    .map(NotificationTypeMapper::convertNotificationTypeToDTO

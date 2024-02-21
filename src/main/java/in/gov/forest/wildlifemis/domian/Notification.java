@@ -26,10 +26,12 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "type_id")
-    private NotificationType type;
+    private NotificationType notificationType;
     private String fileUrl;
 
-    @CreatedDate
+    //or @CreationTimestamp (provided by Hibernate)
+//    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
     private Boolean isActive;

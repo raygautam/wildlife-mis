@@ -48,4 +48,11 @@ public class GlobalException {
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.CONFLICT.value(), ex.getError(), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(ResourceNotFoundException ex)
+    {
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.CONFLICT.value(), ex.getError(), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+    }
 }
