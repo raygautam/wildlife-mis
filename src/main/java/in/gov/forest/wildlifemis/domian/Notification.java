@@ -3,7 +3,6 @@ package in.gov.forest.wildlifemis.domian;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 import java.util.Objects;
@@ -25,8 +24,8 @@ public class Notification {
     private String fileName;
 
     @ManyToOne
-    @JoinColumn(name = "type_id")
     private NotificationType notificationType;
+
     private String fileUrl;
 
     //or @CreationTimestamp (provided by Hibernate)
@@ -36,7 +35,7 @@ public class Notification {
 
     private Boolean isActive;
 
-//    private Boolean archive;
+    private Boolean isArchive;
 
     @Override
     public final boolean equals(Object o) {

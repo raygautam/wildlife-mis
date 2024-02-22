@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 
 @SpringBootApplication
-@EnableJpaAuditing
+//@EnableJpaAuditing
 public class WildlifeMisApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WildlifeMisApplication.class, args);

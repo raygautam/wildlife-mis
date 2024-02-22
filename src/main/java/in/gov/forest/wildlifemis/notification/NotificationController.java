@@ -19,7 +19,7 @@ import java.net.URL;
 public class NotificationController {
 
     @Autowired
-    private NotificationServiceInter notificationServiceInter;
+    NotificationServiceInter notificationServiceInter;
     @Autowired
     private ResourceLoader resourceLoader;
 
@@ -31,6 +31,13 @@ public class NotificationController {
 //        return ResponseEntity.ok().body(file.getOriginalFilename()+", "+title+", "+notificationTypeId);
         ApiResponse<?> apiResponse=notificationServiceInter.save(file, notificationTypeId, title);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @GetMapping("/getActiveNotification/{notificationTypeId}")
+    public ResponseEntity<?> getActiveNotification(@PathVariable Long notificationTypeId) {
+        ApiResponse<?> apiResponse=notificationServiceInter.getActiveNotification(notificationTypeId);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
     }
 
     @GetMapping("/downloadPDf/{id}")

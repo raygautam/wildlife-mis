@@ -10,5 +10,7 @@ public interface NotificationServiceInter {
     ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title) throws IOException;
     ResponseEntity<?> downloadPDf(Long id);
 
+    ApiResponse<?> getActiveNotification(Long notificationTypeId);
+
 //    ApiResponse<?> delete(String fileName) throws IOException;
 }
