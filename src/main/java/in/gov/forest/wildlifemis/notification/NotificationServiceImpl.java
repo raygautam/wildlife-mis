@@ -1,22 +1,17 @@
 package in.gov.forest.wildlifemis.notification;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import in.gov.forest.wildlifemis.comman.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Notification;
-import in.gov.forest.wildlifemis.exception.DataInsertionException;
-import in.gov.forest.wildlifemis.exception.DataRetrievalException;
+import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
-import in.gov.forest.wildlifemis.exception.ResourceNotFoundException;
-import in.gov.forest.wildlifemis.notification.dto.ActiveNotification;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
+import io.micrometer.common.KeyValues;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,13 +25,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Timer;
-import java.util.logging.Handler;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,12 +120,12 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("File not found with id: " + id))
                 );
-        String fileName = notification.getFileName();
+//        String fileName = notification.getFileName();
         // Construct the file path
-        log.info("fileName {}", fileName);
+//        log.info("fileName {}", fileName);
 
         Path filePath = Paths.get(notification.getFileUrl());
-        log.info("Path {}", filePath);
+//        log.info("Path {}", filePath);
 
         // Check if the file exists
         if (!Files.exists(filePath)) {
@@ -154,15 +145,10 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         //inline for view and attachment for download
         return ResponseEntity.ok()
                 .header(
-                        HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\""
+                        HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + notification.getFileName() + "\""
                 )
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
-//        return ApiResponse.builder()
-//                .data(
-//                        resource
-//                )
-//                .build();
     }
 
     @Override
@@ -172,13 +158,68 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository.findByNotificationTypeIdAndIsActive(notificationTypeId, Boolean.TRUE)
-//                                    .stream()
-//                                    .map(
-//                                            notification -> ActiveNotification.
-//                                    ).collect(Collectors.toList())
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error(e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> archive(Long id) {
+        try{
+//            Notification note=notificationRepository.findById(id)
+//                    .stream()
+//                    .map(
+//                            notification -> {
+//                                notification.setIsArchive(Boolean.TRUE);
+//                                notification.setIsActive(Boolean.FALSE);
+//                                Notification notification1=notificationRepository.save(notification);
+//                                if (notification.getId()!=null){
+//                                    return  "Updated Successfully";
+//                                }else {
+//                                    return  "Fail to Update";
+//                                }
+//                            }
+//                    )
+//                    .collect(Collectors.toList())
+//                    .orElseThrow(()->new RuntimeException("Notification not found"));
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+
+                            notificationRepository.findById(id)
+                                    .stream()
+                                    .map(
+                                            notification -> {
+                                                notification.setIsArchive(Boolean.TRUE);
+                                                notification.setIsActive(Boolean.FALSE);
+                                                Notification notification1=notificationRepository.save(notification);
+                                                if (notification.getId()!=null){
+                                                   return  "Updated Successfully";
+                                                }else {
+                                                    return  "Fail to Update";
+                                                }
+                                            }
+                                    )
+                                    .findFirst()
+                                    .orElseThrow(()->new NotFoundException("Notification not found", new Error("Notification not found")))
+
+                    ).build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> getArchive() {
+        try{
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            notificationRepository.findByIsArchive(Boolean.TRUE)
+                    ).build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
         }
     }
 

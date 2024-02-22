@@ -29,8 +29,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                           notificationTypeRepository.save(NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO))
                   ).build();
         }catch (DataInsertionException e){
-            Error error=new Error(e.getMessage());
-            throw new DataInsertionException("Failed to save notificationType", error);
+            throw new DataInsertionException("Failed to save notificationType", new Error(e.getMessage()));
         }
     }
 
@@ -45,8 +44,8 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                                    ).collect(Collectors.toList())
                     ).build();
         }catch (DataRetrievalException e){
-            Error error=new Error(e.getMessage());
-            throw new DataRetrievalException("Failed to retrieve notificationType", error);
+//            Error error=new Error(e.getMessage());
+            throw new DataRetrievalException("Failed to retrieve notificationType", new Error(e.getMessage()));
         }
     }
 

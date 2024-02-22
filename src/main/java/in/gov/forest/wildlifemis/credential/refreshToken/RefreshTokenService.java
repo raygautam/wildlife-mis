@@ -54,7 +54,7 @@ public class RefreshTokenService {
   public RefreshToken verifyExpiration(RefreshToken token) {
     if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
       refreshTokenRepository.delete(token);
-      throw new JwtCustomException("Refresh token was expired. Please make a new signIn request", new Error(token.getToken()));
+      throw new JwtCustomException("Refresh token was expired. Please make a new signIn request", new Error("Refresh token was expired. Please make a new signIn request"));
     }
 
     return token;

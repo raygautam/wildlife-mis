@@ -47,6 +47,24 @@ public class NotificationController {
 
     }
 
+    @PutMapping("/archive/{id}")
+    public ResponseEntity<?> archive(@PathVariable Long id) {
+        ApiResponse<?> apiResponse=notificationServiceInter.archive(id);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+
+    }
+
+    @GetMapping("/getArchive")
+    public ResponseEntity<?> getArchive() {
+        ApiResponse<?> apiResponse=notificationServiceInter.getArchive();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+
+    }
+
+
+
 //    @GetMapping("/{fileName}")
 //    public ResponseEntity<?> saveNotificationType(@PathVariable String fileName){
 //        return ResponseEntity.ok()

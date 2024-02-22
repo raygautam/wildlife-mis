@@ -7,6 +7,7 @@ import in.gov.forest.wildlifemis.comman.TokenRefreshRequest;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
+import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,10 +98,11 @@ public class AuthenticationService {
                                         JwtResponse.builder()
                                                 .token(accessToken)
                                                 .type("Bearer")
+                                                .refreshToken(tokenRefreshRequest.getRefreshToken())
                                                 .build()
                                 ).build();
-                    }).orElseThrow(() -> new RuntimeException(
-                            "Refresh token is not in database!"));
+                    }).orElseThrow(() -> new DataRetrievalException(
+                            "Refresh token is not in database!",new Error("provided refresh token is either expired or not present!")));
         }catch (ExpiredJwtException e) {
             Error error=new Error(e.getMessage());
             return ApiResponse.builder()

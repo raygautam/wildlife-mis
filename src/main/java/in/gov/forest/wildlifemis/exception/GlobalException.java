@@ -55,4 +55,10 @@ public class GlobalException {
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.CONFLICT.value(), ex.getError(), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleNotFoundException(NotFoundException ex)
+    {
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), ex.getError(), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+    }
 }
