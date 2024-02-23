@@ -2,10 +2,11 @@ package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.comman.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Notification;
+import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
-import io.micrometer.common.KeyValues;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Date;
-import java.util.stream.Collector;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,7 +69,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
 
         try {
-            Notification notification = Notification.builder()
+            in.gov.forest.wildlifemis.domian.Notification notification = in.gov.forest.wildlifemis.domian.Notification.builder()
                     .title(title)
                     .fileName(randomName)
                     .notificationType(
@@ -116,7 +116,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
     @Override
     public ResponseEntity<?> downloadPDf(Long id) {
-        Notification notification = notificationRepository.findById(id)
+        in.gov.forest.wildlifemis.domian.Notification notification = notificationRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("File not found with id: " + id))
                 );
@@ -193,7 +193,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             notification -> {
                                                 notification.setIsArchive(Boolean.TRUE);
                                                 notification.setIsActive(Boolean.FALSE);
-                                                Notification notification1=notificationRepository.save(notification);
+                                                in.gov.forest.wildlifemis.domian.Notification notification1=notificationRepository.save(notification);
                                                 if (notification.getId()!=null){
                                                    return  "Updated Successfully";
                                                 }else {
@@ -222,6 +222,21 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
         }
     }
+
+    @Override
+    public ApiResponse<?> getAllNotification() {
+        notificationRepository.findAll();
+        try{
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            notificationRepository.findByOrderByCreatedDateDesc()
+                    ).build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
+        }
+    }
+
 
 //    @Override
 //    public ApiResponse<?> delete(String fileName) throws IOException {

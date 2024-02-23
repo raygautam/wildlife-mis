@@ -16,5 +16,7 @@ public interface NotificationServiceInter {
 
     ApiResponse<?> getArchive();
 
+    ApiResponse<?> getAllNotification();
+
 //    ApiResponse<?> delete(String fileName) throws IOException;
 }

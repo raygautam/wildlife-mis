@@ -49,6 +49,7 @@ public class NotificationController {
 
     @PutMapping("/archive/{id}")
     public ResponseEntity<?> archive(@PathVariable Long id) {
+        //id is notification Entity id.
         ApiResponse<?> apiResponse=notificationServiceInter.archive(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
@@ -58,6 +59,13 @@ public class NotificationController {
     @GetMapping("/getArchive")
     public ResponseEntity<?> getArchive() {
         ApiResponse<?> apiResponse=notificationServiceInter.getArchive();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+
+    }
+    @GetMapping("/getAllNotification")
+    public ResponseEntity<?> getAllNotification() {
+        ApiResponse<?> apiResponse=notificationServiceInter.getAllNotification();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
 
