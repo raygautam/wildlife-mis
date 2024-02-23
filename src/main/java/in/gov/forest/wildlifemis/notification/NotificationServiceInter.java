@@ -1,6 +1,6 @@
 package in.gov.forest.wildlifemis.notification;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -20,7 +20,9 @@ public class Notification {
     @SequenceGenerator(name = "notification_gen", sequenceName = "notification_seq", initialValue = 1, allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
+
     private String title;
+
     private String fileName;
 
     @ManyToOne

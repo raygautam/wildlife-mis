@@ -1,17 +1,13 @@
-package in.gov.forest.wildlifemis.exception;
+package in.gov.forest.wildlifemis.commonDTO;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Error {
+public class ErrorDTO {
     private String field;
     private String errorMessage;
 }

@@ -1,9 +1,10 @@
-package in.gov.forest.wildlifemis.comman;
+package in.gov.forest.wildlifemis.common;
 
 import in.gov.forest.wildlifemis.exception.Error;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.io.Serializable;
 @Builder
 public class ApiResponse<T> implements Serializable {
     private Integer status;
-    private Error error;
+    private List<Error> error;
     private T data;
 }
 

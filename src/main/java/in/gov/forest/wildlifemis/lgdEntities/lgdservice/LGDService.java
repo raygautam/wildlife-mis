@@ -144,7 +144,7 @@ public class LGDService {
                     ).sorted(Comparator.comparing(DistrictResponseDTO::getDistrictCode)).toList()
             );
         }catch (DataAccessException e){
-            Error error= new Error(e.getMessage());
+            Error error= new Error("",e.getMessage());
             throw new DataRetrievalException("Could not able to retrieved data!",error);
         }
 
@@ -160,7 +160,7 @@ public class LGDService {
                             .toList()
             );
         }catch(DataAccessException e){
-            Error error= new Error(e.getMessage());
+            Error error= new Error("",e.getMessage());
             throw new DataRetrievalException("Could not able to retrieved data!",error);
         }
     }
@@ -175,7 +175,7 @@ public class LGDService {
                             .toList()
             );
         }catch(DataAccessException e){
-            Error error=new Error(e.getMessage());
+            Error error=new Error("",e.getMessage());
             throw new DataRetrievalException("Could not able to retrieved data!",error);
         }
     }
@@ -190,7 +190,7 @@ public class LGDService {
                             .toList()
             );
         }catch(DataAccessException e){
-            Error error=new Error(e.getMessage());
+            Error error=new Error("",e.getMessage());
             throw new DataRetrievalException("Could not able to retrieved data!",error);
         }
     }

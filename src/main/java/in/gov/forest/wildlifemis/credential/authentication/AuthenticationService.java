@@ -1,9 +1,9 @@
 package in.gov.forest.wildlifemis.credential.authentication;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
-import in.gov.forest.wildlifemis.comman.JwtResponse;
-import in.gov.forest.wildlifemis.comman.LoginRequestDTO;
-import in.gov.forest.wildlifemis.comman.TokenRefreshRequest;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.common.JwtResponse;
+import in.gov.forest.wildlifemis.common.LoginRequestDTO;
+import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -102,12 +103,12 @@ public class AuthenticationService {
                                                 .build()
                                 ).build();
                     }).orElseThrow(() -> new DataRetrievalException(
-                            "Refresh token is not in database!",new Error("provided refresh token is either expired or not present!")));
+                            "Refresh token is not in database!",new Error("","provided refresh token is either expired or not present!")));
         }catch (ExpiredJwtException e) {
-            Error error=new Error(e.getMessage());
+            Error error=new Error("",e.getMessage());
             return ApiResponse.builder()
                     .status(HttpStatus.UNAUTHORIZED.value())
-                    .error(error)
+                    .error(Collections.singletonList(error))
                     .data(null)
                     .build();
         }

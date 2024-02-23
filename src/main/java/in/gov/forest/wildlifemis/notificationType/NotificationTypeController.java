@@ -1,11 +1,10 @@
 package in.gov.forest.wildlifemis.notificationType;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.notificationType.dto.NotificationTypeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

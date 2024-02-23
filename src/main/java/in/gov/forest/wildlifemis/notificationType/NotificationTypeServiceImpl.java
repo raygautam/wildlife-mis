@@ -1,7 +1,6 @@
 package in.gov.forest.wildlifemis.notificationType;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
-import in.gov.forest.wildlifemis.domian.NotificationType;
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +27,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                           notificationTypeRepository.save(NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO))
                   ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to save notificationType", new Error(e.getMessage()));
+            throw new DataInsertionException("Failed to save notificationType", new Error("",e.getMessage()));
         }
     }
 
@@ -45,7 +43,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());
-            throw new DataRetrievalException("Failed to retrieve notificationType", new Error(e.getMessage()));
+            throw new DataRetrievalException("Failed to retrieve notificationType", new Error("",e.getMessage()));
         }
     }
 
@@ -65,7 +63,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                                     )
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notificationType", new Error(e.getMessage()));
+            throw new DataInsertionException("Failed to update notificationType", new Error("",e.getMessage()));
         }
     }
 

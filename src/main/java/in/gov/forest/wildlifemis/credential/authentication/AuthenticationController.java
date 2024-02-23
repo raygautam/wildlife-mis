@@ -1,8 +1,8 @@
 package in.gov.forest.wildlifemis.credential.authentication;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
-import in.gov.forest.wildlifemis.comman.LoginRequestDTO;
-import in.gov.forest.wildlifemis.comman.TokenRefreshRequest;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.common.LoginRequestDTO;
+import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

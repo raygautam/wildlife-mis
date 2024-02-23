@@ -1,11 +1,8 @@
 package in.gov.forest.wildlifemis.notification;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
-import in.gov.forest.wildlifemis.domian.Notification;
-import in.gov.forest.wildlifemis.domian.NotificationType;
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
-import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,9 +23,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -48,7 +44,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         if (file.isEmpty()) {
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .error(new Error("Please select a file to upload"))
+                    .error(Collections.singletonList(new Error("","Please select a file to upload")))
                     .build();
         }
         if (!fileUploadDirectory.exists()) {
@@ -74,7 +70,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .fileName(randomName)
                     .notificationType(
                             notificationTypeRepository.findById(notificationTypeId)
-                                    .orElseThrow(() -> new DataRetrievalException("error", new Error("You have provided wrong notificationType Id : " + notificationTypeId)))
+                                    .orElseThrow(() -> new DataRetrievalException("error", new Error("","You have provided wrong notificationType Id : " + notificationTypeId)))
                     )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
@@ -90,12 +86,12 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
-                                notificationRepository.save(notification).getId()
+                                notificationRepository.save(notification)
                         )
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Enable to store notification", new Error(e.getMessage()));
+                throw new DataInsertionException("Enable to store notification", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
@@ -118,7 +114,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
     public ResponseEntity<?> downloadPDf(Long id) {
         in.gov.forest.wildlifemis.domian.Notification notification = notificationRepository.findById(id)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("File not found with id: " + id, new Error("File not found with id: " + id))
+                        () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
                 );
 //        String fileName = notification.getFileName();
         // Construct the file path
@@ -129,7 +125,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
         // Check if the file exists
         if (!Files.exists(filePath)) {
-            throw new ResourceNotFoundException("File not found: ", new Error("File not found: "));
+            throw new ResourceNotFoundException("File not found: ", new Error("","File not found: "));
         }
 
         // Load the file as a resource
@@ -160,7 +156,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                             notificationRepository.findByNotificationTypeIdAndIsActive(notificationTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
-            throw new DataRetrievalException("Fail to Retrieve Data", new Error(e.getMessage()));
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
         }
     }
 
@@ -202,11 +198,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             }
                                     )
                                     .findFirst()
-                                    .orElseThrow(()->new NotFoundException("Notification not found", new Error("Notification not found")))
+                                    .orElseThrow(()->new NotFoundException("Notification not found", new Error("","Notification not found")))
 
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
+            throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
 
@@ -219,7 +215,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                             notificationRepository.findByIsArchive(Boolean.TRUE)
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
+            throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
 
@@ -233,7 +229,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                             notificationRepository.findByOrderByCreatedDateDesc()
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notification", new Error(e.getMessage()));
+            throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
 

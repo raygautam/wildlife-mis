@@ -1,4 +1,4 @@
-package in.gov.forest.wildlifemis.comman;
+package in.gov.forest.wildlifemis.common;
 
 import lombok.Data;
 

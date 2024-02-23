@@ -1,18 +1,21 @@
 package in.gov.forest.wildlifemis.notification;
 
-import in.gov.forest.wildlifemis.comman.ApiResponse;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
+
 @RestController
 @Slf4j
 @RequestMapping("/notification")
@@ -23,14 +26,18 @@ public class NotificationController {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    @PostMapping("/save")
-//    @ContentType(MediaType.MULTIPART_FORM_DATA.APPLICATION_PDF)
-    public ResponseEntity<?> saveNotificationType(@RequestParam("file") MultipartFile file,
-                                                  @RequestParam("notificationTypeId") Long notificationTypeId,
-                                                  @RequestParam("title") String title) throws IOException {
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> saveNotificationType(
+            @RequestParam(value = "file") @Valid @NotNull(message = "Select file!") MultipartFile file,
+            @RequestParam(value = "notificationTypeId") @Valid @NotNull(message = "Provide notificationTypeId!") Long notificationTypeId,
+            @RequestParam(value = "title") @Valid @NotEmpty(message = "Provide title!") String title
+    ) throws IOException {
 //        return ResponseEntity.ok().body(file.getOriginalFilename()+", "+title+", "+notificationTypeId);
-        ApiResponse<?> apiResponse=notificationServiceInter.save(file, notificationTypeId, title);
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//        if(file!=null && notificationTypeId!=null && title!=null || !Objects.equals(title, "")){
+            ApiResponse<?> apiResponse=notificationServiceInter.save(file, notificationTypeId, title);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//        }else{
+//                    }
     }
 
     @GetMapping("/getActiveNotification/{notificationTypeId}")
