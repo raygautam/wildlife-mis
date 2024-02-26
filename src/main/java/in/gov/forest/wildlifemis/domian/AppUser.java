@@ -41,7 +41,7 @@ public class AppUser {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "service_id", nullable = true)
-    private Service service;
+    private ForestService service;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "division_id", nullable = true)

@@ -4,40 +4,23 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@Builder
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class Notification {
+public class ForestService {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_gen")
-    @SequenceGenerator(name = "notification_gen", sequenceName = "notification_seq", initialValue = 1,  allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String title;
-
-    private String fileName;
-
-    @ManyToOne
-    private NotificationType notificationType;
-
-    private String fileUrl;
-
-    //or @CreationTimestamp (provided by Hibernate)
-//    @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    private Boolean isActive;
-
-    private Boolean isArchive;
+    @Column(unique = true, nullable = false)
+    private String serviceName;
 
     @Override
     public final boolean equals(Object o) {
@@ -46,8 +29,8 @@ public class Notification {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Notification that = (Notification) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        ForestService service = (ForestService) o;
+        return getId() != null && Objects.equals(getId(), service.getId());
     }
 
     @Override

@@ -71,16 +71,15 @@ public class GlobalException {
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(MissingServletRequestParameterException.class)
-//    public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex) {
-//        ApiResponse<?> apiResponse=ApiResponse.builder()
-//                .status(HttpStatus.BAD_REQUEST.value())
-//                .error(Collections.singletonList(new Error("",ex.getParameterName()+" fields are required")))
-//                .build();
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//
-////        return new ResponseEntity<>(apiResponse, HttpStatusCode.valueOf(apiResponse.getStatus()));
-//    }
+    //handleMissingServletRequestParameter like RequestParam value is null or missing specially the foreign key
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex) {
+        ApiResponse<?> apiResponse=ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(Collections.singletonList(new Error(ex.getParameterName()," fields are required")))
+                .build();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+}
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

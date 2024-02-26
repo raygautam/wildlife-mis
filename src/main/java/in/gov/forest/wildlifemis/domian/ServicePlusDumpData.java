@@ -10,16 +10,18 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Service {
+@NoArgsConstructor
+public class ServicePlusDumpData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "service_plus_dump_data_gen")
+    @SequenceGenerator(name = "service_plus_dump_data_gen", sequenceName = "service_plus_dump_data_seq", allocationSize = 1)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(unique = true)
-    private String serviceName;
+    @Column(columnDefinition = "text", nullable = false)
+    private String data;
 
     @Override
     public final boolean equals(Object o) {
@@ -28,8 +30,8 @@ public class Service {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Service service = (Service) o;
-        return getId() != null && Objects.equals(getId(), service.getId());
+        ServicePlusDumpData that = (ServicePlusDumpData) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override

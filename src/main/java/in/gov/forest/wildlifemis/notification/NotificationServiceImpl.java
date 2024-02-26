@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -44,9 +45,18 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         if (file.isEmpty()) {
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .error(Collections.singletonList(new Error("","Please select a file to upload")))
+                    .error(Collections.singletonList(new Error("file","Please select a file to upload")))
                     .build();
         }
+
+        if( notificationTypeId==null){
+            throw new BadRequestException("", new Error("notificationTypeId","field is required"));
+        }
+
+        if( title==null || Objects.equals(title, "")){
+            throw new BadRequestException("", new Error("title","field is required"));
+        }
+
         if (!fileUploadDirectory.exists()) {
             try {
                 boolean created = fileUploadDirectory.mkdirs();
@@ -189,12 +199,9 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             notification -> {
                                                 notification.setIsArchive(Boolean.TRUE);
                                                 notification.setIsActive(Boolean.FALSE);
-                                                in.gov.forest.wildlifemis.domian.Notification notification1=notificationRepository.save(notification);
-                                                if (notification.getId()!=null){
-                                                   return  "Updated Successfully";
-                                                }else {
-                                                    return  "Fail to Update";
-                                                }
+                                                notificationRepository.save(notification);
+                                                return  "Updated Successfully";
+
                                             }
                                     )
                                     .findFirst()

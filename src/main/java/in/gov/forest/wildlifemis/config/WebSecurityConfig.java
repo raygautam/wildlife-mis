@@ -83,7 +83,11 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                     auth->
                             auth
 //                                    .requestMatchers("/notification/downloadPDf/**").permitAll()
-                                    .requestMatchers("/public/**", "/notification/**", "/notification_type/**")
+                                    .requestMatchers("/public/**",
+                                            "/notification/**",
+                                            "/notification_type/**",
+                                            "/forestServices/**"
+                                    )
                                     .permitAll()
 //                                    auth.requestMatchers("/notification/download/{id}").permitAll()
                             .anyRequest().authenticated()

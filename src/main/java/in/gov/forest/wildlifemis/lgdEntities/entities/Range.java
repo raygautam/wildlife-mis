@@ -1,7 +1,7 @@
 package in.gov.forest.wildlifemis.lgdEntities.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import in.gov.forest.wildlifemis.domian.Service;
+import in.gov.forest.wildlifemis.domian.ForestService;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -31,7 +31,7 @@ public class Range {
     private Division division;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Service service;
+    private ForestService service;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "ranges")
     @ToString.Exclude

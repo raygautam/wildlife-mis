@@ -19,9 +19,9 @@ public class NotificationTypeController {
 
 //    SuperAdmin can enter notification_type
 //    @PreAuthorize("hasRole('SuperAdmin')")
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ResponseEntity<?> saveNotificationType(@RequestBody NotificationTypeDTO notificationTypeDTO){
-        ApiResponse<?> apiResponse=notificationTypeServiceInter.save(notificationTypeDTO);
+        ApiResponse<?> apiResponse=notificationTypeServiceInter.add(notificationTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 

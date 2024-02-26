@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -26,14 +28,14 @@ public class NotificationController {
     @Autowired
     private ResourceLoader resourceLoader;
 
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> saveNotificationType(
-            @RequestParam(value = "file") @Valid @NotNull(message = "Select file!") MultipartFile file,
-            @RequestParam(value = "notificationTypeId") @Valid @NotNull(message = "Provide notificationTypeId!") Long notificationTypeId,
-            @RequestParam(value = "title") @Valid @NotEmpty(message = "Provide title!") String title
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "notificationTypeId") Long notificationTypeId,
+            @RequestParam(value = "title") String title
     ) throws IOException {
 //        return ResponseEntity.ok().body(file.getOriginalFilename()+", "+title+", "+notificationTypeId);
-//        if(file!=null && notificationTypeId!=null && title!=null || !Objects.equals(title, "")){
+
             ApiResponse<?> apiResponse=notificationServiceInter.save(file, notificationTypeId, title);
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //        }else{

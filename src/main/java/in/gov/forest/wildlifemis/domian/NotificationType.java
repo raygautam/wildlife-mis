@@ -39,6 +39,6 @@ public class NotificationType {
     }
 
     public enum Notification_Type{
-        E_Services, Advertisements_and_Results, Announcements, Tenders_And_Notices,
+         Advertisements_and_Results, Announcements, Tenders_And_Notices,
     }
 }
