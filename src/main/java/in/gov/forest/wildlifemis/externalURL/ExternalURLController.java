@@ -1,9 +1,30 @@
 package in.gov.forest.wildlifemis.externalURL;
 
-import org.springframework.web.bind.annotation.RestController;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.externalURL.dto.ExternalURL_DTO;
+import in.gov.forest.wildlifemis.notification.NotificationServiceInter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class ExternalURLController {
 
+    @Autowired
+    private ExternalURLServiceInter externalURLServiceInter;
+
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addExternalURL(@RequestBody ExternalURL_DTO externalURLDto) throws IOException {
+
+        ApiResponse<?> apiResponse=externalURLServiceInter.add(externalURLDto);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
 }

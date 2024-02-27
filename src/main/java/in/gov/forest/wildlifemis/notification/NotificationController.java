@@ -21,6 +21,7 @@ import java.util.Objects;
 @RestController
 @Slf4j
 @RequestMapping("/notification")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class NotificationController {
 
     @Autowired

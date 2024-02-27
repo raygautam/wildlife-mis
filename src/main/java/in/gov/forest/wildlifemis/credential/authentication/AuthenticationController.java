@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 @RestController
 //@CrossOrigin(origins = "http://10.179.2.158:8080")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
