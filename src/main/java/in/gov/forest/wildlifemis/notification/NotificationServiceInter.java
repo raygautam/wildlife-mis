@@ -14,9 +14,11 @@ public interface NotificationServiceInter {
 
     ApiResponse<?> archive(Long id);
 
-    ApiResponse<?> getArchive();
+    ApiResponse<?> getAllArchive();
 
     ApiResponse<?> getAllNotification();
+
+    ApiResponse<?> getArchiveNotification(Long notificationTypeId);
 
 //    ApiResponse<?> delete(String fileName) throws IOException;
 }

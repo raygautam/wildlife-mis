@@ -16,4 +16,6 @@ public interface NotificationRepository extends JpaRepository<in.gov.forest.wild
 
 //    @Query("SELECT n FROM Notification n")
     List<GetNotificationDetails> findByOrderByCreatedDateDesc();
+
+    List<GetNotificationDetails> findByNotificationTypeIdAndIsArchive(Long notificationTypeId, Boolean aTrue);
 }

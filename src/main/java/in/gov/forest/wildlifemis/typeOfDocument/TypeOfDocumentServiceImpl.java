@@ -1,38 +1,38 @@
-package in.gov.forest.wildlifemis.notificationType;
+package in.gov.forest.wildlifemis.typeOfDocument;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.domian.TypeOfDocument;
 import in.gov.forest.wildlifemis.domian.TypeOfNotification;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.NotFoundException;
-import in.gov.forest.wildlifemis.notificationType.dto.NotificationTypeDTO;
+import in.gov.forest.wildlifemis.typeOfDocument.dto.TypeOfDocumentDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @Slf4j
-public class NotificationTypeServiceImpl implements NotificationTypeServiceInter{
+public class TypeOfDocumentServiceImpl implements TypeOfDocumentServiceInter{
     @Autowired
-     NotificationTypeRepository notificationTypeRepository;
+    TypeOfDocumentRepository typeOfDocumentRepository;
     @Override
-    public ApiResponse<?> add(NotificationTypeDTO notificationTypeDTO) {
+    public ApiResponse<?> add(TypeOfDocumentDTO typeOfDocumentDTO) {
         try{
-          return ApiResponse.builder()
-                  .status(HttpStatus.CREATED.value())
-                  .data(
-                          notificationTypeRepository.save(
-                                  TypeOfNotification.builder()
-                                          .name(notificationTypeDTO.getName())
-                                          .build()
+            return ApiResponse.builder()
+                    .status(HttpStatus.CREATED.value())
+                    .data(
+                            typeOfDocumentRepository.save(
+                                    TypeOfDocument.builder()
+                                            .name(typeOfDocumentDTO.getName())
+                                            .build()
 //                                  NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO)
-                          )
-                  ).build();
+                            )
+                    ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to save notificationType", new Error("",e.getMessage()));
+            throw new DataInsertionException("Failed to save typeOfDocument", new Error("",e.getMessage()));
         }
     }
 
@@ -44,37 +44,35 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationTypeRepository.findByOrderById()
+                            typeOfDocumentRepository.findByOrderById()
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());
-            throw new DataRetrievalException("Failed to retrieve notificationType", new Error("",e.getMessage()));
+            throw new DataRetrievalException("Failed to retrieve typeOfDocument", new Error("",e.getMessage()));
         }
     }
 
 
     @Override
-    public ApiResponse<?> update(Long id, NotificationTypeDTO notificationTypeDTO) {
+    public ApiResponse<?> update(Long id, TypeOfDocumentDTO typeOfDocument) {
         try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationTypeRepository.findById(id)
+                            typeOfDocumentRepository.findById(id)
                                     .stream()
                                     .map(
                                             notificationType -> {
-                                                notificationType.setName(notificationTypeDTO.getName());
-                                                notificationTypeRepository.save(notificationType);
+                                                notificationType.setName(typeOfDocument.getName());
+                                                typeOfDocumentRepository.save(notificationType);
                                                 return "Updated Successfully";
                                             }
                                     )
                                     .findFirst()
-                                    .orElseThrow(()->new NotFoundException("NotificationType not found", new Error("","NotificationType not found")))
+                                    .orElseThrow(()->new NotFoundException("TypeOfDocument not found", new Error("","NotificationType not found")))
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notificationType", new Error("",e.getMessage()));
+            throw new DataInsertionException("Failed to update TypeOfDocument", new Error("",e.getMessage()));
         }
     }
-
-
 }

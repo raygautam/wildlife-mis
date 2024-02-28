@@ -169,52 +169,51 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
         }
     }
+    @Override
+    public ApiResponse<?> getArchiveNotification(Long notificationTypeId) {
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            notificationRepository
+                                    .findByNotificationTypeIdAndIsArchive(notificationTypeId, Boolean.TRUE)
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+        }
+    }
 
     @Override
     public ApiResponse<?> archive(Long id) {
         try{
-//            Notification note=notificationRepository.findById(id)
-//                    .stream()
-//                    .map(
-//                            notification -> {
-//                                notification.setIsArchive(Boolean.TRUE);
-//                                notification.setIsActive(Boolean.FALSE);
-//                                Notification notification1=notificationRepository.save(notification);
-//                                if (notification.getId()!=null){
-//                                    return  "Updated Successfully";
-//                                }else {
-//                                    return  "Fail to Update";
-//                                }
-//                            }
-//                    )
-//                    .collect(Collectors.toList())
-//                    .orElseThrow(()->new RuntimeException("Notification not found"));
-            return ApiResponse.builder()
-                    .status(HttpStatus.OK.value())
-                    .data(
+            return ApiResponse
+                    .builder()
+                        .status(HttpStatus.OK.value())
+                        .data(
 
-                            notificationRepository.findById(id)
-                                    .stream()
-                                    .map(
-                                            notification -> {
-                                                notification.setIsArchive(Boolean.TRUE);
-                                                notification.setIsActive(Boolean.FALSE);
-                                                notificationRepository.save(notification);
-                                                return  "Updated Successfully";
+                                notificationRepository.findById(id)
+                                        .stream()
+                                        .map(
+                                                notification -> {
+                                                    notification.setIsArchive(Boolean.TRUE);
+                                                    notification.setIsActive(Boolean.FALSE);
+                                                    notificationRepository.save(notification);
+                                                    return  "Updated Successfully";
 
-                                            }
-                                    )
-                                    .findFirst()
-                                    .orElseThrow(()->new NotFoundException("Notification not found", new Error("","Notification not found")))
+                                                }
+                                        )
+                                        .findFirst()
+                                        .orElseThrow(()->new NotFoundException("Notification not found", new Error("","Notification not found")))
 
-                    ).build();
+                        )
+                    .build();
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
 
     @Override
-    public ApiResponse<?> getArchive() {
+    public ApiResponse<?> getAllArchive() {
         try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())

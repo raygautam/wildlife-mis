@@ -2,7 +2,6 @@ package in.gov.forest.wildlifemis.externalURL;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.ExternalURL;
-import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.externalURL.dto.ExternalURL_DTO;

@@ -6,4 +6,9 @@ public interface GetNotificationDetails {
      Long getId();
      String getTitle();
      String getCreatedDate();
+     String getNotificationTypeName();
+
+      Boolean getIsActive();
+
+      Boolean getIsArchive();
 }
