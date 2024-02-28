@@ -1,7 +1,7 @@
 package in.gov.forest.wildlifemis.notificationType;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
-import in.gov.forest.wildlifemis.domian.TypeOfNotification;
+import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
@@ -25,7 +25,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                   .status(HttpStatus.CREATED.value())
                   .data(
                           notificationTypeRepository.save(
-                                  TypeOfNotification.builder()
+                                  NotificationType.builder()
                                           .name(notificationTypeDTO.getName())
                                           .build()
 //                                  NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO)

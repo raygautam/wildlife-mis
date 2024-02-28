@@ -20,10 +20,10 @@ public class DocumentController {
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> saveNotificationType(
             @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "typeOfDocumentId") Long notificationTypeId,
+            @RequestParam(value = "typeOfDocumentId") Long typeOfDocumentId,
             @RequestParam(value = "title") String title
     ) throws IOException {
-        ApiResponse<?> apiResponse = documentServiceInter.save(file, notificationTypeId, title);
+        ApiResponse<?> apiResponse = documentServiceInter.save(file, typeOfDocumentId, title);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
@@ -34,9 +34,9 @@ public class DocumentController {
 
     }
 
-    @GetMapping("/delete/{typeOfDocumentId}")
-    public ResponseEntity<?> delete(@PathVariable Long typeOfDocumentId) {
-        ApiResponse<?> apiResponse = documentServiceInter.delete(typeOfDocumentId);
+    @GetMapping("/delete/{documentId}")
+    public ResponseEntity<?> delete(@PathVariable Long documentId) {
+        ApiResponse<?> apiResponse = documentServiceInter.delete(documentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }

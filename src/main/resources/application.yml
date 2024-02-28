@@ -23,14 +23,11 @@ spring:
 #      springframework : DEBUG
 
 #Local file store location
-file:
-  upload:
-    directory: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\wildlife-mis\src\main\resources\static\uploads
+#fileUploadDirectory: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\wildlife-mis\src\main\resources\static\uploads
+fileUploadDirectory: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\
 
 #Server file store location
-#file:
-#  upload:
-#    directory: /opt/tomcat/webapps/upload
+#fileUploadDirectory: /opt/tomcat/webapps/
 server:
   port : 8082
 

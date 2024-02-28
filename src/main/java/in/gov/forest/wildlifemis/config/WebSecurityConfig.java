@@ -87,6 +87,8 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                                             "/notification/**",
                                             "/notification_type/**",
                                             "/forestServices/**",
+                                            "/typeOfDocument/**",
+                                            "/document/**",
                                             "/servicePlusStatus"
                                     )
                                     .permitAll()

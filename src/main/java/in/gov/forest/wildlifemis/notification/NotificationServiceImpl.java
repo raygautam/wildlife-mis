@@ -33,8 +33,8 @@ public class NotificationServiceImpl implements NotificationServiceInter {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-    @Value("${file.upload.directory}")
-    File fileUploadDirectory;
+    @Value("${fileUploadDirectory}")
+    String fileUploadDirectory;
 
     @Autowired
     NotificationRepository notificationRepository;
@@ -42,6 +42,8 @@ public class NotificationServiceImpl implements NotificationServiceInter {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title) throws IOException {
+        File uploadFileUrl = new File(fileUploadDirectory+"uploads");
+
         if (file.isEmpty()) {
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -57,9 +59,9 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             throw new BadRequestException("", new Error("title","field is required"));
         }
 
-        if (!fileUploadDirectory.exists()) {
+        if (!uploadFileUrl.exists()) {
             try {
-                boolean created = fileUploadDirectory.mkdirs();
+                boolean created = uploadFileUrl.mkdirs();
                 if (created) {
                     log.info("Directory created successfully.");
                 } else {
@@ -71,7 +73,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
 
         String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis();
-        File destFile = new File(fileUploadDirectory + File.separator + randomName);
+        File destFile = new File(uploadFileUrl + File.separator + randomName);
 
 
         try {

@@ -26,7 +26,7 @@ public class Notification {
     private String fileName;
 
     @ManyToOne
-    private TypeOfNotification notificationType;
+    private NotificationType notificationType;
 
     private String fileUrl;
 

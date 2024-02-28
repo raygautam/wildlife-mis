@@ -2,7 +2,6 @@ package in.gov.forest.wildlifemis.typeOfDocument;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.TypeOfDocument;
-import in.gov.forest.wildlifemis.domian.TypeOfNotification;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;

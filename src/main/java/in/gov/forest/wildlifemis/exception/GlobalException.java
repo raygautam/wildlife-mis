@@ -9,6 +9,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,11 @@ public class GlobalException {
         return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(new Error("",ex.getMessage()+ex.getMaxUploadSize())), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(JwtCustomException ex) {
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.FORBIDDEN.value(), Collections.singletonList(ex.getError()), null);
