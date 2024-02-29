@@ -57,10 +57,6 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                         )
                 );
         File URL= new File(fileUploadDirectory + typeOfDocument.getName());
-//        File formsURL= new File(fileUploadDirectory + "forms");
-//        File notificationAndOrdersURL= new File(fileUploadDirectory + "notificationAndOrders");
-//        File civilListURL= new File(fileUploadDirectory + "civilList");
-//        File publicationsURL= new File(fileUploadDirectory + "publications");
 
         if (file.isEmpty()) {
             return ApiResponse.builder()

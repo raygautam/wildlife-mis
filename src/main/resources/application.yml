@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
   datasource:
     url: jdbc:postgresql://localhost:5432/wildlife_mis
     username: postgres
@@ -16,11 +20,17 @@ spring:
         generate_statistics: false
         order_inserts: true
         order_updates: true
+
+pdfUploadSize: 5*1024*1024
+imageUploadSize: 2*1024*1024
+
 #        dialect: org.hibernate.dialect.PostgreSQLDialect
 #logging:
 #  level:
 #    org:
 #      springframework : DEBUG
+
+
 
 #Local file store location
 #fileUploadDirectory: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\wildlife-mis\src\main\resources\static\uploads
