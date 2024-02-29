@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Document {
+public class Gallery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -25,10 +25,9 @@ public class Document {
     private String fileName;
 
     @ManyToOne
-    private DocumentType typeOfDocument;
+    private GalleryType galleryType;
 
     private String fileUrl;
-
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
@@ -42,8 +41,8 @@ public class Document {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Document document = (Document) o;
-        return getId() != null && Objects.equals(getId(), document.getId());
+        Gallery gallery = (Gallery) o;
+        return getId() != null && Objects.equals(getId(), gallery.getId());
     }
 
     @Override

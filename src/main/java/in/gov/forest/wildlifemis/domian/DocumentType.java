@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -14,26 +13,13 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Document {
+public class DocumentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String title;
-
-    private String fileName;
-
-    @ManyToOne
-    private DocumentType typeOfDocument;
-
-    private String fileUrl;
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
-
-    private Boolean isActive;
+    private String name;
 
     @Override
     public final boolean equals(Object o) {
@@ -42,8 +28,8 @@ public class Document {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Document document = (Document) o;
-        return getId() != null && Objects.equals(getId(), document.getId());
+        DocumentType that = (DocumentType) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override

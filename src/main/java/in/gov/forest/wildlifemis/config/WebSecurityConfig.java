@@ -87,7 +87,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                                             "/notification/**",
                                             "/notification_type/**",
                                             "/forestServices/**",
-                                            "/typeOfDocument/**",
+                                            "/documentType/**",
                                             "/document/**",
                                             "/servicePlusStatus"
                                     )

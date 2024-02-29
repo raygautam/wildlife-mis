@@ -1,11 +1,13 @@
-package in.gov.forest.wildlifemis.document;
+package in.gov.forest.wildlifemis.gallery;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Document;
 import in.gov.forest.wildlifemis.domian.DocumentType;
+import in.gov.forest.wildlifemis.domian.Gallery;
+import in.gov.forest.wildlifemis.domian.GalleryType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
-import in.gov.forest.wildlifemis.documentType.DocumentTypeRepository;
+import in.gov.forest.wildlifemis.galleryType.GalleryTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +34,20 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class DocumentServiceImpl implements DocumentServiceInter{
+public class GalleryServiceImpl implements GalleryServiceInter{
+    @Autowired
+    GalleryRepository galleryRepository;
 
     @Autowired
-    DocumentRepository documentRepository;
-
-    @Autowired
-    DocumentTypeRepository typeOfDocumentRepository;
-
+    GalleryTypeRepository galleryTypeRepository;
     @Value("${fileUploadDirectory}")
     String fileUploadDirectory;
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) {
-        DocumentType typeOfDocument=typeOfDocumentRepository.findById(documentTypeId)
+    public ApiResponse<?> save(MultipartFile file, Long galleryTypeId, String title) {
+        GalleryType galleryType=galleryTypeRepository.findById(galleryTypeId)
                 .orElseThrow(
                         ()->new NotFoundException(
                                 "Id is not present!",
@@ -55,7 +57,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                                 )
                         )
                 );
-        File URL= new File(fileUploadDirectory + typeOfDocument.getName());
+        File URL= new File(fileUploadDirectory + galleryType.getName());
 
         if (file.isEmpty()) {
             return ApiResponse.builder()
@@ -64,8 +66,8 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     .build();
         }
 
-        if(documentTypeId==null){
-            throw new BadRequestException("", new Error("documentTypeId","field is required"));
+        if(galleryTypeId==null){
+            throw new BadRequestException("", new Error("galleryTypeId","field is required"));
         }
 
         if( title==null || Objects.equals(title, "")){
@@ -92,10 +94,10 @@ public class DocumentServiceImpl implements DocumentServiceInter{
         File destFile = new File(URL + File.separator + randomName);
 
         try {
-            Document document=Document.builder()
+            Gallery gallery=Gallery.builder()
                     .title(title)
                     .fileName(randomName)
-                    .typeOfDocument(typeOfDocument)
+                    .galleryType(galleryType)
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
                     .isActive(Boolean.TRUE)
@@ -107,7 +109,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
-                                documentRepository.save(document)
+                                galleryRepository.save(gallery)
                         )
                         .build();
 
@@ -130,12 +132,12 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> getDocument(Long documentTypeId) {
+    public ApiResponse<?> getGallery(Long galleryTypeId) {
         try {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findByTypeOfDocumentIdAndIsActive(documentTypeId, Boolean.TRUE)
+                            galleryRepository.findByGalleryTypeIdAndIsActive(galleryTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -143,12 +145,12 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> delete(Long documentId) {
+    public ApiResponse<?> delete(Long galleryId) {
         try {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.deleteByTypeOfDocumentId(documentId, Boolean.FALSE)
+                            galleryRepository.deleteByGalleryTypeId(galleryId, Boolean.FALSE)
                     ).build();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
@@ -157,7 +159,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
 
     @Override
     public ResponseEntity<?> download(Long id) {
-        Document document = documentRepository.findById(id)
+        Gallery gallery = galleryRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
                 );
@@ -165,7 +167,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
         // Construct the file path
 //        log.info("fileName {}", fileName);
 
-        Path filePath = Paths.get(document.getFileUrl());
+        Path filePath = Paths.get(gallery.getFileUrl());
 //        log.info("Path {}", filePath);
 
         // Check if the file exists
@@ -186,9 +188,10 @@ public class DocumentServiceImpl implements DocumentServiceInter{
         //inline for view and attachment for download
         return ResponseEntity.ok()
                 .header(
-                        HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + document.getFileName() + "\""
+                        HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + gallery.getFileName() + "\""
                 )
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
+
 }

@@ -1,4 +1,4 @@
-package in.gov.forest.wildlifemis.typeOfDocument.dto;
+package in.gov.forest.wildlifemis.documentType.dto;
 
 import lombok.*;
 
@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class TypeOfDocumentDTO {
+public class DocumentTypeDTO {
     private String name;
 }

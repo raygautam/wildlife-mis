@@ -5,11 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface DocumentServiceInter {
-    ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title);
+    ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title);
 
-    ApiResponse<?> getDocument(Long typeOfDocumentId);
+    ApiResponse<?> getDocument(Long documentTypeId);
 
-    ApiResponse<?> delete(Long typeOfDocumentId);
+    ApiResponse<?> delete(Long documentTypeId);
 
     ResponseEntity<?> download(Long id);
 }
