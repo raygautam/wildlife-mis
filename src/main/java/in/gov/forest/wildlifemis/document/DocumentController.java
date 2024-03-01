@@ -34,11 +34,10 @@ public class DocumentController {
 
     }
 
-    @GetMapping("/delete/{documentId}")
+    @DeleteMapping("/delete/{documentId}")
     public ResponseEntity<?> delete(@PathVariable Long documentId) {
         ApiResponse<?> apiResponse = documentServiceInter.delete(documentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-
     }
 
     @GetMapping("/download/{id}")

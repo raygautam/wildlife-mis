@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-    List<GetDocumentDetails> findByTypeOfDocumentIdAndIsActive(Long typeOfDocumentId, Boolean aTrue);
+    List<GetDocumentDetails> findByDocumentTypeIdAndIsActive(Long typeOfDocumentId, Boolean aTrue);
 
     @Modifying
     @Query("UPDATE Document SET isActive = :aFalse WHERE id = :documentId")

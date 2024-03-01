@@ -45,7 +45,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) {
-        DocumentType typeOfDocument=typeOfDocumentRepository.findById(documentTypeId)
+        DocumentType documentType=typeOfDocumentRepository.findById(documentTypeId)
                 .orElseThrow(
                         ()->new NotFoundException(
                                 "Id is not present!",
@@ -55,7 +55,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                                 )
                         )
                 );
-        File URL= new File(fileUploadDirectory + typeOfDocument.getName());
+        File URL= new File(fileUploadDirectory + documentType.getName());
 
         if (file.isEmpty()) {
             return ApiResponse.builder()
@@ -95,7 +95,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             Document document=Document.builder()
                     .title(title)
                     .fileName(randomName)
-                    .typeOfDocument(typeOfDocument)
+                    .documentType(documentType)
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
                     .isActive(Boolean.TRUE)
@@ -135,7 +135,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findByTypeOfDocumentIdAndIsActive(documentTypeId, Boolean.TRUE)
+                            documentRepository.findByDocumentTypeIdAndIsActive(documentTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -179,7 +179,9 @@ public class DocumentServiceImpl implements DocumentServiceInter{
 
         // Determine the file's content type
 //        String contentType = determineContentType(notification.getFileUrl());
-        log.info("image : {}", resource);
+
+//        log.info("image : {}", resource);
+
         // Create the ResponseEntity with the file's content
 //        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 

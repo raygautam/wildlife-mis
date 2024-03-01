@@ -1,7 +1,6 @@
 package in.gov.forest.wildlifemis.galleryType;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
-import in.gov.forest.wildlifemis.documentType.dto.DocumentTypeDTO;
 import in.gov.forest.wildlifemis.galleryType.dto.GalleryTypeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

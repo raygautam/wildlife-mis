@@ -37,8 +37,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeServiceInter {
 
     @Override
     public ApiResponse<?> get() {
-//        List<NotificationType> sortedList = new ArrayList<>(notificationTypeRepository.findAll());
-
         try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())

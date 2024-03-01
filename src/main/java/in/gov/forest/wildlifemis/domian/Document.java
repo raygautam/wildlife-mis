@@ -25,7 +25,7 @@ public class Document {
     private String fileName;
 
     @ManyToOne
-    private DocumentType typeOfDocument;
+    private DocumentType documentType;
 
     private String fileUrl;
 
