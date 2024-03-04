@@ -1,6 +1,7 @@
 package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.domian.Notification;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +77,7 @@ public class NotificationController {
 
     /**API to download notification resource using Notification Entity id.**/
     @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+    public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
 //        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
         return notificationServiceInter.downloadPDf(id);
 
@@ -102,46 +106,16 @@ public class NotificationController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    @GetMapping("/getArchiveNotificationByPagination/{notificationTypeId}")
+    public ResponseEntity<?> getArchiveNotificationByPagination(
+            @PathVariable Long notificationTypeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotificationByPagination(notificationTypeId, pageable);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 }
 
-//    @GetMapping("/{fileName}")
-//    public ResponseEntity<?> saveNotificationType(@PathVariable String fileName){
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+fileName+"\"")
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(notificationServiceInter.download(fileName));
-//    }
-
-
-//    @GetMapping("/delete/{fileName}")
-//    public ResponseEntity<?> getNotificationType(@PathVariable String fileName) throws IOException {
-//        ApiResponse<?> apiResponse=notificationServiceInter.delete(fileName);
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//
-//    }
-
-//
-//    @GetMapping("/get")
-//    public ResponseEntity<?> getNotificationType(){
-//
-//    }
-//
-//    @GetMapping("/get/{id}")
-//    public ResponseEntity<?> getNotificationType(@PathVariable Long id){
-//
-//    }
-//
-//    @GetMapping("/delete/{id}")
-//    public ResponseEntity<?> getNotificationType(@PathVariable Long id){
-//
-//    }
-
-
-//    @GetMapping("/path")
-//    public ResponseEntity<?> saveNotificationType() throws IOException {
-//        URL url;
-//        return (ResponseEntity<?>) ResponseEntity.ok(
-//                url = resourceLoader.getResource("classpath:").getURL()
-//        );
-//    }
 

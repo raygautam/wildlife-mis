@@ -4,6 +4,8 @@ import in.gov.forest.wildlifemis.common.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 public interface GalleryServiceInter {
     ApiResponse<?> save(MultipartFile file, Long galleryTypeId, String title);
 
@@ -11,5 +13,5 @@ public interface GalleryServiceInter {
 
     ApiResponse<?> delete(Long galleryId);
 
-    ResponseEntity<?> download(Long id);
+    ResponseEntity<?> download(Long id) throws IOException;
 }

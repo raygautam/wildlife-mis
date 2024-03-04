@@ -40,25 +40,22 @@ public class GalleryServiceImpl implements GalleryServiceInter{
 
     @Autowired
     GalleryTypeRepository galleryTypeRepository;
-    @Value("${fileUploadDirectory}")
+    @Value("${fileUploadDirectoryForGallery}")
     String fileUploadDirectory;
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResponse<?> save(MultipartFile file, Long galleryTypeId, String title) {
-        GalleryType galleryType=galleryTypeRepository.findById(galleryTypeId)
-                .orElseThrow(
-                        ()->new NotFoundException(
-                                "Id is not present!",
-                                new Error(
-                                        "",
-                                        "Id is not present!"
-                                )
-                        )
-                );
-        File URL= new File(fileUploadDirectory + galleryType.getName());
+//        GalleryType galleryType=
+        File URL= new File(fileUploadDirectory);
 
+        if(!Objects.equals(file.getContentType(), "image/png || image/jpg || image/jpeg")){
+            return ApiResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .error(Collections.singletonList(new Error("file","File format not supported!!")))
+                    .build();
+        }
         if (file.isEmpty()) {
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -97,7 +94,18 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             Gallery gallery=Gallery.builder()
                     .title(title)
                     .fileName(randomName)
-                    .galleryType(galleryType)
+                    .galleryType(
+                            galleryTypeRepository.findById(galleryTypeId)
+                                    .orElseThrow(
+                                            ()->new NotFoundException(
+                                                    "Id is not present!",
+                                                    new Error(
+                                                            "",
+                                                            "Id is not present!"
+                                                    )
+                                            )
+                                    )
+                    )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
                     .isActive(Boolean.TRUE)
@@ -106,10 +114,11 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             file.transferTo(destFile);
 
             try {
+                galleryRepository.save(gallery);
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
-                                galleryRepository.save(gallery)
+                                "File inserted successfully."
                         )
                         .build();
 
@@ -137,7 +146,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            galleryRepository.findByGalleryTypeIdAndIsActive(galleryTypeId, Boolean.TRUE)
+                            galleryRepository.findByGalleryTypeIdAndIsActiveOrderByCreatedDateDesc(galleryTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -158,7 +167,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
     }
 
     @Override
-    public ResponseEntity<?> download(Long id) {
+    public ResponseEntity<?> download(Long id) throws IOException {
         Gallery gallery = galleryRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
@@ -190,7 +199,13 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + gallery.getFileName() + "\""
                 )
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(MediaType.parseMediaType(
+                        Files.probeContentType(
+                                Path.of(
+                                        resource.getFile().getAbsolutePath()
+                                )
+                        )
+                ))
                 .body(resource);
     }
 

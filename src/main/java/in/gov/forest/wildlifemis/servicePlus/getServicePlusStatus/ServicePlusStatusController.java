@@ -65,8 +65,9 @@ public class ServicePlusStatusController {
             HttpsURLConnection httpClient = (HttpsURLConnection) new URL(url).openConnection();
 
             //add reuqest header
+            // 1357
             httpClient.setRequestMethod("POST");
-            String content = "{\"serviceId\":\"1357\",\"departmentId\": \"\"}";
+            String content = "{\"serviceId\":\"1301\",\"departmentId\": \"\"}";
 
             httpClient.setRequestProperty("Content-Type", "application/json");
             httpClient.setRequestProperty("Accept", "application/json");

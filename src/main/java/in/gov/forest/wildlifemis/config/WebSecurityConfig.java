@@ -89,6 +89,8 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                                             "/forestServices/**",
                                             "/documentType/**",
                                             "/document/**",
+                                            "/galleryType/**",
+                                            "/gallery/**",
                                             "/servicePlusStatus"
                                     )
                                     .permitAll()

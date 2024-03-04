@@ -1,8 +1,11 @@
 package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.domian.Notification;
+import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,7 +38,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-    @Value("${fileUploadDirectory}")
+    @Value("${fileUploadDirectoryForNotification}")
     String fileUploadDirectory;
 
     @Autowired
@@ -42,7 +47,15 @@ public class NotificationServiceImpl implements NotificationServiceInter {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title) throws IOException {
-        File uploadFileUrl = new File(fileUploadDirectory+"uploads");
+//        NotificationType notificationType=
+        File uploadFileUrl = new File(fileUploadDirectory);
+
+//        if(!Objects.equals(file.getContentType(), "application/pdf")){
+//            return ApiResponse.builder()
+//                  .status(HttpStatus.BAD_REQUEST.value())
+//                  .error(Collections.singletonList(new Error("file","File format not supported!!")))
+//                  .build();
+//        }
 
         if (file.isEmpty()) {
             return ApiResponse.builder()
@@ -72,7 +85,8 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             }
         }
 
-        String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis();
+        String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis()
+                + "."+Objects.requireNonNull(file.getContentType()).substring(file.getContentType().lastIndexOf("/") + 1);
         File destFile = new File(uploadFileUrl + File.separator + randomName);
 
 
@@ -81,8 +95,19 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .title(title)
                     .fileName(randomName)
                     .notificationType(
-                            notificationTypeRepository.findById(notificationTypeId)
-                                    .orElseThrow(() -> new DataRetrievalException("error", new Error("","You have provided wrong notificationType Id : " + notificationTypeId)))
+                            notificationTypeRepository
+                                    .findById(notificationTypeId)
+                                    .orElseThrow(
+                                            () ->
+                                                    new DataRetrievalException(
+                                                            "error",
+                                                            new Error(
+                                                                    "",
+                                                                    "You have provided wrong notificationType Id : " + notificationTypeId
+                                                            )
+                                                    )
+                                    )
+
                     )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
@@ -95,10 +120,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             // notificationRepository.save(notification);
 
             try {
+                Notification notification1=notificationRepository.save(notification);
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
-                                notificationRepository.save(notification)
+                                "File inserted successfully."
                         )
                         .build();
 
@@ -123,7 +149,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
 
     @Override
-    public ResponseEntity<?> downloadPDf(Long id) {
+    public ResponseEntity<?> downloadPDf(Long id) throws IOException {
         in.gov.forest.wildlifemis.domian.Notification notification = notificationRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
@@ -155,7 +181,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + notification.getFileName() + "\""
                 )
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(
+                        MediaType.parseMediaType(
+                                Files.probeContentType(Path.of(resource.getFile().getAbsolutePath()))
+                        )
+                )
                 .body(resource);
     }
 
@@ -165,7 +195,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationRepository.findByNotificationTypeIdAndIsActive(notificationTypeId, Boolean.TRUE)
+                            notificationRepository.findByNotificationTypeIdAndIsActiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -178,7 +208,22 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository
-                                    .findByNotificationTypeIdAndIsArchive(notificationTypeId, Boolean.TRUE)
+                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE)
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable) {
+//        Page<Notification> notifications = notificationRepository.findByNotificationTypeId(notificationTypeId, pageable);
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            notificationRepository
+                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE, pageable)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -220,22 +265,66 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationRepository.findByIsArchive(Boolean.TRUE)
+                            notificationRepository.findByIsArchiveOrderByCreatedDateDesc(Boolean.TRUE)
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
+            throw new DataRetrievalException("Failed to Retrieve notification", new Error("",e.getMessage()));
         }
     }
 
     @Override
     public ApiResponse<?> getAllNotification() {
-        notificationRepository.findAll();
+
         try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationRepository.findByOrderByCreatedDateDesc()
+                            notificationRepository.findAll(
+                                        PageRequest.of(
+                                                0,10,
+                                                Sort.by("createdDate")
+                                                        .descending()
+                                        )
+                                    )
+                                    .stream()
+                                    .map(
+                                             notification -> {
+                                                 return new GetNotificationDetails() {
+                                                     @Override
+                                                     public Long getId() {
+                                                         return notification.getId();
+                                                     }
+
+                                                     @Override
+                                                     public String getTitle() {
+                                                         return notification.getTitle();
+                                                     }
+
+                                                     @Override
+                                                     public String getCreatedDate() {
+                                                         // You need to get this value from obj
+                                                         return notification.getCreatedDate().toString();
+                                                     }
+
+                                                     @Override
+                                                     public String getNotificationTypeName() {
+                                                         return notification.getNotificationType().getName();
+                                                     }
+
+                                                     @Override
+                                                     public Boolean getIsActive() {
+                                                         return notification.getIsActive();
+                                                     }
+
+                                                     @Override
+                                                     public Boolean getIsArchive() {
+                                                         return notification.getIsArchive();
+                                                     }
+                                                 };
+                                             }
+                                    ).collect(Collectors.toList())
                     ).build();
+
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
-    List<GetGalleryDetails> findByGalleryTypeIdAndIsActive(Long galleryTypeId, Boolean aTrue);
+    List<GetGalleryDetails> findByGalleryTypeIdAndIsActiveOrderByCreatedDateDesc(Long galleryTypeId, Boolean aTrue);
 
     @Modifying
     @Query("UPDATE Gallery SET isActive = :aFalse WHERE id = :galleryId")

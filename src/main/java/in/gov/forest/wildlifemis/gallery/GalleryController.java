@@ -41,7 +41,7 @@ public class GalleryController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+    public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
         return galleryServiceInter.download(id);
 
     }

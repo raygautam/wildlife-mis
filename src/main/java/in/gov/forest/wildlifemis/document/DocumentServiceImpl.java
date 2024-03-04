@@ -40,22 +40,19 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     @Autowired
     DocumentTypeRepository typeOfDocumentRepository;
 
-    @Value("${fileUploadDirectory}")
+    @Value("${fileUploadDirectoryForDocument}")
     String fileUploadDirectory;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) {
-        DocumentType documentType=typeOfDocumentRepository.findById(documentTypeId)
-                .orElseThrow(
-                        ()->new NotFoundException(
-                                "Id is not present!",
-                                new Error(
-                                        "",
-                                        "Id is not present!"
-                                )
-                        )
-                );
-        File URL= new File(fileUploadDirectory + documentType.getName());
+//        DocumentType documentType=
+        File URL= new File(fileUploadDirectory);
+        if(!Objects.equals(file.getContentType(), "application/pdf")){
+            return ApiResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .error(Collections.singletonList(new Error("file","File format not supported!!")))
+                    .build();
+        }
 
         if (file.isEmpty()) {
             return ApiResponse.builder()
@@ -95,7 +92,18 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             Document document=Document.builder()
                     .title(title)
                     .fileName(randomName)
-                    .documentType(documentType)
+                    .documentType(
+                            typeOfDocumentRepository.findById(documentTypeId)
+                                    .orElseThrow(
+                                            ()->new NotFoundException(
+                                                    "Id is not present!",
+                                                    new Error(
+                                                            "",
+                                                            "Id is not present!"
+                                                    )
+                                            )
+                                    )
+                    )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(new Date())
                     .isActive(Boolean.TRUE)
@@ -104,10 +112,11 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             file.transferTo(destFile);
 
             try {
+                documentRepository.save(document);
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
-                                documentRepository.save(document)
+                                "File inserted successfully."
                         )
                         .build();
 
@@ -135,7 +144,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findByDocumentTypeIdAndIsActive(documentTypeId, Boolean.TRUE)
+                            documentRepository.findByDocumentTypeIdAndIsActiveOrderByCreatedDateDesc(documentTypeId, Boolean.TRUE)
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
