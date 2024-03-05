@@ -50,12 +50,12 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 //        NotificationType notificationType=
         File uploadFileUrl = new File(fileUploadDirectory);
 
-//        if(!Objects.equals(file.getContentType(), "application/pdf")){
-//            return ApiResponse.builder()
-//                  .status(HttpStatus.BAD_REQUEST.value())
-//                  .error(Collections.singletonList(new Error("file","File format not supported!!")))
-//                  .build();
-//        }
+        if(!Objects.equals(file.getContentType(), "application/pdf")){
+            return ApiResponse.builder()
+                  .status(HttpStatus.BAD_REQUEST.value())
+                  .error(Collections.singletonList(new Error("file","File format not supported!!")))
+                  .build();
+        }
 
         if (file.isEmpty()) {
             return ApiResponse.builder()

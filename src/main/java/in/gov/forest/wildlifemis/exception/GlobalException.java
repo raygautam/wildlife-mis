@@ -28,6 +28,11 @@ public class GlobalException {
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(new Error("",ex.getMessage())), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(MinUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMinSizeException(MinUploadSizeExceededException ex) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(new Error("",ex.getMessage())), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(JwtCustomException ex) {
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.FORBIDDEN.value(), Collections.singletonList(ex.getError()), null);

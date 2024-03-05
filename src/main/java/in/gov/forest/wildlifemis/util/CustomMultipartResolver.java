@@ -2,6 +2,7 @@ package in.gov.forest.wildlifemis.util;
 
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.MaxUploadSizeExceededException;
+import in.gov.forest.wildlifemis.exception.MinUploadSizeExceededException;
 import io.micrometer.common.lang.NonNullApi;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
@@ -32,8 +33,14 @@ public class CustomMultipartResolver extends StandardServletMultipartResolver {
                     if (filename != null) {
                         String extension = filename.substring(filename.lastIndexOf(".") + 1);
                         long maxSize = getMaxFileSize(extension);
+
+                        if (file.getSize() < 20*1024){
+                            throw new MinUploadSizeExceededException(
+                                    new Error("","Minimum upload size is "+20*1024+" provided size "+file.getSize())
+                            );
+                        }
                         if (file.getSize() > maxSize) {
-                            throw new MaxUploadSizeExceededException("", new Error("","Maximum upload size of "+maxSize+" bytes provided size "+file.getSize()+" bytes"));
+                            throw new MaxUploadSizeExceededException("", new Error("","Maximum upload size is "+maxSize+" provided size "+file.getSize()));
                         }
                     }
                 }
@@ -47,11 +54,12 @@ public class CustomMultipartResolver extends StandardServletMultipartResolver {
 
     private long getMaxFileSize(String extension) {
         return switch (extension.toLowerCase()) {
-            case "pdf" -> 3*1024*1024;
+            case "pdf" -> 5*1024*1024;
             case "jpg", "jpeg", "png", "gif" -> 2*1024*1024;
             default -> 5*1024*1024; // Default size limit if extension is not recognized
         };
     }
+
 
     /**
      * This method was supported in old versions ans present inside web.commons

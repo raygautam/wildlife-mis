@@ -34,6 +34,13 @@ public class DocumentController {
 
     }
 
+    /**
+     * Deletes a document based on the given document ID.
+     *
+     * @param documentId the ID of the document to be deleted
+     * @return an API response indicating the status of the operation
+     * on delete operation changing isActive status to false.
+     **/
     @DeleteMapping("/delete/{documentId}")
     public ResponseEntity<?> delete(@PathVariable Long documentId) {
         ApiResponse<?> apiResponse = documentServiceInter.delete(documentId);

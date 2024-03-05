@@ -39,9 +39,12 @@ fileUploadDirectoryForDocument: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(1
 fileUploadDirectoryForGallery: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(15-02-2024)\wildlife-mis\gallery
 
 #Server file store location
-#fileUploadDirectory: /opt/tomcat/webapps/
+#fileUploadDirectoryForNotification: /opt/tomcat/webapps/notification
+#fileUploadDirectoryForDocument: /opt/tomcat/webapps/document
+#fileUploadDirectoryForGallery: /opt/tomcat/webapps/gallery
+
 server:
-  port : 8082
+  port : 8083
 
 MACInitializer:
   value: false

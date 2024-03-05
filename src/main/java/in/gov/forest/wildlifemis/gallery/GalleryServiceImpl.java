@@ -190,7 +190,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
 
         // Determine the file's content type
 //        String contentType = determineContentType(notification.getFileUrl());
-        log.info("image : {}", resource);
+//        log.info("image : {}", resource);
         // Create the ResponseEntity with the file's content
 //        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 
