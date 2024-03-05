@@ -50,12 +50,15 @@ public class GalleryServiceImpl implements GalleryServiceInter{
 //        GalleryType galleryType=
         File URL= new File(fileUploadDirectory);
 
-        if(!Objects.equals(file.getContentType(), "image/png || image/jpg || image/jpeg")){
+        if(!Objects.equals(file.getContentType(), "image/png") &&
+                !Objects.equals(file.getContentType(), "image/jpg") &&
+                !Objects.equals(file.getContentType(), "image/jpeg")){
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .error(Collections.singletonList(new Error("file","File format not supported!!")))
+                    .error(Collections.singletonList(new Error("file","File format not supported "+file.getContentType()+"!!")))
                     .build();
         }
+
         if (file.isEmpty()) {
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
@@ -159,7 +162,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            galleryRepository.deleteByGalleryTypeId(galleryId, Boolean.FALSE)
+                            galleryRepository.deleteByGalleryId(galleryId, Boolean.FALSE)
                     ).build();
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
@@ -207,6 +210,59 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                         )
                 ))
                 .body(resource);
+    }
+
+    @Override
+//    @Transactional(rollbackFor = Exception.class)
+    public ApiResponse<?> deletePermanently(Long galleryId) {
+        ApiResponse<?> response;
+        try {
+            // Get the file details from the database
+            Gallery gallery = galleryRepository.findById(galleryId)
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("File not found with id: " + galleryId, new Error("","File not found with id: " + galleryId))
+                    );
+//            Gallery isActive=galleryRepository.findByIsActive(Boolean.FALSE);
+            if(!gallery.getIsActive()){
+                Path filePath = Paths.get(gallery.getFileUrl());
+
+                // Delete the file from the directory
+                if (Files.exists(filePath)) {
+                    Files.delete(filePath);
+                }
+                // Delete the file record from the database
+                galleryRepository.delete(gallery);
+
+                response=ApiResponse.builder()
+                        .status(HttpStatus.OK.value())
+                        .data(
+                                "File and record deleted successfully."
+                        ).build();
+            }else {
+                response= ApiResponse.builder()
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .error(
+                                Collections.singletonList(new Error("","File is active cannot be deleted."))
+                        ).build();
+            }
+
+//            return "File and record deleted successfully.";
+        } catch (IOException e) {
+            response= ApiResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .error(
+                            Collections.singletonList(new  Error("","Error deleting file: " + e.getMessage()))
+                    ).build();
+//            return "Error deleting file: " + e.getMessage();
+        } catch (Exception e) {
+            response= ApiResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .error(
+                            Collections.singletonList(new  Error("","Error deleting file and record: " + e.getMessage()))
+                    ).build();
+//            return "Error deleting file and record: " + e.getMessage();
+        }
+        return response;
     }
 
 }

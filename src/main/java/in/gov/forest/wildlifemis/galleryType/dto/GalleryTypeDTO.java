@@ -8,5 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GalleryTypeDTO {
+    private Long id;
     private String name;
 }

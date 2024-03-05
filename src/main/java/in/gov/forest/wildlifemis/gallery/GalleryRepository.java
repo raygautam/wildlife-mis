@@ -16,5 +16,7 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
     @Modifying
     @Query("UPDATE Gallery SET isActive = :aFalse WHERE id = :galleryId")
-    List<GetGalleryDetails> deleteByGalleryTypeId(Long galleryId, Boolean aFalse);
+    List<GetGalleryDetails> deleteByGalleryId(Long galleryId, Boolean aFalse);
+
+    Gallery findByIsActive(Boolean aFalse);
 }

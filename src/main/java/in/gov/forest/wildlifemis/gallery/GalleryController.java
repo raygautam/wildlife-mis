@@ -40,6 +40,15 @@ public class GalleryController {
 
     }
 
+    /**
+     If they want to delete permanently the file from the gallery if isActive is false folder and Super Admin.
+     **/
+    @GetMapping("/deletePermanently/{galleryId}")
+    public ResponseEntity<?> deletePermanently(@PathVariable Long galleryId) {
+        ApiResponse<?> apiResponse = galleryServiceInter.deletePermanently(galleryId);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+    }
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
         return galleryServiceInter.download(id);

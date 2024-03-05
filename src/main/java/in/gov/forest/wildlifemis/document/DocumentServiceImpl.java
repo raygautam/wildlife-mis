@@ -50,7 +50,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
         if(!Objects.equals(file.getContentType(), "application/pdf")){
             return ApiResponse.builder()
                     .status(HttpStatus.BAD_REQUEST.value())
-                    .error(Collections.singletonList(new Error("file","File format not supported!!")))
+                    .error(Collections.singletonList(new Error("file","File format not supported "+file.getContentType()+"!!")))
                     .build();
         }
 
