@@ -121,7 +121,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Enable to store document", new Error("",e.getMessage()));
+                throw new DataInsertionException("Unable to store document", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
