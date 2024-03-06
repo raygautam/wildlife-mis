@@ -44,7 +44,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     String fileUploadDirectory;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) {
+    public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) throws IOException {
 //        DocumentType documentType=
         File URL= new File(fileUploadDirectory);
         if(!Objects.equals(file.getContentType(), "application/pdf")){
@@ -79,7 +79,8 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                 }
             } catch (IOException e) {
 //                System.out.println("Failed to create directory: " + e.getMessage());
-                log.info("Failed to create directory: " + e.getMessage());
+//                log.info("Failed to create directory: " + e.getMessage());
+                throw new IOException("Failed to create directory: " + e.getMessage());
             }
         }
 //        String contentType=file.getContentType();
