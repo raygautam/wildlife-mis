@@ -1,6 +1,7 @@
 package in.gov.forest.wildlifemis.document;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.document.dto.DocumentRequestDTO;
 import in.gov.forest.wildlifemis.domian.Document;
 import in.gov.forest.wildlifemis.domian.DocumentType;
 import in.gov.forest.wildlifemis.exception.*;
@@ -44,7 +45,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     String fileUploadDirectory;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, Long documentTypeId, String title) throws IOException {
+    public ApiResponse<?> save(MultipartFile file, DocumentRequestDTO documentRequestDTO) {
 //        DocumentType documentType=
         File URL= new File(fileUploadDirectory);
         if(!Objects.equals(file.getContentType(), "application/pdf")){
@@ -61,11 +62,11 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     .build();
         }
 
-        if(documentTypeId==null){
+        if(documentRequestDTO.getDocumentTypeId()==null){
             throw new BadRequestException("", new Error("documentTypeId","field is required"));
         }
 
-        if( title==null || Objects.equals(title, "")){
+        if( documentRequestDTO.getTitle()==null || Objects.equals(documentRequestDTO.getTitle(), "")){
             throw new BadRequestException("", new Error("title","field is required"));
         }
 
@@ -74,15 +75,13 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                 boolean created = URL.mkdirs();
                 if (created) {
                     log.info("Directory created successfully.");
-                } else {
-                    throw new IOException("Failed to create directory.");
                 }
-            } catch (IOException e) {
-//                System.out.println("Failed to create directory: " + e.getMessage());
-//                log.info("Failed to create directory: " + e.getMessage());
-                throw new IOException("Failed to create directory: " + e.getMessage());
+            } catch (Exception e) {
+                throw new IOCustomException("",new Error("","Fail to create directory."+e.getMessage()));
             }
         }
+
+
 //        String contentType=file.getContentType();
 //        String extension = fil.substring(filename.lastIndexOf(".") + 1);
         String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis()
@@ -91,10 +90,10 @@ public class DocumentServiceImpl implements DocumentServiceInter{
 
         try {
             Document document=Document.builder()
-                    .title(title)
+                    .title(documentRequestDTO.getTitle())
                     .fileName(randomName)
                     .documentType(
-                            typeOfDocumentRepository.findById(documentTypeId)
+                            typeOfDocumentRepository.findById(documentRequestDTO.getDocumentTypeId())
                                     .orElseThrow(
                                             ()->new NotFoundException(
                                                     "Id is not present!",
@@ -122,7 +121,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Unable to store document", new Error("",e.getMessage()));
+                throw new DataInsertionException("Fail to add document", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
@@ -135,7 +134,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             if (destFile.exists() && destFile.isFile()) {
                 deleted = destFile.delete(); // Delete the file
             }
-            throw new RuntimeException(e.getMessage()); // Re-throw the exception to propagate it up
+            throw new IOCustomException("",new Error("","Fail to add file to directory."+e.getMessage()));
         }
     }
 

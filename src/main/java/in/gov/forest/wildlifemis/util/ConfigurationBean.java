@@ -1,4 +1,4 @@
-package in.gov.forest.wildlifemis.helper;
+package in.gov.forest.wildlifemis.util;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.modelmapper.ModelMapper;

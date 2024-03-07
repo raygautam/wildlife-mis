@@ -36,7 +36,7 @@ public class FishFarmerDetails implements Serializable {
 
   private String epic_head_of_family;
 
-  private Integer alternate_mobile_no;
+  private String alternate_mobile_no;
 
   private String epic_no;
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,18 @@ public class GlobalException {
 //        Error error = new Error("The JWT token has expired");
         ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), Collections.singletonList(ex.getError()), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(JsonProcessingCustomException.class)
+    public ResponseEntity<ApiResponse<Object>> handleJsonProcessingCustomException(JsonProcessingCustomException ex) {
+//        Error error = new Error("The JWT token has expired");
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), Collections.singletonList(ex.getError()), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IOCustomException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIOCustomException(IOCustomException ex) {
+//        Error error = new Error("The JWT token has expired");
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), Collections.singletonList(ex.getError()), null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -80,7 +93,7 @@ public class GlobalException {
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
-    //handleMissingServletRequestParameter like RequestParam value is null or missing specially the foreign key
+    //handleMissingServletRequestParameter like RequestParam value is null
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex) {
         ApiResponse<?> apiResponse=ApiResponse.builder()
@@ -88,7 +101,17 @@ public class GlobalException {
                 .error(Collections.singletonList(new Error(ex.getParameterName()," fields are required")))
                 .build();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-}
+    }
+
+    //handleMissingServletRequestParameter like RequestPart value is null
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<Object> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
+        ApiResponse<?> apiResponse=ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(Collections.singletonList(new Error(ex.getRequestPartName()," fields are required")))
+                .build();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

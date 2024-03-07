@@ -33,14 +33,15 @@ public class CustomMultipartResolver extends StandardServletMultipartResolver {
                     if (filename != null) {
                         String extension = filename.substring(filename.lastIndexOf(".") + 1);
                         long maxSize = getMaxFileSize(extension);
+                        long minSize = getMinFileSize(extension);
 
-                        if (file.getSize() < 20*1024){
+                        if (file.getSize() < minSize){
                             throw new MinUploadSizeExceededException(
-                                    new Error("","Minimum upload size is "+20*1024+" provided size "+file.getSize())
+                                    new Error("","Please upload a file with a size of at least "+minSize+".")
                             );
                         }
                         if (file.getSize() > maxSize) {
-                            throw new MaxUploadSizeExceededException("", new Error("","Maximum upload size is "+maxSize+" provided size "+file.getSize()));
+                            throw new MaxUploadSizeExceededException("", new Error("","The uploaded file must be smaller than "+maxSize+" in size."));
                         }
                     }
                 }
@@ -54,9 +55,17 @@ public class CustomMultipartResolver extends StandardServletMultipartResolver {
 
     private long getMaxFileSize(String extension) {
         return switch (extension.toLowerCase()) {
-            case "pdf" -> 5*1024*1024;
+            case "pdf" -> 500*1024*1024;
             case "jpg", "jpeg", "png", "gif" -> 2*1024*1024;
             default -> 5*1024*1024; // Default size limit if extension is not recognized
+        };
+    }
+
+    private long getMinFileSize(String extension) {
+        return switch (extension.toLowerCase()) {
+            case "pdf" -> 1024;
+            case "jpg", "jpeg", "png", "gif" -> 1*1024;
+            default -> 1024; // Default size limit if extension is not recognized
         };
     }
 

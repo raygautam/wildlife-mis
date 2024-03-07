@@ -1,26 +1,24 @@
 package in.gov.forest.wildlifemis.notification;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import in.gov.forest.wildlifemis.common.ApiResponse;
-import in.gov.forest.wildlifemis.domian.Notification;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jdk.jfr.ContentType;
+import in.gov.forest.wildlifemis.exception.BadRequestException;
+import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.exception.JsonProcessingCustomException;
+import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -33,24 +31,66 @@ public class NotificationController {
     @Autowired
     private ResourceLoader resourceLoader;
 
+    @Autowired
+    JsonMapper jsonMapper;
 
-    /**
+
+//    /**
+//     * API to add a new notification.
+//     *
+//     * @param file the PDF file to be uploaded
+//     * @param notificationTypeId the id of the notification type
+//     * @param title the title of the notification
+//     * @return an ApiResponse object indicating the status of the operation
+//     * @throws IOException if there is an error in reading or writing the file
+//     */
+//    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> saveNotificationType(
+//            @RequestParam(value = "file") MultipartFile file,
+//            @RequestParam(value = "notificationTypeId") Long notificationTypeId,
+//            @RequestParam(value = "title") String title
+//    ) throws IOException {
+//        ApiResponse<?> apiResponse = notificationServiceInter.save(file, notificationTypeId, title);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//    }
+
+
+        /**
      * API to add a new notification.
      *
      * @param file the PDF file to be uploaded
-     * @param notificationTypeId the id of the notification type
-     * @param title the title of the notification
+     * @param notificationDetails accept the notification details as a JSON of String and then converting to AddNotificationRequest class
      * @return an ApiResponse object indicating the status of the operation
      * @throws IOException if there is an error in reading or writing the file
      */
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add",  consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE,
+            MediaType.APPLICATION_OCTET_STREAM_VALUE,
+    })
     public ResponseEntity<?> saveNotificationType(
-            @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "notificationTypeId") Long notificationTypeId,
-            @RequestParam(value = "title") String title
-    ) throws IOException {
-        ApiResponse<?> apiResponse = notificationServiceInter.save(file, notificationTypeId, title);
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+            @RequestPart(value = "file") MultipartFile file,
+            @RequestPart(value = "notificationDetails") String notificationDetails
+    ) {
+        NotificationRequestDTO notificationRequestDTO = null;
+        try{
+            if(notificationDetails!=null && !notificationDetails.isEmpty()){
+                notificationRequestDTO=jsonMapper.readValue(notificationDetails, NotificationRequestDTO.class);
+            }else{
+                throw new BadRequestException("",new Error("","NotificationDetails is required"));
+            }
+
+        }catch (JsonProcessingException e){
+            log.info("Error "+e.getMessage());
+            throw new JsonProcessingCustomException(notificationDetails,new Error("notificationDetails","Invalid notificationDetails format "+notificationDetails+" recheck and try again!!"));
+        }
+
+        if(notificationRequestDTO!=null){
+            ApiResponse<?> apiResponse = notificationServiceInter.save(
+                    file , notificationRequestDTO);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        }
+
+        return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**

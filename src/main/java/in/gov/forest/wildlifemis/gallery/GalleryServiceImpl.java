@@ -7,6 +7,7 @@ import in.gov.forest.wildlifemis.domian.Gallery;
 import in.gov.forest.wildlifemis.domian.GalleryType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.gallery.dto.GalleryRequestDTO;
 import in.gov.forest.wildlifemis.galleryType.GalleryTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -46,7 +47,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, Long galleryTypeId, String title) {
+    public ApiResponse<?> save(MultipartFile file, GalleryRequestDTO galleryRequestDTO) {
 //        GalleryType galleryType=
         File URL= new File(fileUploadDirectory);
 
@@ -66,11 +67,11 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                     .build();
         }
 
-        if(galleryTypeId==null){
+        if(galleryRequestDTO.getGalleryTypeId()==null){
             throw new BadRequestException("", new Error("galleryTypeId","field is required"));
         }
 
-        if( title==null || Objects.equals(title, "")){
+        if( galleryRequestDTO.getTitle()==null || Objects.equals(galleryRequestDTO.getTitle(), "")){
             throw new BadRequestException("", new Error("title","field is required"));
         }
 
@@ -79,12 +80,10 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                 boolean created = URL.mkdirs();
                 if (created) {
                     log.info("Directory created successfully.");
-                } else {
-                    throw new IOException("Failed to create directory.");
                 }
-            } catch (IOException e) {
-//                System.out.println("Failed to create directory: " + e.getMessage());
+            } catch (Exception e) {
                 log.info("Failed to create directory: " + e.getMessage());
+                throw new IOCustomException("",new Error("","Fail to create directory."+e.getMessage()));
             }
         }
 //        String contentType=file.getContentType();
@@ -95,10 +94,10 @@ public class GalleryServiceImpl implements GalleryServiceInter{
 
         try {
             Gallery gallery=Gallery.builder()
-                    .title(title)
+                    .title(galleryRequestDTO.getTitle())
                     .fileName(randomName)
                     .galleryType(
-                            galleryTypeRepository.findById(galleryTypeId)
+                            galleryTypeRepository.findById(galleryRequestDTO.getGalleryTypeId())
                                     .orElseThrow(
                                             ()->new NotFoundException(
                                                     "Id is not present!",
@@ -126,7 +125,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Enable to store document", new Error("",e.getMessage()));
+                throw new DataInsertionException("Fail to add document", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
@@ -139,7 +138,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             if (destFile.exists() && destFile.isFile()) {
                 deleted = destFile.delete(); // Delete the file
             }
-            throw new RuntimeException(e.getMessage()); // Re-throw the exception to propagate it up
+            throw new IOCustomException("",new Error("","Fail to add file to directory."+e.getMessage()));
         }
     }
 

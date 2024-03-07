@@ -2,9 +2,9 @@ package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Notification;
-import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
 import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title) throws IOException {
+    public ApiResponse<?> save(MultipartFile file, NotificationRequestDTO addNotificationRequest) {
 //        NotificationType notificationType=
         File uploadFileUrl = new File(fileUploadDirectory);
 
@@ -64,11 +64,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .build();
         }
 
-        if( notificationTypeId==null){
+        if( addNotificationRequest.getNotificationTypeId()==null){
             throw new BadRequestException("", new Error("notificationTypeId","field is required"));
         }
 
-        if( title==null || Objects.equals(title, "")){
+        if(addNotificationRequest.getTitle()==null || Objects.equals(addNotificationRequest.getTitle(), "")){
             throw new BadRequestException("", new Error("title","field is required"));
         }
 
@@ -77,11 +77,10 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                 boolean created = uploadFileUrl.mkdirs();
                 if (created) {
                     log.info("Directory created successfully.");
-                } else {
-                    throw new IOException("Failed to create directory.");
                 }
-            } catch (IOException e) {
-                System.out.println("Failed to create directory: " + e.getMessage());
+            } catch (Exception e) {
+                throw new IOCustomException("",new Error("","Fail to create directory."+e.getMessage()));
+//                System.out.println("Failed to create directory: " + e.getMessage());
             }
         }
 
@@ -92,18 +91,18 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
         try {
             in.gov.forest.wildlifemis.domian.Notification notification = in.gov.forest.wildlifemis.domian.Notification.builder()
-                    .title(title)
+                    .title(addNotificationRequest.getTitle())
                     .fileName(randomName)
                     .notificationType(
                             notificationTypeRepository
-                                    .findById(notificationTypeId)
+                                    .findById(addNotificationRequest.getNotificationTypeId())
                                     .orElseThrow(
                                             () ->
                                                     new DataRetrievalException(
                                                             "error",
                                                             new Error(
                                                                     "",
-                                                                    "You have provided wrong notificationType Id : " + notificationTypeId
+                                                                    "You have provided wrong notificationType Id : " + addNotificationRequest.getNotificationTypeId()
                                                             )
                                                     )
                                     )
@@ -129,20 +128,20 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Enable to store notification", new Error("",e.getMessage()));
+                throw new DataInsertionException("Fail to add notification", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
             // Rollback the file operation if an exception occurs
 
-//This code is also working
-//            Path path=Paths.get(destFile.toURI());
-//            Files.deleteIfExists(path);
+            //This code is also working
+            //Path path=Paths.get(destFile.toURI());
+            //Files.deleteIfExists(path);
             boolean deleted = false;
             if (destFile.exists() && destFile.isFile()) {
                 deleted = destFile.delete(); // Delete the file
             }
-            throw e; // Re-throw the exception to propagate it up
+            throw new IOCustomException("",new Error("","Fail to add file to directory."+e.getMessage()));
         }
 
     }

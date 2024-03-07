@@ -1,8 +1,7 @@
 package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
-import in.gov.forest.wildlifemis.domian.Notification;
-import org.springframework.data.domain.Page;
+import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface NotificationServiceInter {
-    ApiResponse<?> save(MultipartFile file, Long notificationTypeId, String title) throws IOException;
+    ApiResponse<?> save(MultipartFile file, NotificationRequestDTO addNotificationRequest);
     ResponseEntity<?> downloadPDf(Long id) throws IOException;
 
     ApiResponse<?> getActiveNotification(Long notificationTypeId);
