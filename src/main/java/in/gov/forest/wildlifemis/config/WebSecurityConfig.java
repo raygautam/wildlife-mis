@@ -23,6 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Configuration
 @EnableSpringConfigured
 @RequiredArgsConstructor
@@ -55,6 +58,21 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
 //        this.passwordEncoder = passwordEncoder;
 //        this.filter = filter;
 //    }
+
+
+    @Bean
+    public WebMvcConfigurer configure() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://127.0.0.1:5173")
+                        .allowedMethods("POST, GET, PUT, OPTIONS, DELETE, PATCH")
+                        .allowedHeaders("*");
+            }
+
+        };
+    }
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
@@ -113,6 +131,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 ));
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

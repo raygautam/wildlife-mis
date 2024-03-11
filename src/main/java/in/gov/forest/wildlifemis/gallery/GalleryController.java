@@ -8,15 +8,28 @@ import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JsonProcessingCustomException;
 import in.gov.forest.wildlifemis.gallery.dto.GalleryRequestDTO;
 import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
+import in.gov.forest.wildlifemis.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @Slf4j
@@ -104,4 +117,8 @@ public class GalleryController {
         return galleryServiceInter.download(id);
 
     }
+
+
+
+
 }

@@ -56,7 +56,7 @@ public class CustomMultipartResolver extends StandardServletMultipartResolver {
     private long getMaxFileSize(String extension) {
         return switch (extension.toLowerCase()) {
             case "pdf" -> 500*1024*1024;
-            case "jpg", "jpeg", "png", "gif" -> 2*1024*1024;
+            case "jpg", "jpeg", "png", "gif" -> 5*1024*1024;
             default -> 5*1024*1024; // Default size limit if extension is not recognized
         };
     }
