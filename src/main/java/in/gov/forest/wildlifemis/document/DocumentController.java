@@ -21,7 +21,7 @@ import java.io.IOException;
 @RestController
 @Slf4j
 @RequestMapping("/document")
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class DocumentController {
     @Autowired
     DocumentServiceInter documentServiceInter;

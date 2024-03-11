@@ -21,8 +21,8 @@ import java.security.NoSuchAlgorithmException;
 
 
 @RestController
-//@CrossOrigin(origins = "http://10.179.2.158:8080")
-@CrossOrigin(origins = "http://127.0.0.1:5173")
+@CrossOrigin("*")
+//@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class ServicePlusStatusController {
 
     @Autowired

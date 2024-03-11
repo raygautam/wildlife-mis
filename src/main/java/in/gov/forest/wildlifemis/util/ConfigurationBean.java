@@ -30,16 +30,20 @@ public class ConfigurationBean {
         return new JsonMapper();
     }
 
-    @Bean
-    public WebMvcConfigurer configure() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/*").allowedOrigins("http://127.0.0.1:5173");
-            }
+//    @Bean
+//    public WebMvcConfigurer configure() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedMethods("POST, GET, PUT, OPTIONS, DELETE, PATCH")
+//                        .allowedOrigins("http://127.0.0.1:5173")
+//                        .allowedHeaders("*");
+//            }
+//
+//        };
+//    }
 
-        };
-    }
 //    @Bean
 //    public PasswordEncoder passwordEncoder(){
 //        return new BCryptPasswordEncoder();

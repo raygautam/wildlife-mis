@@ -21,6 +21,7 @@ import java.io.IOException;
 @RestController
 @Slf4j
 @RequestMapping("/gallery")
+@CrossOrigin("*")
 public class GalleryController {
 
     @Autowired
