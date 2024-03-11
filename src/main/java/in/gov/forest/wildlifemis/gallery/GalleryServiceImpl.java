@@ -8,6 +8,7 @@ import in.gov.forest.wildlifemis.domian.GalleryType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.gallery.dto.GalleryRequestDTO;
+import in.gov.forest.wildlifemis.gallery.dto.GetGalleryDetails;
 import in.gov.forest.wildlifemis.galleryType.GalleryTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
@@ -156,6 +159,50 @@ public class GalleryServiceImpl implements GalleryServiceInter{
     }
 
     @Override
+    public ApiResponse<?> getAllGallery() {
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            galleryRepository.findAll(Sort.by("createdDate").descending())
+                                    .stream()
+                                    .map(gallery ->
+                                            {
+                                                return new GetGalleryDetails() {
+                                                    @Override
+                                                    public Long getId() {
+                                                        return gallery.getId();
+                                                    }
+
+                                                    @Override
+                                                    public String getTitle() {
+                                                        return gallery.getTitle();
+                                                    }
+
+                                                    @Override
+                                                    public String getCreatedDate() {
+                                                        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(gallery.getCreatedDate());
+                                                    }
+
+                                                    @Override
+                                                    public String getGalleryTypeName() {
+                                                        return gallery.getGalleryType().getName();
+                                                    }
+
+                                                    @Override
+                                                    public Boolean getIsActive() {
+                                                        return gallery.getIsActive();
+                                                    }
+                                                };
+                                            }
+                                    )
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
     public ApiResponse<?> delete(Long galleryId) {
         try {
             return ApiResponse.builder()
@@ -263,5 +310,7 @@ public class GalleryServiceImpl implements GalleryServiceInter{
         }
         return response;
     }
+
+
 
 }

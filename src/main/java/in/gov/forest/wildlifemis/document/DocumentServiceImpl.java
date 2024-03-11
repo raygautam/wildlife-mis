@@ -2,6 +2,7 @@ package in.gov.forest.wildlifemis.document;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.document.dto.DocumentRequestDTO;
+import in.gov.forest.wildlifemis.document.dto.GetDocumentDetails;
 import in.gov.forest.wildlifemis.domian.Document;
 import in.gov.forest.wildlifemis.domian.DocumentType;
 import in.gov.forest.wildlifemis.exception.*;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,9 +31,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -152,6 +162,49 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
+    public ApiResponse<?> getAllDocument() {
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            documentRepository.findAll(Sort.by("createdDate").descending())
+                                    .stream()
+                                    .map(document -> {
+                                            return new GetDocumentDetails() {
+                                                @Override
+                                                public Long getId() {
+                                                    return document.getId();
+                                                }
+
+                                                @Override
+                                                public String getTitle() {
+                                                    return document.getTitle();
+                                                }
+
+                                                @Override
+                                                public String getCreatedDate() {
+
+                                                    return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(document.getCreatedDate());
+                                                }
+
+                                                @Override
+                                                public String getDocumentTypeName() {
+                                                    return document.getDocumentType().getName();
+                                                }
+
+                                                @Override
+                                                public Boolean getIsActive() {
+                                                    return document.getIsActive();
+                                                }
+                                            };
+                                    }).collect(Collectors.toList())
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
     public ApiResponse<?> delete(Long documentId) {
         try {
             return ApiResponse.builder()
@@ -202,4 +255,6 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
+
+
 }

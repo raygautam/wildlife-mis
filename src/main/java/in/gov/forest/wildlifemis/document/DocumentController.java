@@ -21,6 +21,7 @@ import java.io.IOException;
 @RestController
 @Slf4j
 @RequestMapping("/document")
+//@CrossOrigin("*")
 public class DocumentController {
     @Autowired
     DocumentServiceInter documentServiceInter;
@@ -65,6 +66,13 @@ public class DocumentController {
         }
 
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/getAllDocument")
+    public ResponseEntity<?> getAllDocument() {
+        ApiResponse<?> apiResponse = documentServiceInter.getAllDocument();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
     }
 
     @GetMapping("/getDocument/{documentTypeId}")

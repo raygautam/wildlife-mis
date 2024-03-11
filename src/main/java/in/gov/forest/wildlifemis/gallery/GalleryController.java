@@ -75,6 +75,13 @@ public class GalleryController {
 
     }
 
+    @GetMapping("/getAllGallery")
+    public ResponseEntity<?> getAllGallery() {
+        ApiResponse<?> apiResponse = galleryServiceInter.getAllGallery();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+    }
+
     @GetMapping("/delete/{galleryId}")
     public ResponseEntity<?> delete(@PathVariable Long galleryId) {
         ApiResponse<?> apiResponse = galleryServiceInter.delete(galleryId);

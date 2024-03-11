@@ -1,6 +1,9 @@
 package in.gov.forest.wildlifemis.role;
 
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.Role;
+import in.gov.forest.wildlifemis.exception.BadRequestException;
+import in.gov.forest.wildlifemis.exception.Error;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,10 @@ public class RoleController {
             // Batch save using saveAll() method
             List<Role> roles = roleMDto.stream().map((roleDto) -> modelMapper.map(roleDto, Role.class)).collect(Collectors.toList());
             List<Role> savedRoles = roleMRepository.saveAll(roles);
+            ApiResponse<?> apiResponse=ApiResponse.builder()
+                    .status(HttpStatus.CREATED.value())
+                    .data(savedRoles)
+                    .build();
             return new ResponseEntity<>(savedRoles, HttpStatus.CREATED);
         } else if (roleMDto.size() == 1) {
             // Single save using save() method
@@ -42,7 +49,10 @@ public class RoleController {
             return new ResponseEntity<>(savedRole, HttpStatus.CREATED);
         } else {
             // Return an error response for empty input
-            throw new IllegalArgumentException("No roles found in the request.");
+            throw new BadRequestException(
+                    "No roles found in the request.",
+                    new Error("","No roles found in the request.")
+                    );
         }
     }
 

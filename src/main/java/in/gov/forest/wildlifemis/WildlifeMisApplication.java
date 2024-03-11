@@ -1,15 +1,12 @@
 package in.gov.forest.wildlifemis;
 
-import in.gov.forest.wildlifemis.appUser.AppUserManagementRepository;
-import in.gov.forest.wildlifemis.domian.AppUser;
-import in.gov.forest.wildlifemis.domian.Role;
-import in.gov.forest.wildlifemis.role.RoleRepository;
-import jakarta.annotation.PostConstruct;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.context.annotation.Bean;
+
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collections;
 
@@ -19,4 +16,5 @@ public class WildlifeMisApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WildlifeMisApplication.class, args);
 	}
+
 }

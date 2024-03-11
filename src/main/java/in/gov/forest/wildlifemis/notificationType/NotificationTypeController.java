@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RequestMapping("/notification_type")
+//@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class NotificationTypeController {
 
     @Autowired

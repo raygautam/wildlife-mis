@@ -15,4 +15,6 @@ public interface DocumentServiceInter {
     ApiResponse<?> delete(Long documentTypeId);
 
     ResponseEntity<?> download(Long id);
+
+    ApiResponse<?> getAllDocument();
 }

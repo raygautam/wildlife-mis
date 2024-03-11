@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -302,7 +303,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                      @Override
                                                      public String getCreatedDate() {
                                                          // You need to get this value from obj
-                                                         return notification.getCreatedDate().toString();
+                                                         return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(notification.getCreatedDate());
                                                      }
 
                                                      @Override

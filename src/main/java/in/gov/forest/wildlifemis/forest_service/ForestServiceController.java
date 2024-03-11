@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RequestMapping("/forestServices")
+//@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class ForestServiceController {
 
     @Autowired
