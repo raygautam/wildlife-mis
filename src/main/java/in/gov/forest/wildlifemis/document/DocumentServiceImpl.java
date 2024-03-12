@@ -3,11 +3,13 @@ package in.gov.forest.wildlifemis.document;
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.document.dto.DocumentRequestDTO;
 import in.gov.forest.wildlifemis.document.dto.GetDocumentDetails;
+import in.gov.forest.wildlifemis.document.dto.GetDocumentDetailsDTO;
 import in.gov.forest.wildlifemis.domian.Document;
 import in.gov.forest.wildlifemis.domian.DocumentType;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.documentType.DocumentTypeRepository;
+import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetailsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,6 +157,18 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     .status(HttpStatus.OK.value())
                     .data(
                             documentRepository.findByDocumentTypeIdAndIsActiveOrderByCreatedDateDesc(documentTypeId, Boolean.TRUE)
+                                    .stream()
+                                    .map(
+                                            document ->{
+                                                return GetDocumentDetailsDTO.builder()
+                                                        .id(document.getId())
+                                                        .title(document.getTitle())
+                                                        .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(document.getCreatedDate()))
+                                                        .documentTypeName(document.getDocumentType().getName())
+                                                        .isActive(document.getIsActive())
+                                                        .build();
+                                            }
+                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -170,34 +184,15 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                             documentRepository.findAll(Sort.by("createdDate").descending())
                                     .stream()
                                     .map(document -> {
-                                            return new GetDocumentDetails() {
-                                                @Override
-                                                public Long getId() {
-                                                    return document.getId();
-                                                }
-
-                                                @Override
-                                                public String getTitle() {
-                                                    return document.getTitle();
-                                                }
-
-                                                @Override
-                                                public String getCreatedDate() {
-
-                                                    return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(document.getCreatedDate());
-                                                }
-
-                                                @Override
-                                                public String getDocumentTypeName() {
-                                                    return document.getDocumentType().getName();
-                                                }
-
-                                                @Override
-                                                public Boolean getIsActive() {
-                                                    return document.getIsActive();
-                                                }
-                                            };
-                                    }).collect(Collectors.toList())
+                                            return GetDocumentDetailsDTO.builder()
+                                                    .id(document.getId())
+                                                    .title(document.getTitle())
+                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(document.getCreatedDate()))
+                                                    .documentTypeName(document.getDocumentType().getName())
+                                                    .isActive(document.getIsActive())
+                                                    .build();
+                                        }
+                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));

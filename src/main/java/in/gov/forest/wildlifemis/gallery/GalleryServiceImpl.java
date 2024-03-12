@@ -9,6 +9,7 @@ import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.gallery.dto.GalleryRequestDTO;
 import in.gov.forest.wildlifemis.gallery.dto.GetGalleryDetails;
+import in.gov.forest.wildlifemis.gallery.dto.GetGalleryDetailsDTO;
 import in.gov.forest.wildlifemis.galleryType.GalleryTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -152,6 +153,19 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                     .status(HttpStatus.OK.value())
                     .data(
                             galleryRepository.findByGalleryTypeIdAndIsActiveOrderByCreatedDateDesc(galleryTypeId, Boolean.TRUE)
+                                    .stream()
+                                    .map(
+                                            gallery ->{
+                                                    return GetGalleryDetailsDTO.builder()
+                                                            .id(gallery.getId())
+                                                            .title(gallery.getTitle())
+                                                            .galleryTypeName(gallery.getGalleryType().getName())
+                                                            .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(gallery.getCreatedDate()))
+                                                            .isActive(gallery.getIsActive())
+                                                            .build();
+                                            }
+                                    )
+
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -166,34 +180,15 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                     .data(
                             galleryRepository.findAll(Sort.by("createdDate").descending())
                                     .stream()
-                                    .map(gallery ->
-                                            {
-                                                return new GetGalleryDetails() {
-                                                    @Override
-                                                    public Long getId() {
-                                                        return gallery.getId();
-                                                    }
-
-                                                    @Override
-                                                    public String getTitle() {
-                                                        return gallery.getTitle();
-                                                    }
-
-                                                    @Override
-                                                    public String getCreatedDate() {
-                                                        return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(gallery.getCreatedDate());
-                                                    }
-
-                                                    @Override
-                                                    public String getGalleryTypeName() {
-                                                        return gallery.getGalleryType().getName();
-                                                    }
-
-                                                    @Override
-                                                    public Boolean getIsActive() {
-                                                        return gallery.getIsActive();
-                                                    }
-                                                };
+                                    .map(
+                                            gallery ->{
+                                                return GetGalleryDetailsDTO.builder()
+                                                        .id(gallery.getId())
+                                                        .title(gallery.getTitle())
+                                                        .galleryTypeName(gallery.getGalleryType().getName())
+                                                        .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(gallery.getCreatedDate()))
+                                                        .isActive(gallery.getIsActive())
+                                                        .build();
                                             }
                                     )
                     ).build();

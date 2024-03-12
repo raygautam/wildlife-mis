@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.notification;
 
+import in.gov.forest.wildlifemis.domian.Notification;
 import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,13 +13,13 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<in.gov.forest.wildlifemis.domian.Notification, Long> {
 
-    List<GetNotificationDetails> findByNotificationTypeIdAndIsActiveOrderByCreatedDateDesc(Long notificationTypeId, boolean isActive);
+    List<Notification> findByNotificationTypeIdAndIsActiveOrderByCreatedDateDesc(Long notificationTypeId, boolean isActive);
 
-    List<GetNotificationDetails> findByIsArchiveOrderByCreatedDateDesc(Boolean aTrue);
+    List<Notification> findByIsArchiveOrderByCreatedDateDesc(Boolean aTrue);
 
 //    @Query("SELECT n FROM Notification n")
     List<GetNotificationDetails> findByOrderByCreatedDateDesc();
 
-    List<GetNotificationDetails> findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(Long notificationTypeId, Boolean aTrue);
+    List<Notification> findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(Long notificationTypeId, Boolean aTrue);
     Page<GetNotificationDetails> findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(Long notificationTypeId, Boolean aTrue, Pageable pageable);
 }

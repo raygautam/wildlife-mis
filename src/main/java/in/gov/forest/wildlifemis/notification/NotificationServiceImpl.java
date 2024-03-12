@@ -1,9 +1,11 @@
 package in.gov.forest.wildlifemis.notification;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.document.dto.GetDocumentDetailsDTO;
 import in.gov.forest.wildlifemis.domian.Notification;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetailsDTO;
 import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
 import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetails;
 import in.gov.forest.wildlifemis.notificationType.NotificationTypeRepository;
@@ -196,6 +198,19 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository.findByNotificationTypeIdAndIsActiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE)
+                                    .stream()
+                                    .map(notification->
+                                        {
+                                            return GetNotificationDetailsDTO.builder()
+                                                    .id(notification.getId())
+                                                    .title(notification.getTitle())
+                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                    .notificationTypeName(notification.getNotificationType().getName())
+                                                    .isActive(notification.getIsActive())
+                                                    .isArchive(notification.getIsArchive())
+                                                    .build();
+                                        }
+                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -208,7 +223,19 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository
-                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE)
+                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE).stream()
+                                    .map(notification->
+                                        {
+                                            return GetNotificationDetailsDTO.builder()
+                                                    .id(notification.getId())
+                                                    .title(notification.getTitle())
+                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                    .notificationTypeName(notification.getNotificationType().getName())
+                                                    .isActive(notification.getIsActive())
+                                                    .isArchive(notification.getIsArchive())
+                                                    .build();
+                                        }
+                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -296,6 +323,19 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository.findByIsArchiveOrderByCreatedDateDesc(Boolean.TRUE)
+                                    .stream()
+                                    .map(
+                                            notification -> {
+                                                return GetNotificationDetailsDTO.builder()
+                                                        .id(notification.getId())
+                                                        .title(notification.getTitle())
+                                                        .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                        .notificationTypeName(notification.getNotificationType().getName())
+                                                        .isActive(notification.getIsActive())
+                                                        .isArchive(notification.getIsArchive())
+                                                        .build();
+                                            }
+                                    )
                     ).build();
         }catch (DataInsertionException e){
             throw new DataRetrievalException("Failed to Retrieve notification", new Error("",e.getMessage()));
@@ -310,47 +350,24 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .status(HttpStatus.OK.value())
                     .data(
                             notificationRepository.findAll(
-                                        PageRequest.of(
-                                                0,10,
-                                                Sort.by("createdDate")
-                                                        .descending()
-                                        )
+//                                        PageRequest.of(
+//                                                0,10,
+//                                                Sort.by("createdDate")
+//                                                        .descending()
+                                    Sort.by("createdDate")
+                                            .descending()
                                     )
                                     .stream()
                                     .map(
                                              notification -> {
-                                                 return new GetNotificationDetails() {
-                                                     @Override
-                                                     public Long getId() {
-                                                         return notification.getId();
-                                                     }
-
-                                                     @Override
-                                                     public String getTitle() {
-                                                         return notification.getTitle();
-                                                     }
-
-                                                     @Override
-                                                     public String getCreatedDate() {
-                                                         // You need to get this value from obj
-                                                         return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(notification.getCreatedDate());
-                                                     }
-
-                                                     @Override
-                                                     public String getNotificationTypeName() {
-                                                         return notification.getNotificationType().getName();
-                                                     }
-
-                                                     @Override
-                                                     public Boolean getIsActive() {
-                                                         return notification.getIsActive();
-                                                     }
-
-                                                     @Override
-                                                     public Boolean getIsArchive() {
-                                                         return notification.getIsArchive();
-                                                     }
-                                                 };
+                                                 return GetNotificationDetailsDTO.builder()
+                                                         .id(notification.getId())
+                                                         .title(notification.getTitle())
+                                                         .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                         .notificationTypeName(notification.getNotificationType().getName())
+                                                         .isActive(notification.getIsActive())
+                                                         .isArchive(notification.getIsArchive())
+                                                         .build();
                                              }
                                     ).collect(Collectors.toList())
                     ).build();
@@ -359,6 +376,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
+
+
+
+}
+
 
 
 //    @Override
@@ -378,7 +400,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 //                .build();
 //    }
 
-        //    @Override
+//    @Override
 //    public ApiResponse<?> save(MultipartFile file,Long notificationTypeId, String title) throws IOException {
 //        if (file.isEmpty()) {
 //            return ApiResponse.builder()
@@ -415,5 +437,3 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 //                )
 //                .build();
 //    }
-
-}

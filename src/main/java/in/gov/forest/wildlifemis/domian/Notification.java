@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.domian;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
