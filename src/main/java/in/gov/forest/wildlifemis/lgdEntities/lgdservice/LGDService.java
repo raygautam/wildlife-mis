@@ -225,8 +225,8 @@ public class LGDService {
         return DivisionResponseDTO.builder()
                 .divisionId(division.getId())
                 .divisionName(division.getName())
-                .serviceId(division.getService().getId())
-                .serviceName(division.getService().getServiceName())
+                .serviceId(division.getService()!=null ? division.getService().getId() :null)
+                .serviceName(division.getService()!=null ? division.getService().getServiceName() :null)
                 .stateCode(division.getState().getStateCode())
                 .stateName(division.getState().getStateName())
                 .build();

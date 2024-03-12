@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 @RestController
 @Slf4j
 @RequestMapping("/gallery")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class GalleryController {
 
     @Autowired

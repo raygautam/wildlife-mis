@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/galleryType")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class GalleryTypeController {
 
     @Autowired

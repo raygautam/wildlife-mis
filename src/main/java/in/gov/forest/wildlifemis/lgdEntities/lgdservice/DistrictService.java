@@ -22,7 +22,9 @@ public class DistrictService {
 
     public List<DistrictDTO> getAllDistricts(){
         List<District> districts = districtRepository.findAll();
-        return  districts.stream().map(districts1 -> modelMapper.map(districts1,DistrictDTO.class)).collect(Collectors.toList());
+        return  districts
+                .stream()
+                .map(districts1 -> modelMapper.map(districts1,DistrictDTO.class)).collect(Collectors.toList());
     }
 
 
