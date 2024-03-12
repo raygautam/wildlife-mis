@@ -215,18 +215,47 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
     }
 
+//    @Override
+//    public ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable) {
+////        Page<Notification> notifications = notificationRepository.findByNotificationTypeId(notificationTypeId, pageable);
+//        try {
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .data(
+//                            notificationRepository
+//                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE, pageable)
+//                    ).build();
+//        } catch (DataRetrievalException e) {
+//            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+//        }
+//    }
+
     @Override
-    public ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable) {
-//        Page<Notification> notifications = notificationRepository.findByNotificationTypeId(notificationTypeId, pageable);
-        try {
-            return ApiResponse.builder()
+    public ApiResponse<?> deleteNotification(Long id) {
+        try{
+            return ApiResponse
+                    .builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationRepository
-                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE, pageable)
-                    ).build();
-        } catch (DataRetrievalException e) {
-            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+                            //Java 8 provides several benefits over updating a field using SQL, including type safety, code re-usability, error handling, and code complexity.
+                            notificationRepository.findById(id)
+                                    .stream()
+                                    .map(
+                                            notification -> {
+                                                notification.setIsArchive(Boolean.FALSE);
+                                                notification.setIsActive(Boolean.FALSE);
+                                                notificationRepository.save(notification);
+                                                return  "Deleted Successfully";
+
+                                            }
+                                    )
+                                    .findFirst()
+                                    .orElseThrow(()->new NotFoundException("Notification Id not found", new Error("","Notification Id not found!!")))
+
+                    )
+                    .build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to delete notification", new Error("",e.getMessage()));
         }
     }
 
@@ -237,7 +266,8 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .builder()
                         .status(HttpStatus.OK.value())
                         .data(
-
+                                //Update notification this way help in to way first checking whether id is present or not second if present then just update the required field and save it.
+                                //Whereas updating field directly using sql query might give error if id is not present and tracking the error will be difficult.
                                 notificationRepository.findById(id)
                                         .stream()
                                         .map(

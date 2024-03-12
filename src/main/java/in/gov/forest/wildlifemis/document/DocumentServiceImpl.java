@@ -205,15 +205,40 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> delete(Long documentId) {
-        try {
-            return ApiResponse.builder()
+    public ApiResponse<?> deleteDocument(Long documentId) {
+//        try {
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .data(
+//                            documentRepository.deleteByTypeOfDocumentId(documentId, Boolean.FALSE)
+//                    ).build();
+//        } catch (DataIntegrityViolationException e) {
+//            throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
+//        }
+
+        try{
+            return ApiResponse
+                    .builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.deleteByTypeOfDocumentId(documentId, Boolean.FALSE)
-                    ).build();
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
+                            //Java 8 provides several benefits over updating a field using SQL, including type safety, code re-usability, error handling, and code complexity.
+                            documentRepository.findById(documentId)
+                                    .stream()
+                                    .map(
+                                            document -> {
+                                                document.setIsActive(Boolean.FALSE);
+                                                documentRepository.save(document);
+                                                return  "Deleted Successfully";
+
+                                            }
+                                    )
+                                    .findFirst()
+                                    .orElseThrow(()->new NotFoundException("Document Id  not found", new Error("","Document Id not found")))
+
+                    )
+                    .build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to delete Document", new Error("",e.getMessage()));
         }
     }
 

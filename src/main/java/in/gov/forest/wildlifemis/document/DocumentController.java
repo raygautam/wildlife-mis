@@ -90,8 +90,8 @@ public class DocumentController {
      * on delete operation changing isActive status to false.
      **/
     @DeleteMapping("/delete/{documentId}")
-    public ResponseEntity<?> delete(@PathVariable Long documentId) {
-        ApiResponse<?> apiResponse = documentServiceInter.delete(documentId);
+    public ResponseEntity<?> deleteDocument(@PathVariable Long documentId) {
+        ApiResponse<?> apiResponse = documentServiceInter.deleteDocument(documentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 

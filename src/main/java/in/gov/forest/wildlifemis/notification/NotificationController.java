@@ -147,16 +147,28 @@ public class NotificationController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/getArchiveNotificationByPagination/{notificationTypeId}")
-    public ResponseEntity<?> getArchiveNotificationByPagination(
-            @PathVariable Long notificationTypeId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotificationByPagination(notificationTypeId, pageable);
+    /**
+        Delete API do not delete notification permanently instead change the flag of isActive to false.
+     **/
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteNotification(@PathVariable Long id){
+        ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+
+
+
+//    @GetMapping("/getArchiveNotificationByPagination/{notificationTypeId}")
+//    public ResponseEntity<?> getArchiveNotificationByPagination(
+//            @PathVariable Long notificationTypeId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "2") int size) {
+//
+//        Pageable pageable = PageRequest.of(page, size);
+//        ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotificationByPagination(notificationTypeId, pageable);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//    }
 }
 
 

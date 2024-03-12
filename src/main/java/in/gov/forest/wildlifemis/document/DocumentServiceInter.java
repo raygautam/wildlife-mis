@@ -12,7 +12,7 @@ public interface DocumentServiceInter {
 
     ApiResponse<?> getDocument(Long documentTypeId);
 
-    ApiResponse<?> delete(Long documentTypeId);
+    ApiResponse<?> deleteDocument(Long documentTypeId);
 
     ResponseEntity<?> download(Long id);
 

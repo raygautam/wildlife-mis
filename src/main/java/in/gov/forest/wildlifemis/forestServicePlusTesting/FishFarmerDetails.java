@@ -1,4 +1,4 @@
-package in.gov.forest.wildlifemis.testing;
+package in.gov.forest.wildlifemis.forestServicePlusTesting;
 
 import jakarta.persistence.*;
 import lombok.*;
