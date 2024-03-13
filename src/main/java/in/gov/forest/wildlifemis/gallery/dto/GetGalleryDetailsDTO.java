@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class GetGalleryDetailsDTO {
     private Long id;
+
     private String title;
 
     private String galleryTypeName;
@@ -16,4 +17,5 @@ public class GetGalleryDetailsDTO {
     private String createdDate;
 
     private boolean isActive;
+    private byte[] image;
 }

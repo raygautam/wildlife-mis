@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,6 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
     List<GetGalleryDetails> deleteByGalleryId(Long galleryId, Boolean aFalse);
 
     Gallery findByIsActive(Boolean aFalse);
+
+    List<Gallery> findByIsActiveOrderByCreatedDateDesc(Boolean aTrue);
 }

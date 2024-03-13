@@ -181,7 +181,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findAll(Sort.by("createdDate").descending())
+                            documentRepository.findByIsActiveOrderByCreatedDateDesc(Boolean.TRUE)
                                     .stream()
                                     .map(document -> {
                                             return GetDocumentDetailsDTO.builder()
@@ -193,6 +193,19 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                                                     .build();
                                         }
                                     )
+
+//                            documentRepository.findAll(Sort.by("createdDate").descending())
+//                                    .stream()
+//                                    .map(document -> {
+//                                            return GetDocumentDetailsDTO.builder()
+//                                                    .id(document.getId())
+//                                                    .title(document.getTitle())
+//                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(document.getCreatedDate()))
+//                                                    .documentTypeName(document.getDocumentType().getName())
+//                                                    .isActive(document.getIsActive())
+//                                                    .build();
+//                                        }
+//                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));

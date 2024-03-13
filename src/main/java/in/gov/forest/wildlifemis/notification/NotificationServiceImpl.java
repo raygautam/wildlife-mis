@@ -349,14 +349,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationRepository.findAll(
-//                                        PageRequest.of(
-//                                                0,10,
-//                                                Sort.by("createdDate")
-//                                                        .descending()
-                                    Sort.by("createdDate")
-                                            .descending()
-                                    )
+                            notificationRepository.findByIsActiveOrderByCreatedDateDesc(Boolean.TRUE)
                                     .stream()
                                     .map(
                                              notification -> {
@@ -369,71 +362,12 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                          .isArchive(notification.getIsArchive())
                                                          .build();
                                              }
-                                    ).collect(Collectors.toList())
+                                    )
                     ).build();
-
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to update notification", new Error("",e.getMessage()));
         }
     }
 
 
-
 }
-
-
-
-//    @Override
-//    public ApiResponse<?> delete(String fileName) throws IOException {
-//        File destFile = new File(fileUploadDirectory + File.separator + fileName);
-////            Path path=Paths.get(destFile.toURI());
-////            Boolean deleted=Files.deleteIfExists(path);
-//        boolean deleted = false;
-//        if (destFile.exists() && destFile.isFile()) {
-//            deleted=destFile.delete(); // Delete the file
-//        }
-//        return ApiResponse.builder()
-//                .status(HttpStatus.OK.value())
-//                .data(
-//                        deleted
-//                )
-//                .build();
-//    }
-
-//    @Override
-//    public ApiResponse<?> save(MultipartFile file,Long notificationTypeId, String title) throws IOException {
-//        if (file.isEmpty()) {
-//            return ApiResponse.builder()
-//                    .status(HttpStatus.BAD_REQUEST.value())
-//                    .error(new Error("Please select a file to upload"))
-//                    .build();
-//        }
-//        if (!fileUploadDirectory.exists()) {
-//            try {
-//                boolean created = fileUploadDirectory.mkdirs();
-//                if (created) {
-//                    log.info("Directory created successfully.");
-//                } else {
-//                    throw new IOException("Failed to create directory.");
-//                }
-//            } catch (IOException e) {
-//                System.out.println("Failed to create directory: " + e.getMessage());
-//            }
-//        }
-//
-//        String randomName = RandomStringUtils.randomAlphabetic(6) + System.currentTimeMillis();
-//        File destFile = new File(fileUploadDirectory + File.separator + randomName);
-//        file.transferTo(destFile);
-//        Notification.builder()
-//                .title(title)
-//                .fileName(randomName)
-//                .notificationType(notificationTypeRepository.getReferenceById(notificationTypeId))
-//                .fileUrl(String.valueOf(destFile))
-//                .isActive(Boolean.TRUE)
-//                .build();
-//        return ApiResponse.builder()
-//                .data(
-//                        destFile
-//                )
-//                .build();
-//    }

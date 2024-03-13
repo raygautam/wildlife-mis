@@ -178,19 +178,47 @@ public class GalleryServiceImpl implements GalleryServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            galleryRepository.findAll(Sort.by("createdDate").descending())
+                            galleryRepository.findByIsActiveOrderByCreatedDateDesc(Boolean.TRUE)
                                     .stream()
                                     .map(
                                             gallery ->{
-                                                return GetGalleryDetailsDTO.builder()
-                                                        .id(gallery.getId())
-                                                        .title(gallery.getTitle())
-                                                        .galleryTypeName(gallery.getGalleryType().getName())
-                                                        .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(gallery.getCreatedDate()))
-                                                        .isActive(gallery.getIsActive())
-                                                        .build();
+                                                File galleryFile = new File(gallery.getFileUrl());
+                                                Resource resource= new FileSystemResource(galleryFile);
+                                                try {
+                                                    return GetGalleryDetailsDTO.builder()
+                                                            .id(gallery.getId())
+                                                            .title(gallery.getTitle())
+                                                            .galleryTypeName(gallery.getGalleryType().getName())
+                                                            .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(gallery.getCreatedDate()))
+                                                            .isActive(gallery.getIsActive())
+                                                            .image(resource.getContentAsByteArray())
+                                                            .build();
+                                                } catch (IOException e) {
+                                                    throw new RuntimeException(e);
+
+                                                }
                                             }
                                     )
+//                            galleryRepository.findAll(Sort.by("createdDate").descending())
+//                                    .stream()
+//                                    .map(
+//                                            gallery ->{
+//                                                File galleryFile = new File(gallery.getFileUrl());
+//                                                Resource resource= new FileSystemResource(galleryFile);
+//                                                try {
+//                                                    return GetGalleryDetailsDTO.builder()
+//                                                            .id(gallery.getId())
+//                                                            .title(gallery.getTitle())
+//                                                            .galleryTypeName(gallery.getGalleryType().getName())
+//                                                            .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(gallery.getCreatedDate()))
+//                                                            .isActive(gallery.getIsActive())
+//                                                            .image(resource.getContentAsByteArray())
+//                                                            .build();
+//                                                } catch (IOException e) {
+//                                                    throw new RuntimeException(e);
+//                                                }
+//                                            }
+//                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));

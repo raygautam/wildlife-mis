@@ -3,6 +3,7 @@ package in.gov.forest.wildlifemis.exception;
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,13 +11,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalException {
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+//        Error error = new Error("",e.getMessage());
+        ApiResponse<Object> apiResponse = new ApiResponse<>(
+                e.getStatusCode().value(),
+//                HttpStatus.METHOD_NOT_ALLOWED.value(),
+                Collections.singletonList(new Error("",e.getMessage())),
+                null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     @ExceptionHandler(JwtCustomException.class)
     public ResponseEntity<ApiResponse<Object>> handleJwtExpiredException(JwtCustomException ex) {
 //        Error error = new Error("The JWT token has expired");

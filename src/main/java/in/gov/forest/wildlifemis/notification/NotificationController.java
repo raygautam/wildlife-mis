@@ -35,27 +35,6 @@ public class NotificationController {
     @Autowired
     JsonMapper jsonMapper;
 
-
-//    /**
-//     * API to add a new notification.
-//     *
-//     * @param file the PDF file to be uploaded
-//     * @param notificationTypeId the id of the notification type
-//     * @param title the title of the notification
-//     * @return an ApiResponse object indicating the status of the operation
-//     * @throws IOException if there is an error in reading or writing the file
-//     */
-//    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<?> saveNotificationType(
-//            @RequestParam(value = "file") MultipartFile file,
-//            @RequestParam(value = "notificationTypeId") Long notificationTypeId,
-//            @RequestParam(value = "title") String title
-//    ) throws IOException {
-//        ApiResponse<?> apiResponse = notificationServiceInter.save(file, notificationTypeId, title);
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//    }
-
-
         /**
      * API to add a new notification.
      *

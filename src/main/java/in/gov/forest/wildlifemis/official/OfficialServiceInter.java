@@ -6,4 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface OfficialServiceInter {
     ApiResponse<?> save(MultipartFile file, OfficialDTO officialDTO);
+
+    ApiResponse<?> getAllOfficial();
 }

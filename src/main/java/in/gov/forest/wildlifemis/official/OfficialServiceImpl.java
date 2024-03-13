@@ -5,17 +5,23 @@ import in.gov.forest.wildlifemis.domian.Notification;
 import in.gov.forest.wildlifemis.domian.Official;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.gallery.dto.GetGalleryDetailsDTO;
+import in.gov.forest.wildlifemis.official.dto.GetOfficialDTO;
 import in.gov.forest.wildlifemis.official.dto.OfficialDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
@@ -33,6 +39,13 @@ public class OfficialServiceImpl implements OfficialServiceInter{
     public ApiResponse<?> save(MultipartFile file, OfficialDTO officialDTO) {
         File uploadFileUrl = new File(fileUploadDirectoryForOfficial);
 
+        if (file.isEmpty()) {
+            return ApiResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .error(Collections.singletonList(new Error("file","Please select a file to upload")))
+                    .build();
+        }
+
         if(!Objects.equals(file.getContentType(), "image/png") &&
                 !Objects.equals(file.getContentType(), "image/jpg") &&
                 !Objects.equals(file.getContentType(), "image/jpeg")){
@@ -42,12 +55,6 @@ public class OfficialServiceImpl implements OfficialServiceInter{
                     .build();
         }
 
-        if (file.isEmpty()) {
-            return ApiResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST.value())
-                    .error(Collections.singletonList(new Error("file","Please select a file to upload")))
-                    .build();
-        }
 
         if( officialDTO.getName()==null || Objects.equals(officialDTO.getName(), "")){
             throw new BadRequestException("", new Error("name","field is required"));
@@ -110,6 +117,38 @@ public class OfficialServiceImpl implements OfficialServiceInter{
                 deleted = destFile.delete(); // Delete the file
             }
             throw new IOCustomException("",new Error("","Fail to add file to directory."+e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> getAllOfficial() {
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            officialRepository.findAll()
+                                    .stream()
+                                    .map(
+                                            official -> {
+                                                Resource resources= new FileSystemResource(
+                                                        new File(official.getFileUrl()));
+                                                try {
+                                                   return GetOfficialDTO.builder()
+                                                            .id(official.getId())
+                                                            .name(official.getName())
+                                                            .designation(official.getDesignation())
+                                                            .image(
+                                                                    resources.getContentAsByteArray()
+                                                            )
+                                                            .build();
+                                                } catch (IOException e) {
+                                                    throw new RuntimeException(e);
+                                                }
+                                            }
+                                    )
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
         }
     }
 }

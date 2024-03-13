@@ -7,7 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfficialDTO {
+public class GetOfficialDTO {
+    private Long id;
     private String name;
     private String designation;
     private byte[] image;

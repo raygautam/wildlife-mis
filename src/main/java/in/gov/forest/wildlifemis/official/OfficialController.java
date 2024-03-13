@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
+@RequestMapping(value = "/official")
+@CrossOrigin("*")
 public class OfficialController {
 
     @Autowired
@@ -54,5 +54,11 @@ public class OfficialController {
         }
 
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getAllOfficial() {
+        ApiResponse<?> apiResponse = officialServiceInter.getAllOfficial();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

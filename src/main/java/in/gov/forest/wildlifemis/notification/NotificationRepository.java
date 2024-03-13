@@ -22,4 +22,6 @@ public interface NotificationRepository extends JpaRepository<in.gov.forest.wild
 
     List<Notification> findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(Long notificationTypeId, Boolean aTrue);
     Page<GetNotificationDetails> findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(Long notificationTypeId, Boolean aTrue, Pageable pageable);
+
+    List<Notification> findByIsActiveOrderByCreatedDateDesc(Boolean aTrue);
 }

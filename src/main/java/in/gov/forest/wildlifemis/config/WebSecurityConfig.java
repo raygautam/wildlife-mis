@@ -102,16 +102,18 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                             auth
 //                                    .requestMatchers("/notification/downloadPDf/**").permitAll()
                                     .requestMatchers(
-                                            "/lgd/**",
-                                            "/public/**",
-                                            "/notification/**",
-                                            "/notification_type/**",
-                                            "/forestServices/**",
-                                            "/documentType/**",
-                                            "/document/**",
-                                            "/galleryType/**",
-                                            "/gallery/**",
-                                            "/servicePlusStatus"
+                                            "/**"
+//                                            "/official/**",
+//                                            "/lgd/**",
+//                                            "/public/**",
+//                                            "/notification/**",
+//                                            "/notification_type/**",
+//                                            "/forestServices/**",
+//                                            "/documentType/**",
+//                                            "/document/**",
+//                                            "/galleryType/**",
+//                                            "/gallery/**",
+//                                            "/servicePlusStatus"
                                     )
                                     .permitAll()
 //                                    auth.requestMatchers("/notification/download/{id}").permitAll()
