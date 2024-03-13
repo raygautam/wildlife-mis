@@ -5,6 +5,7 @@ import in.gov.forest.wildlifemis.domian.ForestService;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.exception.NotFoundException;
 import in.gov.forest.wildlifemis.forest_service.dto.ForestServiceRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                             forestServiceRepository.save(
                                     ForestService.builder()
                                             .serviceName(serviceRequestDTO.getServiceName())
+                                            .serviceURL(serviceRequestDTO.getServiceURL())
                                             .build()
                             )
                     ).build();
@@ -44,6 +46,31 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());
             throw new DataRetrievalException("Failed to retrieve notificationType", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> updateProduct(Long id, ForestServiceRequestDTO forestServiceRequestDTO) {
+        try{
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            forestServiceRepository.findById(id)
+                                    .stream()
+                                    .map(
+                                            forestService -> {
+                                                forestService.setServiceName(forestServiceRequestDTO.getServiceName());
+                                                forestService.setServiceId(forestServiceRequestDTO.getServiceId());
+                                                forestService.setServiceURL(forestServiceRequestDTO.getServiceURL());
+                                                forestServiceRepository.save(forestService);
+                                                return "Updated Successfully";
+                                            }
+                                    )
+                                    .findFirst()
+                                    .orElseThrow(()->new NotFoundException("NotificationType not found", new Error("","NotificationType not found")))
+                    ).build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to update notificationType", new Error("",e.getMessage()));
         }
     }
 }

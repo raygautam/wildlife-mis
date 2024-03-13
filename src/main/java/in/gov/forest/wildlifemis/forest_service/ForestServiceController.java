@@ -26,4 +26,10 @@ public class ForestServiceController {
         ApiResponse<?> apiResponse=service_ServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ForestServiceRequestDTO forestServiceRequestDTO) {
+        ApiResponse<?> apiResponse=service_ServiceInter.updateProduct(id, forestServiceRequestDTO);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 }

@@ -10,18 +10,18 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class ForestService {
+public class Official {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(unique = true, nullable = false)
-    private String serviceName;
-    private String serviceId;
-    private String serviceURL;
+    private String name;
+    private String designation;
+    private String fileName;
+    private String fileUrl;
 
     @Override
     public final boolean equals(Object o) {
@@ -30,8 +30,8 @@ public class ForestService {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        ForestService service = (ForestService) o;
-        return getId() != null && Objects.equals(getId(), service.getId());
+        Official official = (Official) o;
+        return getId() != null && Objects.equals(getId(), official.getId());
     }
 
     @Override

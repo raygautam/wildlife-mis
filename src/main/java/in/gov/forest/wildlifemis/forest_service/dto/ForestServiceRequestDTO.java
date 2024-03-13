@@ -9,4 +9,6 @@ import lombok.*;
 @Builder
 public class ForestServiceRequestDTO {
     private String serviceName;
+    private String serviceId;
+    private String serviceURL;
 }

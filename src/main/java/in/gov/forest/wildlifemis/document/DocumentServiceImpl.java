@@ -238,7 +238,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ResponseEntity<?> download(Long id) {
+    public ResponseEntity<?> download(Long id) throws IOException {
         Document document = documentRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
@@ -272,7 +272,10 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + document.getFileName() + "\""
                 )
-                .contentType(MediaType.APPLICATION_PDF)
+                .contentType(
+                        MediaType.parseMediaType(
+                        Files.probeContentType(Path.of(resource.getFile().getAbsolutePath()))
+                ))
                 .body(resource);
     }
 

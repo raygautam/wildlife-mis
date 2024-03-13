@@ -243,7 +243,8 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + gallery.getFileName() + "\""
                 )
-                .contentType(MediaType.parseMediaType(
+                .contentType(
+                        MediaType.parseMediaType(
                         Files.probeContentType(
                                 Path.of(
                                         resource.getFile().getAbsolutePath()
