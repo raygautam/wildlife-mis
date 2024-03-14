@@ -378,7 +378,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
     }
 
-    @Scheduled(cron="0 50 16 * * ?")
+    @Scheduled(cron="0 0 2 * * ?")
     @Transactional
     public List<?> deactivateNotification(){
         return notificationRepository.findAll().stream()
