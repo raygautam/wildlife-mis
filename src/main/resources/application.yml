@@ -1,3 +1,8 @@
+
+#Before deploying ot the the server check whether the cros origin is handle
+#globally or controller level if globally then comment from controller level.
+
+
 spring:
   servlet:
     multipart:
@@ -43,6 +48,7 @@ fileUploadDirectoryForOfficial: E:\WildlifeMIS(13-02-2024)\forest-wildlife-mis(1
 #fileUploadDirectoryForNotification: /opt/tomcat/webapps/notification
 #fileUploadDirectoryForDocument: /opt/tomcat/webapps/document
 #fileUploadDirectoryForGallery: /opt/tomcat/webapps/gallery
+#fileUploadDirectoryForOfficial: /opt/tomcat/webapps/official
 
 server:
   port : 8083
@@ -53,6 +59,11 @@ AppInitializer:
   value: false
 CoverageLocationForHACAndARWithRangeService:
   value: false
+
+  server:
+    error:
+      whitelabel:
+        enabled: false
 
 
 #wildLife:

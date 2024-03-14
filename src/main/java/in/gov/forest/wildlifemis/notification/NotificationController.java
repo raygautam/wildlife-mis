@@ -6,8 +6,10 @@ import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.exception.BadRequestException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JsonProcessingCustomException;
+import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetailsDTO;
 import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +17,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -33,7 +42,12 @@ public class NotificationController {
     private ResourceLoader resourceLoader;
 
     @Autowired
+    JdbcTemplate jdbcTemplate;
+    @Autowired
     JsonMapper jsonMapper;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
         /**
      * API to add a new notification.
@@ -133,6 +147,37 @@ public class NotificationController {
     public ResponseEntity<?> deleteNotification(@PathVariable Long id){
         ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @GetMapping("/getAllNotificationByCreatedDateGreaterThanNow")
+    public ResponseEntity<?> getAllNotificationByCreatedDateGreaterThanNow(){
+
+        Duration duration= Duration.ofDays(5);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                notificationRepository.findAll().stream()
+                        .filter(notification -> notification
+                                .getCreatedDate()
+                                .toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime()
+                                .plus(duration)
+                                .isAfter(LocalDateTime.now()))
+                        .map(
+                                notification -> {
+                                    return GetNotificationDetailsDTO.builder()
+                                            .id(notification.getId())
+                                            .title(notification.getTitle())
+                                            .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                            .notificationTypeName(notification.getNotificationType().getName())
+                                            .isActive(notification.getIsActive())
+                                            .isArchive(notification.getIsArchive())
+                                            .build();
+                                }
+                        )
+                        .collect(Collectors.toList())
+                );
+//        ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
 

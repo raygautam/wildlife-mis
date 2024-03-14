@@ -22,6 +22,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +51,9 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
     @Autowired
     NotificationRepository notificationRepository;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -369,5 +377,27 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
     }
 
+//    @Scheduled(cron="0 0 14 * * ?")
+//    @Transactional
+    public void deactivateNotification(){
+//        SELECT * FROM public.notification where created_date +  INTERVAL '5 days' < NOW()
+
+        Duration duration= Duration.ofDays(15);
+//        LocalDateTime date= LocalDateTime.now().minusDays(15);
+        notificationRepository.findAll().stream()
+                .filter(notification -> {
+                    LocalDateTime createdDate = notification.getCreatedDate()
+                            .toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+                    LocalDateTime expirationTime = createdDate.plus(duration);
+                    return expirationTime.isAfter(LocalDateTime.now());
+                }).collect(Collectors.toList());
+
+
+//        jdbcTemplate.queryForList("SELECT * FROM Notification n where createdDate + "+duration+" < "+LocalDateTime.now());
+//        notificationRepository.
+//        citizenOTPRepository.deleteByExpiresAtLessThan(LocalDateTime.now());
+    }
 
 }

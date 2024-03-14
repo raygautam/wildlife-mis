@@ -61,4 +61,12 @@ public class OfficialController {
         ApiResponse<?> apiResponse = officialServiceInter.getAllOfficial();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+//    @PutMapping("/updateOfficialDetails")
+//    public ResponseEntity<?> updateOfficialDetails(@RequestBody OfficialDTO officialDTO) {
+//        ApiResponse<?> apiResponse=officialServiceInter.save(officialDTO);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//    }
+
+
 }
