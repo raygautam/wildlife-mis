@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -377,27 +378,27 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
     }
 
-//    @Scheduled(cron="0 0 14 * * ?")
-//    @Transactional
-    public void deactivateNotification(){
-//        SELECT * FROM public.notification where created_date +  INTERVAL '5 days' < NOW()
-
-        Duration duration= Duration.ofDays(15);
-//        LocalDateTime date= LocalDateTime.now().minusDays(15);
-        notificationRepository.findAll().stream()
-                .filter(notification -> {
-                    LocalDateTime createdDate = notification.getCreatedDate()
-                            .toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDateTime();
-                    LocalDateTime expirationTime = createdDate.plus(duration);
-                    return expirationTime.isAfter(LocalDateTime.now());
-                }).collect(Collectors.toList());
-
-
-//        jdbcTemplate.queryForList("SELECT * FROM Notification n where createdDate + "+duration+" < "+LocalDateTime.now());
-//        notificationRepository.
-//        citizenOTPRepository.deleteByExpiresAtLessThan(LocalDateTime.now());
+    @Scheduled(cron="0 50 16 * * ?")
+    @Transactional
+    public List<?> deactivateNotification(){
+        return notificationRepository.findAll().stream()
+                .filter(notification -> notification
+                        .getCreatedDate()
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()
+                        .plus(Duration.ofDays(15))
+                        .isBefore(LocalDateTime.now())
+                        && notification.getIsActive()==Boolean.TRUE
+                )
+                .map(
+                        notification -> {
+                            notification.setIsArchive(Boolean.TRUE);
+                            notification.setIsActive(Boolean.FALSE);
+                            notificationRepository.save(notification);
+                            return null;
+                        }
+                ).toList();
     }
 
 }

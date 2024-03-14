@@ -152,7 +152,7 @@ public class NotificationController {
     @GetMapping("/getAllNotificationByCreatedDateGreaterThanNow")
     public ResponseEntity<?> getAllNotificationByCreatedDateGreaterThanNow(){
 
-        Duration duration= Duration.ofDays(5);
+        Duration duration = Duration.ofDays(2);
         return ResponseEntity.status(HttpStatus.OK).body(
                 notificationRepository.findAll().stream()
                         .filter(notification -> notification
@@ -160,21 +160,18 @@ public class NotificationController {
                                 .toInstant()
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDateTime()
-                                .plus(duration)
-                                .isAfter(LocalDateTime.now()))
+                                .plus(Duration.ofDays(15))
+                                .isBefore(LocalDateTime.now())
+                                && notification.getIsActive()==Boolean.TRUE
+                        )
                         .map(
                                 notification -> {
-                                    return GetNotificationDetailsDTO.builder()
-                                            .id(notification.getId())
-                                            .title(notification.getTitle())
-                                            .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
-                                            .notificationTypeName(notification.getNotificationType().getName())
-                                            .isActive(notification.getIsActive())
-                                            .isArchive(notification.getIsArchive())
-                                            .build();
+                                    notification.setIsArchive(Boolean.TRUE);
+                                    notification.setIsActive(Boolean.FALSE);
+                                    notificationRepository.save(notification);
+                                    return null;
                                 }
                         )
-                        .collect(Collectors.toList())
                 );
 //        ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
 //        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
