@@ -1,7 +1,10 @@
 package in.gov.forest.wildlifemis.exception;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.commonDTO.ErrorDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,12 +12,13 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalException {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -135,7 +139,7 @@ public class GlobalException {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<?> handleMethodArgumentException(MethodArgumentNotValidException exception) {
-        ApiResponse<?> serviceResponse = new ApiResponse<>();
+//        ApiResponse<?> serviceResponse = new ApiResponse<>();
 //        List<Error> errors = new ArrayList<>();
 //        exception.getBindingResult().getFieldErrors()
 //                .forEach(error -> {
@@ -148,8 +152,7 @@ public class GlobalException {
 //                            .build()
 //                    );
 //                });
-
-        ApiResponse.builder()
+        return ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error(
                         exception.getBindingResult().getFieldErrors().stream().map(
@@ -157,8 +160,14 @@ public class GlobalException {
                                         .field(fieldError.getField())
                                         .errorMessage(fieldError.getDefaultMessage())
                                         .build()
-                        ).collect(Collectors.toList())
+                        ).toList()
                 ).build();
-        return serviceResponse;
     }
+
+    //Observability example
+//    @ExceptionHandler(RuntimeException.class)
+//    public ProblemDetail onException(RuntimeException ex) {
+//        return ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), ex.getMessage());
+//    }
+
 }

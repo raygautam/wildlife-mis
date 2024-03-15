@@ -5,6 +5,8 @@ import in.gov.forest.wildlifemis.domian.ExternalURL;
 import in.gov.forest.wildlifemis.exception.*;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.externalURL.dto.ExternalURL_DTO;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,14 @@ import java.util.Objects;
 public class ExternalURLServiceImpl implements ExternalURLServiceInter{
     @Autowired
     ExternalURLRepository externalURLRepository;
+
+    private final ObservationRegistry registry;
+
+    @Autowired
+    public ExternalURLServiceImpl(ObservationRegistry registry) {
+        this.registry = registry;
+    }
+
     @Override
     public ApiResponse<?> add(ExternalURL_DTO externalURLDto) {
         try{
@@ -84,4 +94,12 @@ public class ExternalURLServiceImpl implements ExternalURLServiceInter{
             throw new DataInsertionException("Failed to update external url details ", new Error("",e.getMessage()));
         }
     }
+
+
+//    @Override
+//    public ExternalURL getExternalURL(Long id) {
+//        return Observation.createNotStarted("getExternalURL", registry)
+//                .observe(()->externalURLRepository.findById(id).stream().filter(externalURL -> Objects.equals(externalURL.getId(), id))
+//                        .findAny().orElseThrow(()->new RuntimeException("externalURL Not found with id "+id)));
+//    }
 }

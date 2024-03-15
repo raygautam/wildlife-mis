@@ -65,7 +65,18 @@ CoverageLocationForHACAndARWithRangeService:
       whitelabel:
         enabled: false
 
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+      health:
+        show-details: always
 
+  spring:
+    mvc:
+      problemdetails:
+        enabled: true
 #wildLife:
 #  app:
 #    jwtSecret: spring
