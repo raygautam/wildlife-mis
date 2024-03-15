@@ -113,6 +113,14 @@ public class GlobalException {
                 .build();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ApiResponse<?> apiResponse=ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(Collections.singletonList(new Error("",ex.getMessage())))
+                .build();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
     //handleMissingServletRequestParameter like RequestPart value is null
     @ExceptionHandler(MissingServletRequestPartException.class)

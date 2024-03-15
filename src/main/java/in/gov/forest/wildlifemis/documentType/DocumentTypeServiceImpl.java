@@ -20,16 +20,15 @@ public class DocumentTypeServiceImpl implements DocumentTypeServiceInter {
     @Override
     public ApiResponse<?> add(DocumentTypeDTO typeOfDocumentDTO) {
         try{
+            typeOfDocumentRepository.save(
+                    DocumentType.builder()
+                            .name(typeOfDocumentDTO.getName())
+                            .build()
+            );
             return ApiResponse.builder()
                     .status(HttpStatus.CREATED.value())
-                    .data(
-                            typeOfDocumentRepository.save(
-                                    DocumentType.builder()
-                                            .name(typeOfDocumentDTO.getName())
-                                            .build()
-//                                  NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO)
-                            )
-                    ).build();
+                    .data("Data inserted Successfully.")
+                .build();
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to save documentType", new Error("",e.getMessage()));
         }

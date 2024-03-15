@@ -19,7 +19,11 @@ public class ExternalURL {
     @SequenceGenerator(name = "externalurl_gen", sequenceName = "externalurl_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    @Column(nullable = false)
     private String url;
+
+    @Column(nullable = false)
     private String description;
 
     @Override

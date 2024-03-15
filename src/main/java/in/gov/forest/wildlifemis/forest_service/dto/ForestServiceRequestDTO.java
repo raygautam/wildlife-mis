@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class ForestServiceRequestDTO {
+    private Long id;
     private String serviceName;
     private String serviceId;
     private String serviceURL;

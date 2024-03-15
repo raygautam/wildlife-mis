@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5173")
+//@CrossOrigin(origins = "http://127.0.0.1:5173")
+@CrossOrigin("*")
+@RequestMapping("/externalURL")
 public class ExternalURLController {
 
     @Autowired
@@ -24,6 +26,20 @@ public class ExternalURLController {
     public ResponseEntity<?> addExternalURL(@RequestBody ExternalURL_DTO externalURLDto) throws IOException {
 
         ApiResponse<?> apiResponse=externalURLServiceInter.add(externalURLDto);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getExternalURL() throws IOException {
+
+        ApiResponse<?> apiResponse=externalURLServiceInter.get();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateExternalURL(@RequestBody ExternalURL_DTO externalURLDto) throws IOException {
+
+        ApiResponse<?> apiResponse=externalURLServiceInter.update(externalURLDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
