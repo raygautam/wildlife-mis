@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @RequestMapping("/admin")
 @RestController
+@CrossOrigin("*")
 public class RoleController {
 
     @Autowired
