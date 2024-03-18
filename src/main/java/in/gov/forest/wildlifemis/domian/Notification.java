@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -34,7 +35,10 @@ public class Notification {
     //or @CreationTimestamp (provided by Hibernate)
 //    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    private LocalDateTime createdDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime publishedDate;
 
     private Boolean isActive;
 

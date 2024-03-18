@@ -21,15 +21,15 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
     @Override
     public ApiResponse<?> add(NotificationTypeDTO notificationTypeDTO) {
         try{
+            notificationTypeRepository.save(
+                    NotificationType.builder()
+                            .name(notificationTypeDTO.getName())
+                            .build()
+            );
           return ApiResponse.builder()
                   .status(HttpStatus.CREATED.value())
                   .data(
-                          notificationTypeRepository.save(
-                                  NotificationType.builder()
-                                          .name(notificationTypeDTO.getName())
-                                          .build()
-//                                  NotificationTypeMapper.convertDTOToNotificationType(notificationTypeDTO)
-                          )
+                          "Data Inserted Successfully"
                   ).build();
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to save notificationType", new Error("",e.getMessage()));

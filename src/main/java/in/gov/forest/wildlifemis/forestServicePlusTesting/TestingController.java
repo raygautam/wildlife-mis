@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/public")
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class TestingController {
 
 
@@ -30,8 +30,12 @@ public class TestingController {
 
     @GetMapping("/getDistrictWiseApplicationCount")
     public List<?> getDistrictWiseApplicationCount() throws JsonProcessingException {
-        String sql = "SELECT district_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd " +
-                "Inner join districts d on d.district_code=ffd.district_code " +
+//        String sql = "SELECT district_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd " +
+//                "Inner join districts d on d.district_code=ffd.district_code " +
+//                "GROUP BY district_name";
+
+        String sql = "SELECT district_name, COALESCE(count(fish_farmer_id)) as application_count FROM districts d\n" +
+                "Left join fish_farmer_details ffd  on ffd.district_code=d.district_code\n" +
                 "GROUP BY district_name";
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
@@ -42,9 +46,13 @@ public class TestingController {
 
     @GetMapping("/getDivisionWiseApplicationCount")
     public Object getDivisionWiseApplicationCount() throws JsonProcessingException {
-        String sql = "SELECT d.name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
-                "Inner join division d on d.id=ffd.division_id\n" +
-                "GROUP BY d.name";
+//        String sql = "SELECT d.name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
+//                "Inner join division d on d.id=ffd.division_id\n" +
+//                "GROUP BY d.name";
+        String sql = "SELECT d.name, COALESCE(count(fish_farmer_id), 0) as application_count FROM division d\n" +
+                "Left join fish_farmer_details ffd on ffd.division_id=d.id\n" +
+                "GROUP BY d.name\n" +
+                "Order By d.name";
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
@@ -52,9 +60,16 @@ public class TestingController {
     }
     @GetMapping("/getRangeWiseApplicationCount")
     public Object getRangeWiseApplicationCount() throws JsonProcessingException {
-        String sql = "SELECT d.range_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
-                "Inner join range d on d.range_id=ffd.range_id\n" +
-                "GROUP BY d.range_name";
+//        String sql = "SELECT d.range_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
+//                "Inner join range d on d.range_id=ffd.range_id\n" +
+//                "GROUP BY d.range_name";
+
+        String sql="SELECT d.range_name, COALESCE(count(ffd.range_id), 0) as application_count\n" +
+                "FROM range d\n" +
+                "LEFT JOIN fish_farmer_details ffd on ffd.range_id=d.range_id\n" +
+                "GROUP BY d.range_name, d.range_id\n" +
+                "ORDER BY d.range_name";
+
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper

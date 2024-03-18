@@ -79,6 +79,11 @@ public class NotificationController {
         }
 
         if(notificationRequestDTO!=null){
+//            if(notificationRequestDTO.has("CreatedOn")) {
+//                Timestamp stamp = new Timestamp(store.getLong("CreatedOn"));
+//                Date date = new Date(stamp.getTime());
+//                System.out.println(date);
+//            }
             ApiResponse<?> apiResponse = notificationServiceInter.save(
                     file , notificationRequestDTO);
             return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -149,33 +154,33 @@ public class NotificationController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/getAllNotificationByCreatedDateGreaterThanNow")
-    public ResponseEntity<?> getAllNotificationByCreatedDateGreaterThanNow(){
-
-        Duration duration = Duration.ofDays(2);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                notificationRepository.findAll().stream()
-                        .filter(notification -> notification
-                                .getCreatedDate()
-                                .toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime()
-                                .plus(Duration.ofDays(15))
-                                .isBefore(LocalDateTime.now())
-                                && notification.getIsActive()==Boolean.TRUE
-                        )
-                        .map(
-                                notification -> {
-                                    notification.setIsArchive(Boolean.TRUE);
-                                    notification.setIsActive(Boolean.FALSE);
-                                    notificationRepository.save(notification);
-                                    return null;
-                                }
-                        )
-                );
-//        ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-    }
+//    @GetMapping("/getAllNotificationByCreatedDateGreaterThanNow")
+//    public ResponseEntity<?> getAllNotificationByCreatedDateGreaterThanNow(){
+//
+//        Duration duration = Duration.ofDays(2);
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                notificationRepository.findAll().stream()
+//                        .filter(notification -> notification
+//                                .getCreatedDate()
+//                                .toInstant()
+//                                .atZone(ZoneId.systemDefault())
+//                                .toLocalDateTime()
+//                                .plus(Duration.ofDays(15))
+//                                .isBefore(LocalDateTime.now())
+//                                && notification.getIsActive()==Boolean.TRUE
+//                        )
+//                        .map(
+//                                notification -> {
+//                                    notification.setIsArchive(Boolean.TRUE);
+//                                    notification.setIsActive(Boolean.FALSE);
+//                                    notificationRepository.save(notification);
+//                                    return null;
+//                                }
+//                        )
+//                );
+////        ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
+////        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//    }
 
 
 

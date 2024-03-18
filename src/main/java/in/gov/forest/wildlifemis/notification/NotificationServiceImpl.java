@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
 
                     )
                     .fileUrl(String.valueOf(destFile))
-                    .createdDate(new Date())
+                    .createdDate(LocalDateTime.now())
                     .isActive(Boolean.TRUE)
                     .isArchive(Boolean.FALSE)
                     .build();
@@ -384,9 +384,6 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         return notificationRepository.findAll().stream()
                 .filter(notification -> notification
                         .getCreatedDate()
-                        .toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime()
                         .plus(Duration.ofDays(15))
                         .isBefore(LocalDateTime.now())
                         && notification.getIsActive()==Boolean.TRUE
