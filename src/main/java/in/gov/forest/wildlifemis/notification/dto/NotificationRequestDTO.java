@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 public class NotificationRequestDTO {
     private Long notificationTypeId;
     private String title;
-    private String publishedDate;
+//    private String publishedDate;
 }

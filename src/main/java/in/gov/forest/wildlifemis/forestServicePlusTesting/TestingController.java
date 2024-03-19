@@ -107,4 +107,275 @@ public class TestingController {
         // Convert the result to YourObject using ObjectMapper
         return jdbcTemplate.queryForList(sql);
     }
+
+
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheDistricts")
+    public Object getApplicationsCountForAllMonthForAllTheDistrict() throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.district_name AS DistrictName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT district_name FROM districts) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.district_name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         districts d ON a.district_code = d.district_code\n" +
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.district_name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.district_name = counts.district_name\n" +
+                "GROUP BY \n" +
+                "    d.district_name\n" +
+                "ORDER BY \n" +
+                "    d.district_name;";
+
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+
+
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisions")
+    public Object getApplicationsCountForAllMonthForAllTheDivisions() throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.name AS DivisionName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT name FROM division) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         division d ON  d.id= a.division_id\n" +
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.name = counts.name\n" +
+                "GROUP BY \n" +
+                "    d.name\n" +
+                "ORDER BY \n" +
+                "    d.name;";
+
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheRanges")
+    public Object getApplicationsCountForAllMonthForAllTheRanges() throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.range_name AS RangeName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT range_name FROM range) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.range_name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         range d ON  d.range_id= a.range_id\n" +
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.range_name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.range_name = counts.range_name\n" +
+                "GROUP BY \n" +
+                "    d.range_name\n" +
+                "ORDER BY \n" +
+                "    d.range_name;";
+
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheDistrictsYearWise/{year}")
+    public Object getApplicationsCountForAllMonthForAllTheDistrictsYearWise(@PathVariable Integer year) throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.district_name AS DistrictName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT district_name FROM districts) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.district_name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         districts d ON a.district_code = d.district_code\n" +
+                "     WHERE \n" +
+                "         EXTRACT(year FROM a.created_at) = "+year+"\n" +
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.district_name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.district_name = counts.district_name\n" +
+                "GROUP BY \n" +
+                "    d.district_name\n" +
+                "ORDER BY \n" +
+                "    d.district_name;";
+
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisionsYearWise/{year}")
+    public Object getApplicationsCountForAllMonthForAllTheDivisionsYearWise(@PathVariable Integer year) throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.name AS DivisionName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT name FROM division) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         division d ON  d.id= a.division_id\n" +
+                "WHERE \n" +
+                "         EXTRACT(year FROM a.created_at) = "+year+"\n"+
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.name = counts.name\n" +
+                "GROUP BY \n" +
+                "    d.name\n" +
+                "ORDER BY \n" +
+                "    d.name;";
+
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @GetMapping("/getApplicationsCountForAllMonthForAllTheRangesYearWise/{year}")
+    public Object getApplicationsCountForAllMonthForAllTheRangesYearWise(@PathVariable Integer year) throws JsonProcessingException {
+        String sql = "SELECT \n" +
+                "    d.range_name AS RangeName,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "FROM \n" +
+                "    (SELECT DISTINCT range_name FROM range) d\n" +
+                "CROSS JOIN \n" +
+                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "LEFT JOIN \n" +
+                "    (SELECT \n" +
+                "         EXTRACT(month FROM a.created_at) AS month,\n" +
+                "         d.range_name,\n" +
+                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "     FROM \n" +
+                "         fish_farmer_details a\n" +
+                "     JOIN \n" +
+                "         range d ON  d.range_id= a.range_id\n" +
+                "     WHERE \n" +
+                "         EXTRACT(year FROM a.created_at) = "+year+"\n" +
+                "     GROUP BY \n" +
+                "         EXTRACT(month FROM a.created_at), d.range_name) AS counts \n" +
+                "ON \n" +
+                "    calendar.month = counts.month AND d.range_name = counts.range_name\n" +
+                "GROUP BY \n" +
+                "    d.range_name\n" +
+                "ORDER BY \n" +
+                "    d.range_name;";
+        // Retrieve the result of the SQL query
+//        ObjectMapper objectMapper=new ObjectMapper();
+        // Convert the result to YourObject using ObjectMapper
+        return jdbcTemplate.queryForList(sql);
+    }
+
 }

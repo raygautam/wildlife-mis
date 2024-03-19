@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -213,7 +214,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             return GetNotificationDetailsDTO.builder()
                                                     .id(notification.getId())
                                                     .title(notification.getTitle())
-                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                    .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                                     .notificationTypeName(notification.getNotificationType().getName())
                                                     .isActive(notification.getIsActive())
                                                     .isArchive(notification.getIsArchive())
@@ -238,7 +239,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             return GetNotificationDetailsDTO.builder()
                                                     .id(notification.getId())
                                                     .title(notification.getTitle())
-                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                    .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                                     .notificationTypeName(notification.getNotificationType().getName())
                                                     .isActive(notification.getIsActive())
                                                     .isArchive(notification.getIsArchive())
@@ -338,7 +339,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                 return GetNotificationDetailsDTO.builder()
                                                         .id(notification.getId())
                                                         .title(notification.getTitle())
-                                                        .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                        .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                                         .notificationTypeName(notification.getNotificationType().getName())
                                                         .isActive(notification.getIsActive())
                                                         .isArchive(notification.getIsArchive())
@@ -365,7 +366,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                  return GetNotificationDetailsDTO.builder()
                                                          .id(notification.getId())
                                                          .title(notification.getTitle())
-                                                         .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(notification.getCreatedDate()))
+                                                         .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                                          .notificationTypeName(notification.getNotificationType().getName())
                                                          .isActive(notification.getIsActive())
                                                          .isArchive(notification.getIsArchive())
