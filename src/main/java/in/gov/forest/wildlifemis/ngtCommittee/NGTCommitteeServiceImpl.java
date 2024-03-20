@@ -1,25 +1,23 @@
-package in.gov.forest.wildlifemis.document;
+package in.gov.forest.wildlifemis.ngtCommittee;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.document.DocumentRepository;
 import in.gov.forest.wildlifemis.document.dto.DocumentRequestDTO;
-import in.gov.forest.wildlifemis.document.dto.GetDocumentDetails;
 import in.gov.forest.wildlifemis.document.dto.GetDocumentDetailsDTO;
-import in.gov.forest.wildlifemis.domian.Document;
-import in.gov.forest.wildlifemis.domian.DocumentType;
-import in.gov.forest.wildlifemis.exception.*;
-import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.documentType.DocumentTypeRepository;
-import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetailsDTO;
+import in.gov.forest.wildlifemis.domian.Document;
+import in.gov.forest.wildlifemis.domian.NGTCommittee;
+import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.exception.*;
+import in.gov.forest.wildlifemis.ngtCommittee.dto.GetNGTCommitteeDTO;
+import in.gov.forest.wildlifemis.ngtCommittee.dto.NGTCommitteeDTO;
+import in.gov.forest.wildlifemis.ngtCommitteeType.NGTCommitteeTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,31 +31,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class DocumentServiceImpl implements DocumentServiceInter{
+public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
 
     @Autowired
-    DocumentRepository documentRepository;
+    NGTCommitteeRepository ngtCommitteeRepository;
 
     @Autowired
-    DocumentTypeRepository typeOfDocumentRepository;
+    NGTCommitteeTypeRepository ngtCommitteeTypeRepository;
 
-    @Value("${fileUploadDirectoryForDocument}")
+    @Value("${fileUploadDirectoryForNGTCommittee}")
     String fileUploadDirectory;
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> save(MultipartFile file, DocumentRequestDTO documentRequestDTO) {
+    public ApiResponse<?> save(MultipartFile file, NGTCommitteeDTO ngtCommitteeDTO) {
 //        DocumentType documentType=
         File URL= new File(fileUploadDirectory);
         if(!Objects.equals(file.getContentType(), "application/pdf")){
@@ -74,12 +69,16 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     .build();
         }
 
-        if(documentRequestDTO.getDocumentTypeId()==null){
-            throw new BadRequestException("", new Error("documentTypeId","field is required"));
+        if(ngtCommitteeDTO.ngtCommitteeTypeId()==null){
+            throw new BadRequestException("", new Error("ngtCommitteeTypeId","field is required"));
         }
 
-        if( documentRequestDTO.getTitle()==null || Objects.equals(documentRequestDTO.getTitle(), "")){
+        if( ngtCommitteeDTO.title()==null || Objects.equals(ngtCommitteeDTO.title(), "")){
             throw new BadRequestException("", new Error("title","field is required"));
+        }
+
+        if( ngtCommitteeDTO.publishedDate()==null){
+            throw new BadRequestException("", new Error("publishedDate","field is required"));
         }
 
         if (!URL.exists()) {
@@ -101,11 +100,12 @@ public class DocumentServiceImpl implements DocumentServiceInter{
         File destFile = new File(URL + File.separator + randomName);
 
         try {
-            Document document=Document.builder()
-                    .title(documentRequestDTO.getTitle())
+            LocalDateTime publishedDate = LocalDateTime.parse(ngtCommitteeDTO.publishedDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            NGTCommittee ngtCommittee=NGTCommittee.builder()
+                    .title(ngtCommitteeDTO.title())
                     .fileName(randomName)
-                    .documentType(
-                            typeOfDocumentRepository.findById(documentRequestDTO.getDocumentTypeId())
+                    .ngtCommitteeType(
+                            ngtCommitteeTypeRepository.findById(ngtCommitteeDTO.ngtCommitteeTypeId())
                                     .orElseThrow(
                                             ()->new NotFoundException(
                                                     "Id is not present!",
@@ -118,13 +118,14 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(LocalDateTime.now())
+                    .publishedDate(publishedDate)
                     .isActive(Boolean.TRUE)
                     .build();
 
             file.transferTo(destFile);
 
             try {
-                documentRepository.save(document);
+                ngtCommitteeRepository.save(ngtCommittee);
                 return ApiResponse.builder()
                         .status(HttpStatus.CREATED.value())
                         .data(
@@ -151,22 +152,23 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> getDocument(Long documentTypeId) {
+    public ApiResponse<?> getNGTCommittee(Long ngtCommitteeTypeId) {
         try {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findByDocumentTypeIdAndIsActiveOrderByCreatedDateDesc(documentTypeId, Boolean.TRUE)
+                            ngtCommitteeRepository.findByNgtCommitteeTypeIdAndIsActiveOrderByCreatedDateDesc(ngtCommitteeTypeId, Boolean.TRUE)
                                     .stream()
                                     .map(
-                                            document ->{
-                                                return GetDocumentDetailsDTO.builder()
-                                                        .id(document.getId())
-                                                        .title(document.getTitle())
-                                                        .createdDate(document.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                                                        .documentTypeName(document.getDocumentType().getName())
-                                                        .isActive(document.getIsActive())
-                                                        .build();
+                                            ngtCommittee ->{
+                                                return new GetNGTCommitteeDTO(
+                                                        ngtCommittee.getId(),//id
+                                                        ngtCommittee.getTitle(),//title
+                                                        ngtCommittee.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), //created date,
+                                                        ngtCommittee.getNgtCommitteeType().getName(),//ngtCommitteeTypeName
+                                                        ngtCommittee.getIsActive(),//isActive
+                                                        ngtCommittee.getPublishedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) //publishedDate
+                                                );
                                             }
                                     )
                     ).build();
@@ -176,36 +178,24 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> getAllDocument() {
+    public ApiResponse<?> getAllNGTCommittee() {
         try {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            documentRepository.findByIsActiveOrderByCreatedDateDesc(Boolean.TRUE)
+                            ngtCommitteeRepository.findByIsActiveOrderByCreatedDateDesc(Boolean.TRUE)
                                     .stream()
-                                    .map(document -> {
-                                            return GetDocumentDetailsDTO.builder()
-                                                    .id(document.getId())
-                                                    .title(document.getTitle())
-                                                    .createdDate(document.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
-                                                    .documentTypeName(document.getDocumentType().getName())
-                                                    .isActive(document.getIsActive())
-                                                    .build();
+                                    .map(ngtCommittee -> {
+                                            return new GetNGTCommitteeDTO(
+                                                    ngtCommittee.getId(),//id
+                                                    ngtCommittee.getTitle(),//title
+                                                    ngtCommittee.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), //created date,
+                                                    ngtCommittee.getNgtCommitteeType().getName(),//ngtCommitteeTypeName
+                                                    ngtCommittee.getIsActive(),//isActive
+                                                    ngtCommittee.getPublishedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) //publishedDate
+                                            );
                                         }
                                     )
-
-//                            documentRepository.findAll(Sort.by("createdDate").descending())
-//                                    .stream()
-//                                    .map(document -> {
-//                                            return GetDocumentDetailsDTO.builder()
-//                                                    .id(document.getId())
-//                                                    .title(document.getTitle())
-//                                                    .createdDate(new SimpleDateFormat("dd-MM-yyyy").format(document.getCreatedDate()))
-//                                                    .documentTypeName(document.getDocumentType().getName())
-//                                                    .isActive(document.getIsActive())
-//                                                    .build();
-//                                        }
-//                                    )
                     ).build();
         } catch (DataRetrievalException e) {
             throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
@@ -213,16 +203,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
     }
 
     @Override
-    public ApiResponse<?> deleteDocument(Long documentId) {
-//        try {
-//            return ApiResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .data(
-//                            documentRepository.deleteByTypeOfDocumentId(documentId, Boolean.FALSE)
-//                    ).build();
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
-//        }
+    public ApiResponse<?> deleteDocument(Long ngtCommitteeId) {
 
         try{
             return ApiResponse
@@ -230,29 +211,29 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                     .status(HttpStatus.OK.value())
                     .data(
                             //Java 8 provides several benefits over updating a field using SQL, including type safety, code re-usability, error handling, and code complexity.
-                            documentRepository.findById(documentId)
+                            ngtCommitteeRepository.findById(ngtCommitteeId)
                                     .stream()
                                     .map(
-                                            document -> {
-                                                document.setIsActive(Boolean.FALSE);
-                                                documentRepository.save(document);
+                                            ngtCommittee -> {
+                                                ngtCommittee.setIsActive(Boolean.FALSE);
+                                                ngtCommitteeRepository.save(ngtCommittee);
                                                 return  "Deleted Successfully";
 
                                             }
                                     )
                                     .findFirst()
-                                    .orElseThrow(()->new NotFoundException("Document Id  not found", new Error("","Document Id not found")))
+                                    .orElseThrow(()->new NotFoundException("Not found", new Error("","Not found")))
 
                     )
                     .build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to delete Document", new Error("",e.getMessage()));
+            throw new DataInsertionException("Failed to delete Data", new Error("",e.getMessage()));
         }
     }
 
     @Override
     public ResponseEntity<?> download(Long id) throws IOException {
-        Document document = documentRepository.findById(id)
+        NGTCommittee document = ngtCommitteeRepository.findById(id)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("File not found with id: " + id, new Error("","File not found with id: " + id))
                 );
