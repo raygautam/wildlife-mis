@@ -31,8 +31,8 @@ public class NGTCommittee {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime publishedDate;
+    @Temporal(TemporalType.DATE)
+    private Date publishedDate;
 
     private Boolean isActive;
 

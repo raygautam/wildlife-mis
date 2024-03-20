@@ -100,7 +100,9 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
         File destFile = new File(URL + File.separator + randomName);
 
         try {
-            LocalDateTime publishedDate = LocalDateTime.parse(ngtCommitteeDTO.publishedDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//            LocalDateTime dateTime = LocalDateTime.parse(ngtCommitteeDTO.publishedDate(), formatter);
+
             NGTCommittee ngtCommittee=NGTCommittee.builder()
                     .title(ngtCommitteeDTO.title())
                     .fileName(randomName)
@@ -118,7 +120,7 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
                     )
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(LocalDateTime.now())
-                    .publishedDate(publishedDate)
+                    .publishedDate(new SimpleDateFormat("dd-MM-yyyy").parse(ngtCommitteeDTO.publishedDate()))
                     .isActive(Boolean.TRUE)
                     .build();
 
@@ -167,7 +169,7 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
                                                         ngtCommittee.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), //created date,
                                                         ngtCommittee.getNgtCommitteeType().getName(),//ngtCommitteeTypeName
                                                         ngtCommittee.getIsActive(),//isActive
-                                                        ngtCommittee.getPublishedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) //publishedDate
+                                                        new SimpleDateFormat("dd-MM-yyyy").format(ngtCommittee.getPublishedDate()) //publishedDate
                                                 );
                                             }
                                     )
@@ -192,7 +194,7 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
                                                     ngtCommittee.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")), //created date,
                                                     ngtCommittee.getNgtCommitteeType().getName(),//ngtCommitteeTypeName
                                                     ngtCommittee.getIsActive(),//isActive
-                                                    ngtCommittee.getPublishedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) //publishedDate
+                                                    new SimpleDateFormat("dd-MM-yyyy").format(ngtCommittee.getPublishedDate()) //publishedDate
                                             );
                                         }
                                     )
@@ -203,7 +205,7 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
     }
 
     @Override
-    public ApiResponse<?> deleteDocument(Long ngtCommitteeId) {
+    public ApiResponse<?> deleteNGTCommittee(Long ngtCommitteeId) {
 
         try{
             return ApiResponse

@@ -76,13 +76,13 @@ public class NGTCommitteeController {
     /**
      * Deletes a document based on the given document ID.
      *
-     * @param documentId the ID of the document to be deleted
+     * @param ngtCommitteeId the ID of the document to be deleted
      * @return an API response indicating the status of the operation
      * on delete operation changing isActive status to false.
      **/
-    @DeleteMapping("/delete/{documentId}")
-    public ResponseEntity<?> deleteDocument(@PathVariable Long documentId) {
-        ApiResponse<?> apiResponse = ngtCommitteeServiceInter.deleteDocument(documentId);
+    @DeleteMapping("/delete/{ngtCommitteeId}")
+    public ResponseEntity<?> deleteNGTCommittee(@PathVariable Long ngtCommitteeId) {
+        ApiResponse<?> apiResponse = ngtCommitteeServiceInter.deleteNGTCommittee(ngtCommitteeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 

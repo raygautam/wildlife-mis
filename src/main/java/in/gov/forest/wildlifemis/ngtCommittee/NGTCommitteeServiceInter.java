@@ -11,11 +11,11 @@ import java.io.IOException;
 public interface NGTCommitteeServiceInter {
     ApiResponse<?> save(MultipartFile file, NGTCommitteeDTO ngtCommitteeDTO);
 
-    ApiResponse<?> deleteDocument(Long documentTypeId);
-
     ResponseEntity<?> download(Long id) throws IOException;
 
     ApiResponse<?> getAllNGTCommittee();
 
     ApiResponse<?> getNGTCommittee(Long ngtCommitteeTypeId);
+
+    ApiResponse<?> deleteNGTCommittee(Long ngtCommitteeId);
 }
