@@ -1,7 +1,9 @@
 package in.gov.forest.wildlifemis.servicePlus.getServicePlusStatus;
 
 
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.common.MessageByLocale;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,8 +30,8 @@ public class ServicePlusStatusController {
     @Autowired
     private MessageByLocale messageByLocale;
 
-//    @Autowired
-//    private ServicePlusStatusService servicePlusStatusService;
+    @Autowired
+    private ServicePlusStatusService servicePlusStatusService;
 
 
 
@@ -106,13 +108,13 @@ public class ServicePlusStatusController {
     }
 
 
-//    @GetMapping("/public/servicePlus/district/data/{districtCode}")
-//    public ResponseEntity<ApiResponse> getAllDistrictWiseDetail(@PathVariable(value = "districtCode",required = true) Integer districtCode ) throws JSONException {
-//
-//        ApiResponse apiResponse = servicePlusStatusService.getDistrictWiseStatusOfApplication(districtCode);
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//
-//
-//    }
+    @GetMapping("servicePlus/district/data/{districtCode}")
+    public ResponseEntity<ApiResponse<?>> getAllDistrictWiseDetail(@PathVariable(value = "districtCode",required = true) Integer districtCode ) throws JSONException, JSONException {
+
+        ApiResponse<?> apiResponse = servicePlusStatusService.getDistrictWiseStatusOfApplication(districtCode);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+
+    }
 
 }

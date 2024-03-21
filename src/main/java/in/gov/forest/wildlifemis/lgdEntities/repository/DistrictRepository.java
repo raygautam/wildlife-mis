@@ -22,4 +22,6 @@ public interface DistrictRepository extends JpaRepository<District,Long> {
     @Query("SELECT NEW in.gov.forest.wildlifemis.lgdEntities.dtos.responseDTO.NumberOfDistrictDTO(COUNT(d.state), d.districtCode, d.districtName) FROM District d JOIN d.state s " +
             "GROUP BY d.state")
     List<NumberOfDistrictDTO> findTotalNumberOfDistrict();
+
+    District findByDistrictCode(Integer districtCode);
 }
