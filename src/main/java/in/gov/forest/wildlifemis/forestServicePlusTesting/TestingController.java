@@ -112,38 +112,39 @@ public class TestingController {
     @GetMapping("/getApplicationsCountForAllMonthForAllTheDistricts")
     public Object getApplicationsCountForAllMonthForAllTheDistrict() throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.district_name AS DistrictName,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "    COALESCE(d.district_name, 'Total') AS DistrictName,\n" +
+                "    SUM(CASE WHEN calendar.month = 1 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS January,\n" +
+                "    SUM(CASE WHEN calendar.month = 2 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS February,\n" +
+                "    SUM(CASE WHEN calendar.month = 3 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS March,\n" +
+                "    SUM(CASE WHEN calendar.month = 4 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS April,\n" +
+                "    SUM(CASE WHEN calendar.month = 5 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS May,\n" +
+                "    SUM(CASE WHEN calendar.month = 6 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS June,\n" +
+                "    SUM(CASE WHEN calendar.month = 7 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS July,\n" +
+                "    SUM(CASE WHEN calendar.month = 8 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS August,\n" +
+                "    SUM(CASE WHEN calendar.month = 9 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS September,\n" +
+                "    SUM(CASE WHEN calendar.month = 10 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS October,\n" +
+                "    SUM(CASE WHEN calendar.month = 11 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS November,\n" +
+                "    SUM(CASE WHEN calendar.month = 12 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS December,\n" +
+                "    SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
                 "    (SELECT DISTINCT district_name FROM districts) d\n" +
                 "CROSS JOIN \n" +
                 "    (SELECT generate_series(1, 12) AS month) calendar\n" +
                 "LEFT JOIN \n" +
                 "    (SELECT \n" +
-                "         EXTRACT(month FROM a.created_at) AS month,\n" +
-                "         d.district_name,\n" +
-                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                "        EXTRACT(month FROM a.created_at) AS month,\n" +
+                "        d.district_name,\n" +
+                "        COUNT(a.fish_farmer_id) AS Application_Count\n" +
                 "     FROM \n" +
-                "         fish_farmer_details a\n" +
+                "        fish_farmer_details a\n" +
                 "     JOIN \n" +
-                "         districts d ON a.district_code = d.district_code\n" +
+                "        districts d ON a.district_code = d.district_code\n" +
                 "     GROUP BY \n" +
-                "         EXTRACT(month FROM a.created_at), d.district_name) AS counts \n" +
+                "        EXTRACT(month FROM a.created_at), d.district_name) AS counts \n" +
                 "ON \n" +
                 "    calendar.month = counts.month AND d.district_name = counts.district_name\n" +
                 "GROUP BY \n" +
-                "    d.district_name\n" +
+                "    ROLLUP(d.district_name)\n" +
                 "ORDER BY \n" +
                 "    d.district_name;";
 
@@ -157,40 +158,41 @@ public class TestingController {
     @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisions")
     public Object getApplicationsCountForAllMonthForAllTheDivisions() throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.name AS DivisionName,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "\tCOALESCE(d.name, 'Total') AS DivisionName,\n" +
+                "    SUM(CASE WHEN calendar.month = 1 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS January,\n" +
+                "    SUM(CASE WHEN calendar.month = 2 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS February,\n" +
+                "    SUM(CASE WHEN calendar.month = 3 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS March,\n" +
+                "    SUM(CASE WHEN calendar.month = 4 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS April,\n" +
+                "    SUM(CASE WHEN calendar.month = 5 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS May,\n" +
+                "    SUM(CASE WHEN calendar.month = 6 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS June,\n" +
+                "    SUM(CASE WHEN calendar.month = 7 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS July,\n" +
+                "    SUM(CASE WHEN calendar.month = 8 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS August,\n" +
+                "    SUM(CASE WHEN calendar.month = 9 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS September,\n" +
+                "    SUM(CASE WHEN calendar.month = 10 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS October,\n" +
+                "    SUM(CASE WHEN calendar.month = 11 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS November,\n" +
+                "    SUM(CASE WHEN calendar.month = 12 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS December,\n" +
+                "    SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
-                "    (SELECT DISTINCT name FROM division) d\n" +
+                "(SELECT DISTINCT name FROM division) d\n" +
                 "CROSS JOIN \n" +
-                "    (SELECT generate_series(1, 12) AS month) calendar\n" +
+                "(SELECT generate_series(1, 12) AS month) calendar\n" +
                 "LEFT JOIN \n" +
-                "    (SELECT \n" +
-                "         EXTRACT(month FROM a.created_at) AS month,\n" +
-                "         d.name,\n" +
-                "         COUNT(a.fish_farmer_id) AS Application_Count\n" +
-                "     FROM \n" +
-                "         fish_farmer_details a\n" +
-                "     JOIN \n" +
-                "         division d ON  d.id= a.division_id\n" +
-                "     GROUP BY \n" +
-                "         EXTRACT(month FROM a.created_at), d.name) AS counts \n" +
-                "ON \n" +
-                "    calendar.month = counts.month AND d.name = counts.name\n" +
-                "GROUP BY \n" +
-                "    d.name\n" +
-                "ORDER BY \n" +
-                "    d.name;";
+                "(SELECT \n" +
+                " EXTRACT(month FROM a.created_at) AS month,\n" +
+                " d.name,\n" +
+                " COUNT(a.fish_farmer_id) AS Application_Count\n" +
+                " FROM \n" +
+                " fish_farmer_details a\n" +
+                " JOIN \n" +
+                " division d ON  d.id= a.division_id\n" +
+                " GROUP BY \n" +
+                " EXTRACT(month FROM a.created_at), d.name) AS counts \n" +
+                " ON \n" +
+                " calendar.month = counts.month AND d.name = counts.name\n" +
+                " GROUP BY \n" +
+                " ROLLUP(d.name)\n" +
+                " ORDER BY \n" +
+                " d.name;";
 
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
@@ -201,19 +203,20 @@ public class TestingController {
     @GetMapping("/getApplicationsCountForAllMonthForAllTheRanges")
     public Object getApplicationsCountForAllMonthForAllTheRanges() throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.range_name AS RangeName,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 4 THEN Application_Count END), 0) AS April,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 5 THEN Application_Count END), 0) AS May,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 6 THEN Application_Count END), 0) AS June,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 7 THEN Application_Count END), 0) AS July,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 8 THEN Application_Count END), 0) AS August,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "\tCOALESCE(d.range_name, 'Total') AS RangeName,\n" +
+                "    SUM(CASE WHEN calendar.month = 1 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS January,\n" +
+                "    SUM(CASE WHEN calendar.month = 2 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS February,\n" +
+                "    SUM(CASE WHEN calendar.month = 3 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS March,\n" +
+                "    SUM(CASE WHEN calendar.month = 4 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS April,\n" +
+                "    SUM(CASE WHEN calendar.month = 5 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS May,\n" +
+                "    SUM(CASE WHEN calendar.month = 6 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS June,\n" +
+                "    SUM(CASE WHEN calendar.month = 7 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS July,\n" +
+                "    SUM(CASE WHEN calendar.month = 8 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS August,\n" +
+                "    SUM(CASE WHEN calendar.month = 9 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS September,\n" +
+                "    SUM(CASE WHEN calendar.month = 10 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS October,\n" +
+                "    SUM(CASE WHEN calendar.month = 11 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS November,\n" +
+                "    SUM(CASE WHEN calendar.month = 12 THEN COALESCE(Application_Count, 0) ELSE 0 END) AS December,\n" +
+                "    SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
                 "    (SELECT DISTINCT range_name FROM range) d\n" +
                 "CROSS JOIN \n" +
@@ -232,7 +235,7 @@ public class TestingController {
                 "ON \n" +
                 "    calendar.month = counts.month AND d.range_name = counts.range_name\n" +
                 "GROUP BY \n" +
-                "    d.range_name\n" +
+                "    ROLLUP(d.range_name)\n" +
                 "ORDER BY \n" +
                 "    d.range_name;";
 
