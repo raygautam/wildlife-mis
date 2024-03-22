@@ -34,9 +34,9 @@ public class TestingController {
 //                "Inner join districts d on d.district_code=ffd.district_code " +
 //                "GROUP BY district_name";
 
-        String sql = "SELECT district_name, COALESCE(count(fish_farmer_id)) as application_count FROM districts d\n" +
-                "Left join fish_farmer_details ffd  on ffd.district_code=d.district_code\n" +
-                "GROUP BY district_name";
+        String sql = "SELECT d.district_code, d.district_name, COALESCE(count(fish_farmer_id)) as application_count FROM districts d\n" +
+                " Left join fish_farmer_details ffd  on ffd.district_code=d.district_code\n" +
+                " GROUP BY d.district_name, d.district_code";
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
@@ -49,9 +49,9 @@ public class TestingController {
 //        String sql = "SELECT d.name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
 //                "Inner join division d on d.id=ffd.division_id\n" +
 //                "GROUP BY d.name";
-        String sql = "SELECT d.name, COALESCE(count(fish_farmer_id), 0) as application_count FROM division d\n" +
+        String sql = "SELECT d.id, d.name, COALESCE(count(fish_farmer_id), 0) as application_count FROM division d\n" +
                 "Left join fish_farmer_details ffd on ffd.division_id=d.id\n" +
-                "GROUP BY d.name\n" +
+                "GROUP BY d.name, d.id\n" +
                 "Order By d.name";
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
@@ -64,7 +64,7 @@ public class TestingController {
 //                "Inner join range d on d.range_id=ffd.range_id\n" +
 //                "GROUP BY d.range_name";
 
-        String sql="SELECT d.range_name, COALESCE(count(ffd.range_id), 0) as application_count\n" +
+        String sql="SELECT d.range_id, d.range_name, COALESCE(count(ffd.range_id), 0) as application_count\n" +
                 "FROM range d\n" +
                 "LEFT JOIN fish_farmer_details ffd on ffd.range_id=d.range_id\n" +
                 "GROUP BY d.range_name, d.range_id\n" +
