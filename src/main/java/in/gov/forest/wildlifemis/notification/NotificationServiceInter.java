@@ -22,7 +22,7 @@ public interface NotificationServiceInter {
 
     ApiResponse<?> getArchiveNotification(Long notificationTypeId);
 
-//    ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable);
+    ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable);
 
     ApiResponse<?> deleteNotification(Long id);
 

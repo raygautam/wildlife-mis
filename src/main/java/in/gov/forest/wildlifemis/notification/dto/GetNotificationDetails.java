@@ -5,6 +5,7 @@ package in.gov.forest.wildlifemis.notification.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public interface GetNotificationDetails {
@@ -14,6 +15,8 @@ public interface GetNotificationDetails {
     String getNotificationTypeName();
 
     Boolean getIsActive();
+
+    Boolean getIsNew();
 
     Boolean getIsArchive();
 }

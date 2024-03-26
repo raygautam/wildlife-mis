@@ -124,6 +124,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(LocalDateTime.now())
                     .isActive(Boolean.TRUE)
+                    .isNew(Boolean.TRUE)
                     .isArchive(Boolean.FALSE)
                     .build();
 
@@ -217,6 +218,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                     .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
                                                     .notificationTypeName(notification.getNotificationType().getName())
                                                     .isActive(notification.getIsActive())
+                                                    .isNew(notification.getIsNew())
                                                     .isArchive(notification.getIsArchive())
                                                     .build();
                                         }
@@ -243,6 +245,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                     .notificationTypeName(notification.getNotificationType().getName())
                                                     .isActive(notification.getIsActive())
                                                     .isArchive(notification.getIsArchive())
+                                                    .isNew(notification.getIsNew())
                                                     .build();
                                         }
                                     )
@@ -252,20 +255,33 @@ public class NotificationServiceImpl implements NotificationServiceInter {
         }
     }
 
-//    @Override
-//    public ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable) {
-////        Page<Notification> notifications = notificationRepository.findByNotificationTypeId(notificationTypeId, pageable);
-//        try {
-//            return ApiResponse.builder()
-//                    .status(HttpStatus.OK.value())
-//                    .data(
-//                            notificationRepository
-//                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE, pageable)
-//                    ).build();
-//        } catch (DataRetrievalException e) {
-//            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
-//        }
-//    }
+    @Override
+    public ApiResponse<?> getArchiveNotificationByPagination(Long notificationTypeId, Pageable pageable) {
+//        Page<Notification> notifications = notificationRepository.findByNotificationTypeId(notificationTypeId, pageable);
+        try {
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            notificationRepository
+                                    .findByNotificationTypeIdAndIsArchiveOrderByCreatedDateDesc(notificationTypeId, Boolean.TRUE, pageable)
+                                    .map(notification->
+                                            {
+                                                return GetNotificationDetailsDTO.builder()
+                                                        .id(notification.getId())
+                                                        .title(notification.getTitle())
+                                                        .createdDate(notification.getCreatedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                                                        .notificationTypeName(notification.getNotificationType().getName())
+                                                        .isActive(notification.getIsActive())
+                                                        .isArchive(notification.getIsArchive())
+                                                        .isNew(notification.getIsNew())
+                                                        .build();
+                                            }
+                                    )
+                    ).build();
+        } catch (DataRetrievalException e) {
+            throw new DataRetrievalException("Fail to Retrieve Data", new Error("",e.getMessage()));
+        }
+    }
 
     @Override
     public ApiResponse<?> deleteNotification(Long id) {
@@ -343,6 +359,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                         .notificationTypeName(notification.getNotificationType().getName())
                                                         .isActive(notification.getIsActive())
                                                         .isArchive(notification.getIsArchive())
+                                                        .isNew(notification.getIsNew())
                                                         .build();
                                             }
                                     )
@@ -370,6 +387,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                          .notificationTypeName(notification.getNotificationType().getName())
                                                          .isActive(notification.getIsActive())
                                                          .isArchive(notification.getIsArchive())
+                                                         .isNew(notification.getIsNew())
                                                          .build();
                                              }
                                     )
@@ -388,11 +406,11 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                         .plus(Duration.ofDays(15))
                         .isBefore(LocalDateTime.now())
                         && notification.getIsActive()==Boolean.TRUE
+                        && notification.getIsNew()==Boolean.TRUE
                 )
                 .map(
                         notification -> {
-                            notification.setIsArchive(Boolean.TRUE);
-                            notification.setIsActive(Boolean.FALSE);
+                            notification.setIsNew(Boolean.FALSE);
                             notificationRepository.save(notification);
                             return null;
                         }

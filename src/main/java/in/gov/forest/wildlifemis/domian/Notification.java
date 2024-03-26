@@ -1,12 +1,10 @@
 package in.gov.forest.wildlifemis.domian;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -14,8 +12,8 @@ import java.util.Objects;
 @Setter
 @ToString
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_gen")
@@ -41,6 +39,8 @@ public class Notification {
     private LocalDateTime publishedDate;
 
     private Boolean isActive;
+
+    private Boolean isNew;
 
     private Boolean isArchive;
 

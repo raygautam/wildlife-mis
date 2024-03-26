@@ -12,5 +12,6 @@ public class GetNotificationDetailsDTO {
 //    private String publishedDate;
     private String notificationTypeName;
     private boolean isActive;
+    private boolean isNew;
     private boolean isArchive;
 }

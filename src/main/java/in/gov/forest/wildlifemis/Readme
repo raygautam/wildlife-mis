@@ -1,0 +1,4 @@
+1. State, Districts, SubDistrict, Block, village, Division, Ranges, OperatedBlock
+Entity are present inside the src/main/java/in/gov/forest/wildlifemis/lgdEntities/entities and
+other entities inside the domain folder and other resource of all entities will be inside there
+particular folder with similar name as entity.

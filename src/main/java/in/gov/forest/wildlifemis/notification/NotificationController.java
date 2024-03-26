@@ -8,6 +8,9 @@ import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JsonProcessingCustomException;
 import in.gov.forest.wildlifemis.notification.dto.GetNotificationDetailsDTO;
 import in.gov.forest.wildlifemis.notification.dto.NotificationRequestDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,11 @@ public class NotificationController {
 
     @Autowired
     NotificationRepository notificationRepository;
+
+
+
+
+
 
         /**
      * API to add a new notification.
@@ -96,6 +104,15 @@ public class NotificationController {
      * API to get all notifications using the specified notificationTypeId and if the isActive is true
      * @PathVariable Long notificationTypeId
      **/
+//    @Operation(summary = "This is to fetch All the Books stored in Db")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200",
+//                    description = "Fetched All the Books form Db",
+//                    content = {@Content(mediaType = "application/json")}),
+//            @ApiResponse(responseCode = "404",
+//                    description = "NOt Available",
+//                    content = @Content)
+//    })
     @GetMapping("/getActiveNotification/{notificationTypeId}")
     public ResponseEntity<?> getActiveNotification(@PathVariable Long notificationTypeId) {
         ApiResponse<?> apiResponse = notificationServiceInter.getActiveNotification(notificationTypeId);
@@ -185,16 +202,16 @@ public class NotificationController {
 
 
 
-//    @GetMapping("/getArchiveNotificationByPagination/{notificationTypeId}")
-//    public ResponseEntity<?> getArchiveNotificationByPagination(
-//            @PathVariable Long notificationTypeId,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "2") int size) {
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotificationByPagination(notificationTypeId, pageable);
-//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//    }
+    @GetMapping("/getArchiveNotificationByPagination/{notificationTypeId}")
+    public ResponseEntity<?> getArchiveNotificationByPagination(
+            @PathVariable Long notificationTypeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotificationByPagination(notificationTypeId, pageable);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 }
 
 
