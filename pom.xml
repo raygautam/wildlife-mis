@@ -161,6 +161,7 @@
 			<artifactId>android-json</artifactId>
 			<version>0.0.20131108.vaadin1</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
 <!--		<dependency>-->
 <!--			<groupId>org.springdoc</groupId>-->

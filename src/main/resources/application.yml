@@ -74,10 +74,19 @@ CoverageLocationForHACAndARWithRangeService:
       health:
         show-details: always
 
+
   spring:
     mvc:
       problemdetails:
         enabled: true
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include : health,info,beans,env, myendpoint
 
 #springdoc:
 #  api-docs:
