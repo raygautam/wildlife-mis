@@ -67,9 +67,9 @@ public class AuthenticationService {
                                         .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
                                         .username(userDetails.getUsername())
-                                        .serviceName(userDetails.getServiceName())
-                                        .rangeName(userDetails.getRangeName())
-                                        .divisionName(userDetails.getDivisionName())
+                                        .serviceId(userDetails.getServiceId())
+                                        .rangeId(userDetails.getRangeId())
+                                        .divisionId(userDetails.getDivisionId())
                                         .roles(Collections.singletonList(userDetails.getAuthorities().toString()))
                                         .build()
                         ).build();

@@ -30,22 +30,22 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private final String password;
 
-    private final String serviceName;
+    private final Long serviceId;
 
-    private final String divisionName;
+    private final Integer divisionId;
 
-    private final String rangeName;
+    private final Integer rangeId;
 //    private final String stateName;
 
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String password, String serviceName, String divisionName, String rangeName, List<GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String password, Long serviceId, Integer divisionId, Integer rangeId, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.serviceName = serviceName;
-        this.divisionName = divisionName;
-        this.rangeName = rangeName;
+        this.serviceId = serviceId;
+        this.divisionId = divisionId;
+        this.rangeId = rangeId;
         this.authorities = authorities;
     }
     @Override
@@ -57,18 +57,18 @@ public class UserDetailsImpl implements UserDetails {
     List<GrantedAuthority> authorities = userDetail_t.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-        String serviceName=userDetail_t.getService()!=null && userDetail_t.getService().getServiceName() != null ? userDetail_t.getService().getServiceName() : "";
-        String divisionName= userDetail_t.getDivision()!=null && userDetail_t.getDivision().getName() != null ? userDetail_t.getDivision().getName():"";
-        String rangeName=userDetail_t.getRange()!=null && userDetail_t.getRange().getRangeName() != null ? userDetail_t.getRange().getRangeName():"";
+//        String serviceName=userDetail_t.getService()!=null && userDetail_t.getService().getServiceName() != null ? userDetail_t.getService().getServiceName() : "";
+//        String divisionName= userDetail_t.getDivision()!=null && userDetail_t.getDivision().getName() != null ? userDetail_t.getDivision().getName():"";
+//        String rangeName=userDetail_t.getRange()!=null && userDetail_t.getRange().getRangeName() != null ? userDetail_t.getRange().getRangeName():"";
 
         log.info("");
         return new UserDetailsImpl(
             userDetail_t.getId(),
             userDetail_t.getUserName(),
             userDetail_t.getPassword(),
-            userDetail_t.getService()!=null ? userDetail_t.getService().getServiceName():null,
-            userDetail_t.getDivision() != null ? userDetail_t.getDivision().getName():null,
-            userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeName():null,
+            userDetail_t.getService()!=null ? userDetail_t.getService().getId() :null,
+            userDetail_t.getDivision() != null ? userDetail_t.getDivision().getId():null,
+            userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeId():null,
             authorities
         );
     }

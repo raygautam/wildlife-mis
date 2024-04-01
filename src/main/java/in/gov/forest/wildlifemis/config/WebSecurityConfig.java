@@ -102,6 +102,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                             auth
 //                                    .requestMatchers("/notification/downloadPDf/**").permitAll()
                                     .requestMatchers(
+                                            //**Add version url like /api/v1/
                                             "/**"
 //                                            "/official/**",
 //                                            "/lgd/**",

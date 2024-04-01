@@ -148,8 +148,6 @@ public class NotificationController {
     public ResponseEntity<?> getAllArchive() {
         ApiResponse<?> apiResponse = notificationServiceInter.getAllArchive();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-
-
     }
 
     /**API to get all notification presence notifications table.**/

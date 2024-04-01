@@ -88,6 +88,7 @@ management:
       exposure:
         include : health,info,beans,env, myendpoint
 
+
 #springdoc:
 #  api-docs:
 #    path: /wildlife-docs
