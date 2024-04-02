@@ -1,7 +1,7 @@
 package in.gov.forest.wildlifemis.config;//package com.wildlife.config;
 
 
-import in.gov.forest.wildlifemis.credential.authentication.CustomAuthenticationProvider;
+//import in.gov.forest.wildlifemis.credential.authentication.CustomAuthenticationProvider;
 import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImpl;
 import in.gov.forest.wildlifemis.credential.jwt.AuthEntryPointJwt;
 import in.gov.forest.wildlifemis.credential.jwt.JwtAuthenticationFilter;
@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -46,8 +47,8 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
     @Autowired
     private JwtAuthenticationFilter filter;
 
-    @Autowired
-    private CustomAuthenticationProvider authenticationProvider;
+//    @Autowired
+//    private CustomAuthenticationProvider authenticationProvider;
 
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
@@ -83,6 +84,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
         };
     }
     @Bean
+    @Primary
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }

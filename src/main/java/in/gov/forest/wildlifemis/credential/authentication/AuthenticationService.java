@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.credential.authentication;
 
+import in.gov.forest.wildlifemis.appUser.AppUserManagementRepository;
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.common.JwtResponse;
 import in.gov.forest.wildlifemis.common.LoginRequestDTO;
@@ -7,20 +8,25 @@ import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
+import in.gov.forest.wildlifemis.domian.AppUser;
+import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,24 +45,43 @@ public class AuthenticationService {
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AppUserManagementRepository userRepo;
+
+    @Autowired
+    private CustomLoginFailureHandler customLoginFailureHandler;
+
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 
-    public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        if(loginRequestDTO.getUserName()==null || loginRequestDTO.getUserName()=="" && loginRequestDTO.getPassword()==null){
 //            throw new IllegalArgumentException("username or password cannot be empty");
 //        }else{
         log.info("password {}",loginRequestDTO);
-            Authentication authentication = authenticationManager.authenticate(
+        Authentication authentication = null;
+        try {
+             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDTO.getUserName(),
-                           loginRequestDTO.getPassword()));
+                            loginRequestDTO.getPassword()));
+        }catch (BadCredentialsException e){
+            customLoginFailureHandler.onAuthenticationFailure(request,response,e);
+        }
 
-            if(authentication.isAuthenticated()){
+
+        assert authentication != null;
+        if(authentication.isAuthenticated()){
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 //                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
                 String jwt = helper.generateToken(userDetails.getUsername());
-
+                AppUser user = userRepo.findByUserNameAndIsActive(loginRequestDTO.getUserName(), Boolean.TRUE).orElseThrow(null);
+                if(!userService.unlockWhenTimeExpired(user)){
+                    throw new AccessDeniedException("Account is locked");
+                }
                return ApiResponse.builder()
                         .status(HttpStatus.OK.value())
                         .error(null)
@@ -75,6 +100,7 @@ public class AuthenticationService {
                         ).build();
             }
             else {
+//                customLoginFailureHandler.onAuthenticationFailure(request,response);
                 return ApiResponse.builder()
                         .status(HttpStatus.UNAUTHORIZED.value())
                         .error(null)

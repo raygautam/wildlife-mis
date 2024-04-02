@@ -2,6 +2,7 @@ package in.gov.forest.wildlifemis.credential.authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.gov.forest.wildlifemis.domian.AppUser;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,17 +37,26 @@ public class UserDetailsImpl implements UserDetails {
     private final Integer divisionId;
 
     private final Integer rangeId;
+
+    private Boolean accountLocked; ////default value false
+
+    private Integer failedLoginAttempts; //default value 0
+
+    private LocalDateTime lockoutTime;
 //    private final String stateName;
 
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String password, Long serviceId, Integer divisionId, Integer rangeId, List<GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String password, Long serviceId, Integer divisionId, Integer rangeId, Boolean accountLocked, Integer failedLoginAttempts, LocalDateTime lockoutTime, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.serviceId = serviceId;
         this.divisionId = divisionId;
         this.rangeId = rangeId;
+        this.accountLocked = accountLocked;
+        this.failedLoginAttempts=failedLoginAttempts;
+        this.lockoutTime=lockoutTime;
         this.authorities = authorities;
     }
     @Override
@@ -69,6 +80,9 @@ public class UserDetailsImpl implements UserDetails {
             userDetail_t.getService()!=null ? userDetail_t.getService().getId() :null,
             userDetail_t.getDivision() != null ? userDetail_t.getDivision().getId():null,
             userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeId():null,
+            userDetail_t.getAccountLocked(),
+            userDetail_t.getFailedLoginAttempts(),
+            userDetail_t.getLockoutTime(),
             authorities
         );
     }
@@ -103,4 +117,6 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

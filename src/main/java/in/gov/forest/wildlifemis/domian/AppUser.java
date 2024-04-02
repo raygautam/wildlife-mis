@@ -75,6 +75,7 @@ public class AppUser {
 //        this.setUpdatedDate(date);
 //    }
 
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
