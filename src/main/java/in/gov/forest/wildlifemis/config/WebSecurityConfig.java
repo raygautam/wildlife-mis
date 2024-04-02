@@ -1,6 +1,7 @@
 package in.gov.forest.wildlifemis.config;//package com.wildlife.config;
 
 
+import in.gov.forest.wildlifemis.credential.authentication.CustomAuthenticationProvider;
 import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImpl;
 import in.gov.forest.wildlifemis.credential.jwt.AuthEntryPointJwt;
 import in.gov.forest.wildlifemis.credential.jwt.JwtAuthenticationFilter;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,6 +46,9 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
     @Autowired
     private JwtAuthenticationFilter filter;
 
+    @Autowired
+    private CustomAuthenticationProvider authenticationProvider;
+
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 
@@ -59,6 +64,10 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
 //        this.filter = filter;
 //    }
 
+//    @Bean
+//    protected AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder auth) throws Exception {
+//        return auth.authenticationProvider(authenticationProvider);
+//    }
 
     @Bean
     public WebMvcConfigurer configure() {
@@ -120,6 +129,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
 //                                    auth.requestMatchers("/notification/download/{id}").permitAll()
                             .anyRequest().authenticated()
                 )
+
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler)
                 )
@@ -128,7 +138,7 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-                http.headers(headers ->
+        http.headers(headers ->
                 headers.xssProtection(
                         xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
                 ).contentSecurityPolicy(

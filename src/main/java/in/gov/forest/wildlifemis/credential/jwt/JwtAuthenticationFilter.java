@@ -4,7 +4,10 @@ package in.gov.forest.wildlifemis.credential.jwt;
 //import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 //import in.gov.forest.wildlifemis.exception.Error;
 //import in.gov.forest.wildlifemis.exception.JwtCustomException;
+import in.gov.forest.wildlifemis.auditTrail.AuditTrailRepository;
+import in.gov.forest.wildlifemis.auditTrail.RequestBodyCachingWrapper;
 import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImpl;
+import in.gov.forest.wildlifemis.domian.AuditTrail;
 import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JwtCustomException;
@@ -34,6 +37,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 @Component
@@ -47,8 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-//    @Autowired
-//    private AuditTrailRepository auditTrailRepository;
+    @Autowired
+    private AuditTrailRepository auditTrailRepository;
 
     private final Bucket bucket;
 
@@ -88,67 +92,67 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //    @Override
 //    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 //
-//        if (bucket.tryConsume(1)) {
-//            String requestHeader = request.getHeader("Authorization");
-//            logger.info(" Header :  {}", requestHeader);
-//            String username = null;
-//            String token = null;
-//            if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-//                //looking good
-//                token = requestHeader.substring(7);
-//                try {
+//        if(bucket.tryConsume(1)) {
+//            if (request.getServletPath().startsWith("/public")) {
+//                filterChain.doFilter(request, response);
+//            }else{
+//                String requestHeader = request.getHeader("Authorization");
+//                logger.info(" Header :  {}", requestHeader);
+//                String username = null;
+//                String token = null;
+//                if (requestHeader != null && requestHeader.startsWith("Bearer")) {
+//                    //looking good
+//                    token = requestHeader.substring(7);
+//                    try {
 //
-//                    username = this.jwtHelper.getUsernameFromToken(token);
+//                        username = this.jwtHelper.getUsernameFromToken(token);
 //
-//                } catch (IllegalArgumentException e) {
-//                    logger.info("Illegal Argument while fetching the username !!"+e.getMessage());
-//                    Error error = new Error(e.getMessage());
-//                    throw new JwtCustomException("Illegal Argument while fetching the username !!", error);
-//                } catch (ExpiredJwtException e) {
-//                    logger.info("Given jwt token is expired !!");
-////                    e.printStackTrace();
-//                    Error error = new Error("JWT token has expired");
-//                    throw new JwtCustomException("JWT token has expired", error);
-//                } catch (MalformedJwtException e) {
-//                    logger.info("Some changed has done in token !! Invalid Token");
-////                    e.printStackTrace();
-//                    Error error = new Error(e.getMessage());
-//                    throw new JwtCustomException("Some changed has done in token !! Invalid Token",error);
+//                    } catch (IllegalArgumentException e) {
+//                        logger.info("Illegal Argument while fetching the username !!"+e.getMessage());
+//                        Error error = new Error("",e.getMessage());
+//                        throw new JwtCustomException("Illegal Argument while fetching the username !!", error);
+//                    } catch (ExpiredJwtException e) {
+//                        logger.info("Given jwt token is expired !!");
+//                        Error error = new Error("","JWT token has expired");
+//                        throw new JwtCustomException("JWT token has expired", error);
+//                    } catch (MalformedJwtException e) {
+//                        logger.info("Some changed has done in token !! Invalid Token");
+//                        Error error = new Error("",e.getMessage());
+//                        throw new JwtCustomException("Some changed has done in token !! Invalid Token",error);
 //
-//                } catch (Exception e) {
-////                    e.printStackTrace();
-//                    throw new RuntimeException(e.getMessage());
-//                }
-//
-//            } else {
-//                logger.info("Invalid Header Value !! ");
-//                Error error=new Error("Invalid Header Value !! ");
-//                throw new JwtCustomException("Invalid JWT token", error);
-//            }
-//
-//            //
-//            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//
-//
-//                //fetch user detail from username
-//                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-//                Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
-//                if (validateToken) {
-//
-//                    //set the authentication
-//                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//
+//                    } catch (Exception e) {
+//                        throw new RuntimeException(e.getMessage());
+//                    }
 //
 //                } else {
-//                    logger.info("Validation fails !!");
+//                    logger.info("Invalid Header Value !! ");
+//                    Error error=new Error("","Invalid Header Value !! ");
+//                    throw new JwtCustomException("Invalid JWT token", error);
 //                }
 //
-//            }else {
-//                throw  new AccessDeniedException("error-message.access-denied");
+//                //
+//                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//
+//
+//                    //fetch user detail from username
+//                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+//                    Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+//                    if (validateToken) {
+//
+//                        //set the authentication
+//                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//
+//                    } else {
+//                        logger.info("Validation fails !!");
+//                    }
+//
+//                }else {
+//                    throw  new AccessDeniedException("error-message.access-denied");
+//                }
 //            }
-
 //            try {
 //                RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
 //                String requestBody = requestWrapper.getRequestBody();
@@ -166,9 +170,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                auditTrailRepository.save(auditTrail);
 //            } catch (Exception e) {
 //                logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
-//                e.printStackTrace();
 //            }
-
+//
 //        } else {
 //            response.getWriter().write("Too many requests. Please try again later.");
 //            response.setStatus(429);// HTTP 429 Too Many Requests

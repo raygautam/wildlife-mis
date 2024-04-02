@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -26,14 +27,14 @@ public class AppUser {
     private String password;
     private String name;
     private Boolean isActive; //default value true
-    @Column(name = "account_non_locked")
-    private Boolean accountNonLocked; ////default value true
+    @Column(name = "account_locked")
+    private Boolean accountLocked; ////default value false
 
-    @Column(name = "failed_attempt")
-    private Integer failedAttempt; //default value 0
+    @Column(name = "failed_login_attempts")
+    private Integer failedLoginAttempts; //default value 0
 
-    @Column(name = "lock_time")
-    private Date lockTime; // null
+    @Column(name = "lockout_time")
+    private LocalDateTime lockoutTime; // null
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))

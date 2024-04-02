@@ -61,40 +61,56 @@
 //        log.info("role : {}",role);
 ////        System.out.println("roleId : "+role.getId()+" , roleName : "+role.getName());
 //        AppUser appUser=AppUser.builder()
-//                .name("Admin")
-//                .userName("admin@gmail.com")
-//                .password(passwordEncoder.encode("123"))
-//                .accountNonLocked(Boolean.TRUE)
-//                .failedAttempt(0)
+//                .name("PccfAndHoof")
+//                .userName("pccfandhoof@gmail.com")
+//                .password(passwordEncoder.encode("Password@10"))
+//                .accountLocked(Boolean.FALSE)
+//                .failedLoginAttempts(0)
 //                .isActive(Boolean.TRUE)
-//                .lockTime(null)
+//                .lockoutTime(null)
 //                .roles(role)
 //                .service(null)
 //                .division(null)
 //                .range(null)
 //                .build();
-//        System.out.println("role : "+appUser.getRoles());
 //        appUserManagementRepository.save(appUser);
-//
-//        Set<Role> role=roleRepository.findByName("Admin");
-//        log.info("role : {}",role);
+////
+//        Set<Role> role1=roleRepository.findByName("Admin");
+//        log.info("role : {}",role1);
 ////        System.out.println("roleId : "+role.getId()+" , roleName : "+role.getName());
-//        AppUser appUser=AppUser.builder()
+//        AppUser appUser1=AppUser.builder()
 //                .name("Admin")
 //                .userName("admin@gmail.com")
-//                .password(passwordEncoder.encode("123"))
-//                .accountNonLocked(Boolean.TRUE)
-//                .failedAttempt(0)
+//                .password(passwordEncoder.encode("Password@10"))
+//                .accountLocked(Boolean.FALSE)
+//                .failedLoginAttempts(0)
 //                .isActive(Boolean.TRUE)
-//                .lockTime(null)
-//                .roles(role)
+//                .lockoutTime(null)
+//                .roles(role1)
 //                .service(null)
 //                .division(null)
 //                .range(null)
 //                .build();
-//        System.out.println("role : "+appUser.getRoles());
-//        appUserManagementRepository.save(appUser);
+//        appUserManagementRepository.save(appUser1);
 //
+//
+//        Set<Role> role2=roleRepository.findByName("RFO");
+//        log.info("role : {}",role2);
+////        System.out.println("roleId : "+role.getId()+" , roleName : "+role.getName());
+//        AppUser appUser2=AppUser.builder()
+//                .name("rfoUser")
+//                .userName("rfo@gmail.com")
+//                .password(passwordEncoder.encode("Password@10"))
+//                .accountLocked(Boolean.FALSE)
+//                .failedLoginAttempts(0)
+//                .isActive(Boolean.TRUE)
+//                .lockoutTime(null)
+//                .roles(role2)
+//                .service(null)
+//                .division(null)
+//                .range(null)
+//                .build();
+//        appUserManagementRepository.save(appUser2);
 //
 //    }
 //}
