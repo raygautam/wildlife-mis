@@ -21,6 +21,15 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalException {
 
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<Object> handleLockedException(LockedException e) {
+//        Error error = new Error("",e.getMessage());
+        ApiResponse<Object> apiResponse = new ApiResponse<>(
+                HttpStatus.UNAUTHORIZED.value(),
+                Collections.singletonList(new Error("",e.getMessage())),
+                null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 //        Error error = new Error("",e.getMessage());

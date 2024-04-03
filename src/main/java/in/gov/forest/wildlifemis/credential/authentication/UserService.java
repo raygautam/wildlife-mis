@@ -30,7 +30,7 @@ public class UserService {
 
     public void lock(AppUser user) {
         user.setAccountLocked(true);
-        user.setLockoutTime(LocalDateTime.now().plusHours(24));
+        user.setLockoutTime(LocalDateTime.now().plusMinutes(1));
 
         repo.save(user);
     }
@@ -42,7 +42,7 @@ public class UserService {
 //        long lockTimeInMillis = user.getLockTime().getTime();
 //        long currentTimeInMillis = System.currentTimeMillis();
 
-        if (user.getLockoutTime().isAfter(LocalDateTime.now())) {
+        if (user.getLockoutTime().isBefore(LocalDateTime.now())) {
             user.setAccountLocked(false);
             user.setFailedLoginAttempts(0);
             user.setLockoutTime(null);

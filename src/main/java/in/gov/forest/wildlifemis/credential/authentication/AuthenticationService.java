@@ -62,13 +62,23 @@ public class AuthenticationService {
 //            throw new IllegalArgumentException("username or password cannot be empty");
 //        }else{
         log.info("password {}",loginRequestDTO);
+//        log.info("email {}", request.getHeader("userName"));
+
         Authentication authentication = null;
         try {
              authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDTO.getUserName(),
                             loginRequestDTO.getPassword()));
         }catch (BadCredentialsException e){
+//            customLoginFailureHandler.onAuthenticationFailure(request,response,e);
+            request.setAttribute("userName", loginRequestDTO.getUserName());
             customLoginFailureHandler.onAuthenticationFailure(request,response,e);
+            return ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .error(List.of(new Error("","Access Denied !!")))
+                    .data(null)
+                    .build();
+//            throw new AccessDeniedException("Access Denied !!");
         }
 
 
