@@ -16,8 +16,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class AuditTrail {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "auditTrail_ger")
-    @SequenceGenerator(name = "auditTrail", sequenceName = "auditTrail_ger", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "auditTrail_ger")
+//    @SequenceGenerator(name = "auditTrail", sequenceName = "auditTrail_ger", initialValue = 1, allocationSize = 1)
     private Long auditTrailId;
     private String ipAddress;
     private String userName;

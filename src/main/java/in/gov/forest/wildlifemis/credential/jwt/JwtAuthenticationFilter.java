@@ -10,6 +10,7 @@ import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImp
 import in.gov.forest.wildlifemis.domian.AuditTrail;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JwtCustomException;
+import in.gov.forest.wildlifemis.util.CustomEncryption;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -61,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     public JwtAuthenticationFilter() {
-        Bandwidth limit = Bandwidth.classic(50, Refill.intervally(50, Duration.ofSeconds(1)));
+        Bandwidth limit = Bandwidth.classic(60, Refill.intervally(60, Duration.ofSeconds(1)));
         this.bucket = Bucket4j.builder()
                 .addLimit(limit)
                 .build();
@@ -146,7 +147,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
             String requestBody = requestWrapper.getRequestBody();
             if(request.getServletPath().startsWith("/public/login")) {
-                String requestBody1= requestBody;
+                String requestBody1= null;
+                try {
+                    requestBody1 = CustomEncryption.encrypt(requestBody);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 try {
                     filterChain.doFilter(requestWrapper, response);
                     AuditTrail auditTrail=AuditTrail.builder()
