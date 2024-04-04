@@ -12,7 +12,7 @@ import java.util.Date;
 @Service
 @Transactional
 public class UserService {
-    public static final int MAX_FAILED_ATTEMPTS = 2;
+    public static final int MAX_FAILED_ATTEMPTS = 4;
 //
 //    private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
