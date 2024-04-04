@@ -2,21 +2,32 @@ package in.gov.forest.wildlifemis.forestServicePlusTesting;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.exception.Error;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/public")
 @CrossOrigin("*")
 public class TestingController {
 
-
+    @Autowired
+    private EntityManager entityManager;
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @GetMapping("/testing")
     public Object testing() throws JsonProcessingException {
@@ -75,37 +86,56 @@ public class TestingController {
         // Convert the result to YourObject using ObjectMapper
         return jdbcTemplate.queryForList(sql);
     }
-
+//    @SuppressWarnings("unchecked")
     @GetMapping("/getAllApplicationsByDivisionId/{id}")
     public Object getAllApplicationsByDivisionId(@PathVariable Long id) throws JsonProcessingException {
-        String sql = "SELECT * FROM fish_farmer_details ffd\n" +
-                "Where ffd.division_id="+id;
+//        String sql = "SELECT * FROM fish_farmer_details ffd\n" +
+//                "Where ffd.division_id="+id;
+//
+//        return jdbcTemplate.queryForList(sql);
 
-        // Retrieve the result of the SQL query
-//        ObjectMapper objectMapper=new ObjectMapper();
-        // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+//        try {
+//            String sql = "SELECT * FROM fish_farmer_details ffd WHERE ffd.division_id = ?";
+////            Query query = entityManager.createNativeQuery(sql)
+////                    .setParameter("id", id);
+////            List<Map<String,Object>> result=query.getResultList();
+//
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .data(jdbcTemplate.queryForList(sql,id))
+//                    .build();
+//        }catch (Exception e) {
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                    .error(List.of(new Error("","INTERNAL_SERVER_ERROR "+e.getMessage())))
+//                    .build();
+//        }
+
+        String sql = "SELECT * FROM fish_farmer_details ffd WHERE ffd.division_id = ?";
+        return jdbcTemplate.queryForList(sql,id);
+
+
     }
     @GetMapping("/getAllApplicationsByRangeId/{id}")
     public Object getAllApplicationsByRangeId(@PathVariable Long id) throws JsonProcessingException {
         String sql = "SELECT * FROM fish_farmer_details ffd\n" +
-                "Where ffd.range_id="+id;
+                "Where ffd.range_id = ? ";
 
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql,id);
     }
 
     @GetMapping("/getAllApplicationsByDistrictCode/{id}")
     public Object getAllApplicationsByDistrictCode(@PathVariable Long id) throws JsonProcessingException {
         String sql = "SELECT * FROM fish_farmer_details ffd\n" +
-                "Where ffd.district_code="+id;
+                "Where ffd.district_code= ?";
 
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql, id);
     }
 
 
@@ -271,7 +301,7 @@ public class TestingController {
                 "     JOIN \n" +
                 "         districts d ON a.district_code = d.district_code\n" +
                 "     WHERE \n" +
-                "         EXTRACT(year FROM a.created_at) = "+year+"\n" +
+                "         EXTRACT(year FROM a.created_at) = ? \n" +
                 "     GROUP BY \n" +
                 "         EXTRACT(month FROM a.created_at), d.district_name) AS counts \n" +
                 "ON \n" +
@@ -284,7 +314,7 @@ public class TestingController {
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql, year);
     }
 
     @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisionsYearWise/{year}")
@@ -317,7 +347,7 @@ public class TestingController {
                 "     JOIN \n" +
                 "         division d ON  d.id= a.division_id\n" +
                 "WHERE \n" +
-                "         EXTRACT(year FROM a.created_at) = "+year+"\n"+
+                "         EXTRACT(year FROM a.created_at) = ?\n"+
                 "     GROUP BY \n" +
                 "         EXTRACT(month FROM a.created_at), d.name) AS counts \n" +
                 "ON \n" +
@@ -330,7 +360,7 @@ public class TestingController {
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql, year);
     }
 
     @GetMapping("/getApplicationsCountForAllMonthForAllTheRangesYearWise/{year}")
@@ -363,7 +393,7 @@ public class TestingController {
                 "     JOIN \n" +
                 "         range d ON  d.range_id= a.range_id\n" +
                 "     WHERE \n" +
-                "         EXTRACT(year FROM a.created_at) = "+year+"\n" +
+                "         EXTRACT(year FROM a.created_at) = ?\n" +
                 "     GROUP BY \n" +
                 "         EXTRACT(month FROM a.created_at), d.range_name) AS counts \n" +
                 "ON \n" +
@@ -375,7 +405,7 @@ public class TestingController {
         // Retrieve the result of the SQL query
 //        ObjectMapper objectMapper=new ObjectMapper();
         // Convert the result to YourObject using ObjectMapper
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql, year);
     }
 
 }

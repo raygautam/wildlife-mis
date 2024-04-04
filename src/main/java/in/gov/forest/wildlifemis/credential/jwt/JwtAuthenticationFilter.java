@@ -99,7 +99,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@jakarta.validation.constraints.NotNull HttpServletRequest request, @jakarta.validation.constraints.NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if (bucket.tryConsume(1)) {
             String requestHeader = request.getHeader("Authorization");
-            logger.info(" Header :  {}", requestHeader);
+//            logger.info(" Header :  {}", requestHeader);
             String username = null;
             String token = null;
             if (requestHeader != null && requestHeader.startsWith("Bearer")) {
