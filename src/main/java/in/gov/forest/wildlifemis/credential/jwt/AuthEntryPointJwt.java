@@ -1,15 +1,20 @@
 package in.gov.forest.wildlifemis.credential.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import in.gov.forest.wildlifemis.common.ApiResponse;
+import in.gov.forest.wildlifemis.exception.Error;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Component
@@ -23,13 +28,25 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 //    PrintWriter writer = response.getWriter();
 //    writer.println("Access Denied !! " + authException.getMessage());
 
-    response.setContentType("application/json");
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//    response.addCookie(new Cookie("Cookie","1353546"));
-    String errorMessage = "Access Denied !! " + authException.getMessage();
-    String jsonBody = "{\"error\": \"" + errorMessage + "\"}";
+//    response.setContentType("application/json");
+//    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+////    response.addCookie(new Cookie("Cookie","1353546"));
+//    String errorMessage = "Access Denied !! " + authException.getMessage();
+//    String jsonBody = "{\"error\": \"" + errorMessage + "\"}";
+//
+//    response.getWriter().write(jsonBody);
 
-    response.getWriter().write(jsonBody);
+    response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    response.setContentType("application/json");
+    new ObjectMapper().writeValue(
+            response.getWriter(),
+            ApiResponse.builder()
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .error(List.of(new Error("","Access Denied !! " + authException.getMessage())))
+                    .build()
+    );
+
+
 //    String errorMessage = null;
 //    Integer errorCode = null;
 //    int errorStatus = getErrorCode(request);
