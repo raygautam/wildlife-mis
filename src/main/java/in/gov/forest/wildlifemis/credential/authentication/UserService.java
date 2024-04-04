@@ -30,7 +30,7 @@ public class UserService {
 
     public void lock(AppUser user) {
         user.setAccountLocked(true);
-        user.setLockoutTime(LocalDateTime.now().plusMinutes(1));
+        user.setLockoutTime(LocalDateTime.now().plusHours(24));
 
         repo.save(user);
     }

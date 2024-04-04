@@ -4,8 +4,11 @@ package in.gov.forest.wildlifemis.credential.jwt;
 //import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 //import in.gov.forest.wildlifemis.exception.Error;
 //import in.gov.forest.wildlifemis.exception.JwtCustomException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import in.gov.forest.wildlifemis.auditTrail.AuditTrailRepository;
 import in.gov.forest.wildlifemis.auditTrail.RequestBodyCachingWrapper;
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImpl;
 import in.gov.forest.wildlifemis.domian.AuditTrail;
 import in.gov.forest.wildlifemis.exception.Error;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,6 +44,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 
 @Component
@@ -59,10 +64,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //    private PasswordEncoder passwordEncoder;
 
     private final Bucket bucket;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
     public JwtAuthenticationFilter() {
-        Bandwidth limit = Bandwidth.classic(60, Refill.intervally(60, Duration.ofSeconds(1)));
+        Bandwidth limit = Bandwidth.classic(120, Refill.intervally(120, Duration.ofMinutes(1)));
         this.bucket = Bucket4j.builder()
                 .addLimit(limit)
                 .build();
@@ -193,8 +199,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } else {
-            response.getWriter().write("Too many requests. Please try again later.");
-            response.setStatus(429);// HTTP 429 Too Many Requests
+//            response.getWriter().write("Too many requests. Please try again later.");
+//            response.setStatus(429);// HTTP 429 Too Many Requests
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.TOO_MANY_REQUESTS.value())
+//                    .error(List.of(new Error("","Too many requests. Please try again later.")))
+//                    .build();
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.setContentType("application/json");
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    ApiResponse.builder()
+                    .status(HttpStatus.TOO_MANY_REQUESTS.value())
+                    .error(List.of(new Error("","Too many requests. Please try again later.")))
+                    .build()
+            );
         }
     }
 
