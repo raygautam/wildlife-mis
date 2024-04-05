@@ -5,7 +5,6 @@ package in.gov.forest.wildlifemis.credential.jwt;
 //import in.gov.forest.wildlifemis.exception.Error;
 //import in.gov.forest.wildlifemis.exception.JwtCustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import in.gov.forest.wildlifemis.auditTrail.AuditTrailRepository;
 import in.gov.forest.wildlifemis.auditTrail.RequestBodyCachingWrapper;
 import in.gov.forest.wildlifemis.common.ApiResponse;
@@ -13,7 +12,8 @@ import in.gov.forest.wildlifemis.credential.authentication.UserDetailsServiceImp
 import in.gov.forest.wildlifemis.domian.AuditTrail;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JwtCustomException;
-import in.gov.forest.wildlifemis.util.CustomEncryption;
+import in.gov.forest.wildlifemis.util.AESEncryptionUsingSalt;
+import in.gov.forest.wildlifemis.util.AESEncryptionWithoutSalt;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
@@ -33,17 +33,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 
@@ -155,7 +151,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(request.getServletPath().startsWith("/public/login")) {
                 String requestBody1= null;
                 try {
-                    requestBody1 = CustomEncryption.encrypt(requestBody);
+                    requestBody1 = AESEncryptionWithoutSalt.encrypt(requestBody);
+//                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
+                    logger.info("login : {}", AESEncryptionWithoutSalt.decrypt("1oZvL3o7cr3fr+cB85Ir00ruSzwmzekzFSNfSOw85VS1KA2fI27rcvJ0F042oJUOwRm+U6wSsrQtDr4i2vGong=="));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
