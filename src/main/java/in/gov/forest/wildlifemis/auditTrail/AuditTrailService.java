@@ -40,7 +40,7 @@ public class AuditTrailService {
                                             auditTrail -> {
                                                 if(auditTrail.getUrl().equals("/public/login")){
                                                     try {
-                                                        auditTrail.setPayload( AESEncryptionUsingSalt.decrypt(auditTrail.getPayload()));
+                                                        auditTrail.setPayload(AESEncryptionUsingSalt.decrypt(auditTrail.getPayload()));
                                                     } catch (Exception e) {
                                                         throw new RuntimeException(e);
                                                     }
