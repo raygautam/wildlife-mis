@@ -2,17 +2,22 @@ package in.gov.forest.wildlifemis.util;
 
 import org.springframework.stereotype.Component;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.Base64;
 
 @Component
 public class AESEncryptionWithoutSalt {
-//    private static final int AES_KEY_SIZE = 256;
+    private static final int AES_KEY_SIZE = 256;
     private static final int KEY_SIZE = 256;
 //    private static final String SECRET_KEY = "Wildlife-mis2024"; // 16 bytes secret key for AES
 
@@ -39,5 +44,7 @@ public class AESEncryptionWithoutSalt {
         SecretKey secretKey = keyGenerator.generateKey();
         return secretKey.getEncoded();
     }
+
+
 }
 

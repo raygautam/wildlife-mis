@@ -151,9 +151,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(request.getServletPath().startsWith("/public/login")) {
                 String requestBody1= null;
                 try {
-                    requestBody1 = AESEncryptionWithoutSalt.encrypt(requestBody);
+                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
 //                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
-                    logger.info("login : {}", AESEncryptionWithoutSalt.decrypt("1oZvL3o7cr3fr+cB85Ir00ruSzwmzekzFSNfSOw85VS1KA2fI27rcvJ0F042oJUOwRm+U6wSsrQtDr4i2vGong=="));
+//                    logger.info("login : {}", AESEncryptionWithoutSalt.decrypt("1oZvL3o7cr3fr+cB85Ir00ruSzwmzekzFSNfSOw85VS1KA2fI27rcvJ0F042oJUOwRm+U6wSsrQtDr4i2vGong=="));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

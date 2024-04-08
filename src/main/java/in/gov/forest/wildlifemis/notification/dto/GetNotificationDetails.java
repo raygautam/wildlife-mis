@@ -14,6 +14,8 @@ public interface GetNotificationDetails {
     String getCreatedDate();
     String getNotificationTypeName();
 
+    String publishDate();
+
     Boolean getIsActive();
 
     Boolean getIsNew();

@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.auditTrail;
 
+import in.gov.forest.wildlifemis.common.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,9 @@ public class AuditTrailController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getAuditTrailData() {
-        return auditTrailService.getAuditTrailData();
+        ApiResponse<?> apiResponse = auditTrailService.getAuditTrailData();
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//        return auditTrailService.getAuditTrailData();
+
     }
 }
