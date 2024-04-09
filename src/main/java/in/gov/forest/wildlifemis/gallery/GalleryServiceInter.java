@@ -16,7 +16,9 @@ public interface GalleryServiceInter {
 
     ResponseEntity<?> download(Long id) throws IOException;
 
-    ApiResponse<?> deletePermanently(Long galleryId);
+//    ApiResponse<?> deletePermanently(Long galleryId);
 
     ApiResponse<?> getAllGallery();
+
+//    ApiResponse<?> deletePermanentlyByGalleryTypeId(Long galleryTypeId);
 }

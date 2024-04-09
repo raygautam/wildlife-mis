@@ -7,11 +7,13 @@ import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.NotFoundException;
+import in.gov.forest.wildlifemis.gallery.GalleryServiceImpl;
 import in.gov.forest.wildlifemis.galleryType.dto.GalleryTypeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -19,6 +21,9 @@ public class GalleryTypeServiceImpl implements GalleryTypeServiceInter{
 
     @Autowired
     GalleryTypeRepository galleryTypeRepository;
+
+    @Autowired
+    GalleryServiceImpl galleryService;
 
     @Override
     public ApiResponse<?> add(GalleryTypeDTO galleryTypeDTO) {
@@ -77,4 +82,27 @@ public class GalleryTypeServiceImpl implements GalleryTypeServiceInter{
             throw new DataInsertionException("Failed to update GalleryType", new Error("",e.getMessage()));
         }
     }
+
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public ApiResponse<?> deletePermanently(Long id) {
+//        ApiResponse<?> response;
+//            galleryTypeRepository.findById(id)
+//                    .orElseThrow(()->new NotFoundException("GalleryType not found", new Error("","Not found")));
+//            response=galleryService.deletePermanentlyByGalleryTypeId(id);
+//            if(response.getStatus() == 200 || response.getStatus() == 404){
+//                try {
+//                    galleryTypeRepository.deleteById(id);
+//                    response=ApiResponse.builder()
+//                            .status(HttpStatus.OK.value())
+//                            .data("Deleted Successfully.")
+//                            .build();
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//
+//            return response;
+//
+//    }
 }

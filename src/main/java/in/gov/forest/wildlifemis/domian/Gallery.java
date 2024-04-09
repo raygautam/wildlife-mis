@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +35,8 @@ public class Gallery {
     private Date createdDate;
 
     private Boolean isActive;
+
+    private LocalDateTime updatedDate;
 
     @Override
     public final boolean equals(Object o) {

@@ -22,4 +22,6 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
     Gallery findByIsActive(Boolean aFalse);
 
     List<Gallery> findByIsActiveOrderByCreatedDateDesc(Boolean aTrue);
+
+    List<Gallery> findByGalleryTypeId(Long galleryTypeId);
 }

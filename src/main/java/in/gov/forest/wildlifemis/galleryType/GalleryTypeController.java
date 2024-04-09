@@ -32,4 +32,10 @@ public class GalleryTypeController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+//    @DeleteMapping("/deletePermanently/{id}")
+//    public ResponseEntity<?> deleteGalleryType(@PathVariable Long id){
+//        ApiResponse<?> apiResponse=galleryTypeServiceInter.deletePermanently(id);
+//        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+//    }
+
 }

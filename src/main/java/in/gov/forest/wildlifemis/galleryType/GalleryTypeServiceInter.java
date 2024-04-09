@@ -9,4 +9,6 @@ public interface GalleryTypeServiceInter {
     ApiResponse<?> get();
 
     ApiResponse<?> update(Long id, GalleryTypeDTO galleryTypeDTO);
+
+//    ApiResponse<?> deletePermanently(Long id);
 }

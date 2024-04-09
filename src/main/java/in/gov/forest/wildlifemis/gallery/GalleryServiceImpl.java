@@ -33,8 +33,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -232,16 +235,38 @@ public class GalleryServiceImpl implements GalleryServiceInter{
         }
     }
 
+
+
     @Override
     public ApiResponse<?> delete(Long galleryId) {
-        try {
+//        try {
+//            return ApiResponse.builder()
+//                    .status(HttpStatus.OK.value())
+//                    .data(
+//                            galleryRepository.deleteByGalleryId(galleryId, Boolean.FALSE)
+//                    ).build();
+//        } catch (DataIntegrityViolationException e) {
+//            throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
+//        }
+        try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            galleryRepository.deleteByGalleryId(galleryId, Boolean.FALSE)
+                            galleryRepository.findById(galleryId)
+                                    .stream()
+                                    .map(
+                                            gallery -> {
+                                                gallery.setIsActive(Boolean.FALSE);
+                                                gallery.setUpdatedDate(LocalDateTime.now());
+                                                galleryRepository.save(gallery);
+                                                return "Deleted Successfully";
+                                            }
+                                    )
+                                    .findFirst()
+                                    .orElseThrow(()->new NotFoundException("GalleryType not found", new Error("","Not found")))
                     ).build();
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseUpdateException ("Fail to delete Data", new Error("","Fail to delete Data"));
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to update GalleryType", new Error("",e.getMessage()));
         }
     }
 
@@ -289,59 +314,107 @@ public class GalleryServiceImpl implements GalleryServiceInter{
                 .body(resource);
     }
 
-    @Override
+//    @Override
 //    @Transactional(rollbackFor = Exception.class)
-    public ApiResponse<?> deletePermanently(Long galleryId) {
-        ApiResponse<?> response;
-        try {
-            // Get the file details from the database
-            Gallery gallery = galleryRepository.findById(galleryId)
-                    .orElseThrow(
-                            () -> new ResourceNotFoundException("File not found with id: " + galleryId, new Error("","File not found with id: " + galleryId))
-                    );
-//            Gallery isActive=galleryRepository.findByIsActive(Boolean.FALSE);
-            if(!gallery.getIsActive()){
-                Path filePath = Paths.get(gallery.getFileUrl());
-
-                // Delete the file from the directory
-                if (Files.exists(filePath)) {
-                    Files.delete(filePath);
-                }
-                // Delete the file record from the database
-                galleryRepository.delete(gallery);
-
-                response=ApiResponse.builder()
-                        .status(HttpStatus.OK.value())
-                        .data(
-                                "File and record deleted successfully."
-                        ).build();
-            }else {
-                response= ApiResponse.builder()
-                        .status(HttpStatus.BAD_REQUEST.value())
-                        .error(
-                                Collections.singletonList(new Error("","File is active cannot be deleted."))
-                        ).build();
-            }
-
-//            return "File and record deleted successfully.";
-        } catch (IOException e) {
-            response= ApiResponse.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                    .error(
-                            Collections.singletonList(new  Error("","Error deleting file: " + e.getMessage()))
-                    ).build();
-//            return "Error deleting file: " + e.getMessage();
-        } catch (Exception e) {
-            response= ApiResponse.builder()
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                    .error(
-                            Collections.singletonList(new  Error("","Error deleting file and record: " + e.getMessage()))
-                    ).build();
-//            return "Error deleting file and record: " + e.getMessage();
-        }
-        return response;
-    }
-
+//    public ApiResponse<?> deletePermanently(Long galleryId) {
+//        ApiResponse<?> response;
+//        try {
+//            // Get the file details from the database
+//            Gallery gallery = galleryRepository.findById(galleryId)
+//                    .orElseThrow(
+//                            () -> new ResourceNotFoundException("File not found with id: " + galleryId, new Error("","File not found with id: " + galleryId))
+//                    );
+////            Gallery isActive=galleryRepository.findByIsActive(Boolean.FALSE);
+////            if(!gallery.getIsActive()){
+//                Path filePath = Paths.get(gallery.getFileUrl());
+//
+//                // Delete the file from the directory
+//                if (Files.exists(filePath)) {
+//                    Files.delete(filePath);
+//                }
+//
+//                // Delete the file record from the database
+//                galleryRepository.delete(gallery);
+//
+//                response=ApiResponse.builder()
+//                        .status(HttpStatus.OK.value())
+//                        .data(
+//                                "File and record deleted successfully."
+//                        ).build();
+////            }else {
+////                response= ApiResponse.builder()
+////                        .status(HttpStatus.BAD_REQUEST.value())
+////                        .error(
+////                                Collections.singletonList(new Error("","File is active cannot be deleted."))
+////                        ).build();
+////            }
+//
+////            return "File and record deleted successfully.";
+//        } catch (IOException e) {
+//            response= ApiResponse.builder()
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                    .error(
+//                            Collections.singletonList(new  Error("","Error deleting file: " + e.getMessage()))
+//                    ).build();
+////            return "Error deleting file: " + e.getMessage();
+//        } catch (Exception e) {
+//            response= ApiResponse.builder()
+//                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                    .error(
+//                            Collections.singletonList(new  Error("","Error deleting file and record: " + e.getMessage()))
+//                    ).build();
+////            return "Error deleting file and record: " + e.getMessage();
+//        }
+//        return response;
+//    }
+//
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public ApiResponse<?> deletePermanentlyByGalleryTypeId(Long galleryTypeId) {
+//        ApiResponse<?> response;
+//        List<Gallery> galleryList=galleryRepository.findByGalleryTypeId(galleryTypeId);
+//        if (galleryList != null && !galleryList.isEmpty()) {
+//            try {
+//                for(Gallery gallery:galleryList){
+//                    Path filePath = Paths.get(gallery.getFileUrl());
+//
+//                    // Delete the file from the directory
+//                    if (Files.exists(filePath)) {
+//                        Files.delete(filePath);
+//                    }
+//                }
+//                galleryRepository.deleteAll(galleryList);
+//                response=ApiResponse.builder()
+//                        .status(HttpStatus.OK.value())
+//                        .data(
+//                                "File and record deleted successfully."
+//                        ).build();
+//            } catch (IOException e) {
+//                response= ApiResponse.builder()
+//                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                        .error(
+//                                Collections.singletonList(new  Error("","Error deleting file: " + e.getMessage()))
+//                        ).build();
+////            return "Error deleting file: " + e.getMessage();
+//            } catch (Exception e) {
+//                response= ApiResponse.builder()
+//                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                        .error(
+//                                Collections.singletonList(new  Error("","Error deleting file and record: " + e.getMessage()))
+//                        ).build();
+////            return "Error deleting file and record: " + e.getMessage();
+//            }
+//
+//        }else{
+//            response= ApiResponse.builder()
+//                    .status(HttpStatus.NOT_FOUND.value())
+//                    .error(
+//                            Collections.singletonList(new  Error("","No galleries found for the given galleryTypeId: " + galleryTypeId))
+//                    )
+//                    .build();
+//        }
+//        return response;
+//    }
 
 
 }
