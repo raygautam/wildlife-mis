@@ -218,6 +218,7 @@ public class NGTCommitteeServiceImpl implements NGTCommitteeServiceInter {
                                     .map(
                                             ngtCommittee -> {
                                                 ngtCommittee.setIsActive(Boolean.FALSE);
+                                                ngtCommittee.setUpdatedDate(LocalDateTime.now());
                                                 ngtCommitteeRepository.save(ngtCommittee);
                                                 return  "Deleted Successfully";
 

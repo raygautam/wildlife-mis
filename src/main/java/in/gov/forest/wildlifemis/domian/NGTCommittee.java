@@ -36,4 +36,6 @@ public class NGTCommittee {
 
     private Boolean isActive;
 
+    private LocalDateTime updatedDate;
+
 }

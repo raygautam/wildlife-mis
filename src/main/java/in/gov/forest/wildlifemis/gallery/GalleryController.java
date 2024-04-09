@@ -96,7 +96,7 @@ public class GalleryController {
 
     }
 
-    @GetMapping("/delete/{galleryId}")
+    @DeleteMapping("/delete/{galleryId}")
     public ResponseEntity<?> delete(@PathVariable Long galleryId) {
         ApiResponse<?> apiResponse = galleryServiceInter.delete(galleryId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

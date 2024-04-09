@@ -235,6 +235,7 @@ public class DocumentServiceImpl implements DocumentServiceInter{
                                     .map(
                                             document -> {
                                                 document.setIsActive(Boolean.FALSE);
+                                                document.setUpdatedDate(LocalDateTime.now());
                                                 documentRepository.save(document);
                                                 return  "Deleted Successfully";
 

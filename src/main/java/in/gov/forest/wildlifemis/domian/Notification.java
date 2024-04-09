@@ -44,6 +44,8 @@ public class Notification {
 
     private Boolean isArchive;
 
+    private LocalDateTime updatedDate;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

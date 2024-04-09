@@ -297,6 +297,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                             notification -> {
                                                 notification.setIsArchive(Boolean.FALSE);
                                                 notification.setIsActive(Boolean.FALSE);
+                                                notification.setUpdatedDate(LocalDateTime.now());
                                                 notificationRepository.save(notification);
                                                 return  "Deleted Successfully";
 
