@@ -2,6 +2,8 @@ package in.gov.forest.wildlifemis.appUser;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Builder
@@ -12,27 +14,27 @@ import java.util.Set;
 @AllArgsConstructor
 //@JsonIgnoreProperties(value = NonNull)
 public class AppUserManagementDto {
-//    @NotBlank(message = "Id field not be null and not empty and not blank")
+    @NotBlank(message = "Id field not be null and not empty and not blank")
     private  Long id;
 
-//    @NotBlank(message = "Email field not be null and not empty and not blank")
-//    @Email(regexp = "^(|([A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+))$", message = "Email address is invalid please provide valid email id.")
+    @NotBlank(message = "Email field not be null and not empty and not blank")
+    @Email(regexp = "^(|([A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+))$", message = "Email address is invalid please provide valid email id.")
     private  String userName;
 
-//    @NotBlank(message = "Name field not be null and not empty and not blank")
+    @NotBlank(message = "Name field not be null and not empty and not blank")
     private  String name;
 
-//    @NotBlank(message = "field not be null and not empty and not blank")
+    @NotBlank(message = "field not be null and not empty and not blank")
     private  String password;
 
-//    @NotBlank(message = "Role field not be null and not empty and not blank")
+    @NotBlank(message = "Role field not be null and not empty and not blank")
     private Set<Integer> roleId;
 
-    private String service;
+    private Long service;
 
-    private String division;
+    private Integer division;
 
-    private String range;
+    private Integer range;
 
 }
 //    to convert to Long

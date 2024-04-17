@@ -26,6 +26,7 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                             forestServiceRepository.save(
                                     ForestService.builder()
                                             .serviceName(serviceRequestDTO.getServiceName())
+                                            .serviceId(serviceRequestDTO.getServiceId())
                                             .serviceURL(serviceRequestDTO.getServiceURL())
                                             .build()
                             )

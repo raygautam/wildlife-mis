@@ -1,8 +1,10 @@
 package in.gov.forest.wildlifemis.appUser;
 
 
+import in.gov.forest.wildlifemis.common.ApiResponse;
+
 public interface AppUserManagementServiceInter {
-    String insertAppUser(AppUserManagementDto userDetailDto);
+    ApiResponse<?> insertAppUser(AppUserManagementDto userDetailDto);
 
 //    List<GetAppUserDto> getUserDetails();
 //
