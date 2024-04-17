@@ -99,7 +99,8 @@ public class AuthenticationService {
                                 JwtResponse.builder()
                                         .token(jwt)
                                         .type("Bearer")
-                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
+                                        //uncomment one refresh token is implements in front end.
+//                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
                                         .username(userDetails.getUsername())
                                         .serviceId(userDetails.getServiceId())
