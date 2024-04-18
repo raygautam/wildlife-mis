@@ -3,6 +3,7 @@ package in.gov.forest.wildlifemis.credential.authentication;
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.common.LoginRequestDTO;
 import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
+import in.gov.forest.wildlifemis.credential.authentication.dto.ChangePasswordDTO;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 @CrossOrigin("*")
 //@CrossOrigin(origins = "http://10.179.2.158:8080")
 //@CrossOrigin(origins = "http://127.0.0.1:5173")
+@RequestMapping("/public")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -57,7 +59,32 @@ public class AuthenticationController {
 //    }
 
 
-//    @GetMapping("/public/getpk")
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> createToken(@RequestBody LoginRequestDTO loginRequestDTO,
+                                                   HttpServletRequest request,
+                                                   HttpServletResponse response) throws ServletException, IOException {
+
+            log.info("login {}",loginRequestDTO);
+            ApiResponse<?> apiResponse = authenticationService.userLogin(loginRequestDTO, request, response);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+    }
+
+    @GetMapping("/regenerateToken")
+    public ResponseEntity <?> reGenerateToken(@RequestBody TokenRefreshRequest tokenRefreshRequest){
+            ApiResponse<?> apiResponse = authenticationService.regenerateToken(tokenRefreshRequest);
+            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity <?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO){
+        ApiResponse<?> apiResponse = authenticationService.changePassword(changePasswordDTO);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    //    @GetMapping("/public/getpk")
 //    public ResponseEntity<ApiResponse> getCaptcha(HttpServletRequest req ) throws NoSuchAlgorithmException {
 //       // req.getHeader("X-Forwarded-For")
 //
@@ -82,51 +109,5 @@ public class AuthenticationController {
 //        }
 //    }
 
-    @PostMapping("/public/login")
-    public ResponseEntity<?> createToken(@RequestBody LoginRequestDTO loginRequestDTO,
-                                                   HttpServletRequest request,
-                                                   HttpServletResponse response) throws ExecutionException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, ServletException, IOException {
-
-//        System.out.println("Time of token expiration"+new Date(System.currentTimeMillis() + 60 * 1000));
-//        if (bucket.tryConsume(1)) {
-            log.info("login {}",loginRequestDTO);
-            ApiResponse<?> apiResponse = authenticationService.userLogin(loginRequestDTO, request, response);
-            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-
-//        } else {
-//            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-//        }
-    }
-
-    @GetMapping("/public/regenerateToken")
-    public ResponseEntity <?> reGenerateToken(@RequestBody TokenRefreshRequest tokenRefreshRequest){
-//        if(bucket.tryConsume(1)) {
-
-            ApiResponse<?> apiResponse = authenticationService.regenerateToken(tokenRefreshRequest);
-            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//        }
-//        else {
-//            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-//        }
-    }
-
-    /**
-     * This is the method to change the password by the super admin wihtout requiring to trigeer an email
-     *
-     * To change the password from the user end first need to take username and password then trigger and email with an otp and then validdate the otp
-     * At last ask for the new password along with the old password    *
-     * */
-
-//    @PostMapping("/public/changePassword")
-//    public ResponseEntity <ApiResponse> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-//        if(bucket.tryConsume(1)) {
-//
-//            ApiResponse apiResponse = authenticationService.changePassword(changePasswordDTO);
-//            return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-//        }
-//        else {
-//            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-//        }
-//    }
 }
 

@@ -30,8 +30,8 @@ public class AppUserManagementController {
     @Autowired
     private AppUserManagementServiceInter appUserManagementServiceInter;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//    @Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -40,6 +40,7 @@ public class AppUserManagementController {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.insertAppUser(userDetailDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    @PreAuthorize("hasRole('ROLE_USER')")

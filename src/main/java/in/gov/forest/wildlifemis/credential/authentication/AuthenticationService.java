@@ -5,6 +5,7 @@ import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.common.JwtResponse;
 import in.gov.forest.wildlifemis.common.LoginRequestDTO;
 import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
+import in.gov.forest.wildlifemis.credential.authentication.dto.ChangePasswordDTO;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
@@ -12,6 +13,7 @@ import in.gov.forest.wildlifemis.domian.AppUser;
 import in.gov.forest.wildlifemis.exception.AccessDeniedException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
+import in.gov.forest.wildlifemis.exception.NotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +26,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -54,8 +59,8 @@ public class AuthenticationService {
     @Autowired
     private CustomLoginFailureHandler customLoginFailureHandler;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        if(loginRequestDTO.getUserName()==null || loginRequestDTO.getUserName()=="" && loginRequestDTO.getPassword()==null){
@@ -151,33 +156,34 @@ public class AuthenticationService {
         }
     }
 
-//        public ApiResponse changePassword(ChangePasswordDTO changePasswordDTO) throws InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-//
-//        AppUsers users = userRepo.findByUserNameAndIsActive(changePasswordDTO.getUserName(), Boolean.TRUE);
-//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//
-//        if(Objects.isNull(users)){
-//
-//            throw  new ResourceNotFoundException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.RESOURCE_NOT_FOUND));
-//        }
-////        String decryptPassword = RSAUtil.decrypt(changePasswordDTO.getExistingPassword(), Base64.getEncoder().encodeToString(rsaKeyPairGenerator.getPrivateKey().getEncoded()));
-////        boolean matches = bCryptPasswordEncoder.matches(decryptPassword, users.getPassword());
-//        boolean matches = bCryptPasswordEncoder.matches(changePasswordDTO.getExistingPassword(), users.getPassword());
-//
-//        if(!matches){
-//
-//            throw new UnauthourizedException(messageByLocale.getMessage(Constants.ERROR_MESSAGE.UN_AUTHORIZED));
-//
-//
-//        }
-//
-//        users.setPassword(bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword()));
-//        AppUsers save = userRepo.save(users);
-//        ApiResponse apiResponse = new ApiResponse();
-//        apiResponse.setData(save);
-//
-//        return apiResponse;
-//    }
+        public ApiResponse<?> changePassword(ChangePasswordDTO changePasswordDTO)  {
+            try {
+                AppUser user = userRepo.findByUserNameAndIsActive(changePasswordDTO.getUserName(), Boolean.TRUE)
+                        .orElseThrow(() -> new NotFoundException("", new Error("", "User not found")));
+
+                boolean matches = passwordEncoder.matches(changePasswordDTO.getExistingPassword(), user.getPassword());
+
+                if (!matches) {
+                    return ApiResponse.builder()
+                            .status(HttpStatus.UNAUTHORIZED.value())
+                            .error(Collections.singletonList(new Error("", "Unauthorized")))
+                            .build();
+                }
+
+                user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+                userRepo.save(user);
+                return ApiResponse.builder()
+                        .status(HttpStatus.OK.value())
+                        .data("Password successfully updated. You can now log in with your new password.")
+                        .build();
+            } catch (Exception ex) {
+                return ApiResponse.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .error(Collections.singletonList(new Error("", "An unexpected error occurred")))
+                        .build();
+            }
+
+        }
 }
 
 //
