@@ -131,7 +131,6 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
 //                                    auth.requestMatchers("/notification/download/{id}").permitAll()
                             .anyRequest().authenticated()
                 )
-
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler)
                 )

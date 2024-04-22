@@ -36,7 +36,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 //
 //    response.getWriter().write(jsonBody);
 
-    response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+    response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response.setContentType("application/json");
     new ObjectMapper().writeValue(
             response.getWriter(),
@@ -83,6 +83,8 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 //    response.getWriter().write(jsonBody);
 
   }
+
+
 
 //  private int getErrorCode(HttpServletRequest httpRequest) {
 //    return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");

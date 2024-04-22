@@ -92,7 +92,7 @@ public class AuthenticationService {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 //                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
-                String jwt = helper.generateToken(userDetails);
+                String jwt = helper.generateToken(userDetails.getUsername());
                 AppUser user = userRepo.findByUserNameAndIsActive(loginRequestDTO.getUserName(), Boolean.TRUE).orElseThrow(null);
                 if(!userService.unlockWhenTimeExpired(user)){
                     throw new AccessDeniedException("Account is locked");
@@ -133,7 +133,7 @@ public class AuthenticationService {
                     .map(refreshTokenService::verifyExpiration)
                     .map(RefreshToken::getAppUser)
                     .map(userInfo -> {
-                        String accessToken = helper.generateToken(UserDetailsImpl.build(userInfo));
+                        String accessToken = helper.generateToken(userInfo.getUserName());
                         return ApiResponse.builder()
                                 .status(HttpStatus.OK.value())
                                 .error(null)

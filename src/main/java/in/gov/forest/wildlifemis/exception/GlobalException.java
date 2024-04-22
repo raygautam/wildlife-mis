@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.*;
@@ -30,6 +31,17 @@ public class GlobalException {
                 null);
         return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
+
+//    @ExceptionHandler(AccessDeniedException.class)
+//    public ResponseEntity<Object> handleForbiddenException(AccessDeniedException e) {
+////        Error error = new Error("",e.getMessage());
+//        ApiResponse<Object> apiResponse = new ApiResponse<>(
+//                HttpStatus.FORBIDDEN.value(),
+//                Collections.singletonList(new Error("",e.getMessage())),
+//                null);
+//        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
+//    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 //        Error error = new Error("",e.getMessage());

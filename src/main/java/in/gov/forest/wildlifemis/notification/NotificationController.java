@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -129,6 +130,7 @@ public class NotificationController {
 
 
     /**API to download notification resource using Notification Entity id.**/
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
 //        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
