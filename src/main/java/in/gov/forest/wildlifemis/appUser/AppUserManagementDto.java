@@ -14,8 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 //@JsonIgnoreProperties(value = NonNull)
 public class AppUserManagementDto {
-    @NotBlank(message = "Id field not be null and not empty and not blank")
-    private  Long id;
+//    @NotBlank(message = "Id field not be null and not empty and not blank")
+//    private  Long id;
 
     @NotBlank(message = "Email field not be null and not empty and not blank")
     @Email(regexp = "^(|([A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+))$", message = "Email address is invalid please provide valid email id.")

@@ -161,17 +161,39 @@ public class GlobalException {
 //                            .build()
 //                    );
 //                });
-        return ApiResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(
-                        exception.getBindingResult().getFieldErrors().stream().map(
+//        return serviceResponse;
+
+//        return ApiResponse.builder()
+//                .status(HttpStatus.BAD_REQUEST.value())
+//                .error(
+//                        exception.getBindingResult().getFieldErrors().stream().map(
+//                                fieldError -> Error.builder()
+//                                        .field(fieldError.getField())
+//                                        .errorMessage(fieldError.getDefaultMessage())
+//                                        .build()
+//                        ).toList()
+//
+//                ).build();
+
+
+        ApiResponse<?> serviceResponse = new ApiResponse<>();
+        List<ErrorDTO> errors = new ArrayList<>();
+//        exception.getBindingResult().getFieldErrors()
+//                .forEach(error -> {
+//                    ErrorDTO errorDTO = new ErrorDTO(error.getField(), error.getDefaultMessage());
+//                    errors.add(errorDTO);
+//                });
+        serviceResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        serviceResponse.setError( exception.getBindingResult().getFieldErrors().stream().map(
                                 fieldError -> Error.builder()
                                         .field(fieldError.getField())
                                         .errorMessage(fieldError.getDefaultMessage())
                                         .build()
-                        ).toList()
-                ).build();
+                        ).toList());
+        return serviceResponse;
     }
+
+
 
     //Observability example
 //    @ExceptionHandler(RuntimeException.class)

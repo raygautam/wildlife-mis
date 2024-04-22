@@ -26,7 +26,7 @@ public class AuditTrail {
     private String url;
     private String httpMethod;
     @Column(columnDefinition = "text")
-    private String payload;
+//    private String payload;
     private int statusCode;
     private LocalDateTime requestOn;
 

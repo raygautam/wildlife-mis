@@ -1,5 +1,6 @@
 package in.gov.forest.wildlifemis.credential.jwt;
 
+import in.gov.forest.wildlifemis.credential.authentication.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -68,9 +69,9 @@ public class JwtHelper {
     }
 
     //generate token for user
-    public String generateToken(String userName) {
+    public String generateToken(UserDetailsImpl userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userName);
+        return doGenerateToken(claims, userDetails);
     }
 
     //while creating the token -
@@ -78,7 +79,7 @@ public class JwtHelper {
     //2. Sign the JWT using the HS512 algorithm and secret key.
     //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
     //   compaction of the JWT to a URL-safe string
-    private String doGenerateToken(Map<String, Object> claims, String subject) {
+    private String doGenerateToken(Map<String, Object> claims, UserDetailsImpl userDetails) {
 //        Key signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
 //        SecretKey secret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
@@ -88,7 +89,12 @@ public class JwtHelper {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .claim("id", userDetails.getId())
+                .claim("divisionId", userDetails.getDivisionId())
+                .claim("serviceId", userDetails.getServiceId())
+                .claim("rangeId", userDetails.getRangeId())
+                .claim("roles", userDetails.getAuthorities())
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512) // <-- This can be helpful to you

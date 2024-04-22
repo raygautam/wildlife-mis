@@ -9,7 +9,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
@@ -29,7 +31,8 @@ import java.util.concurrent.ExecutionException;
 //@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RequestMapping("/public")
 public class AuthenticationController {
-
+//    @Autowired
+//    private TokenBlacklistService tokenBlacklistService;
     private final AuthenticationService authenticationService;
 //    private final CaptchaService captchaServ;
 //    private final RequestMeta requestMeta;
@@ -83,6 +86,13 @@ public class AuthenticationController {
         ApiResponse<?> apiResponse = authenticationService.changePassword(changePasswordDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logout() {
+//        String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+//        tokenBlacklistService.blacklistToken(token);
+//        return ResponseEntity.ok("Logged out successfully.");
+//    }
 
     //    @GetMapping("/public/getpk")
 //    public ResponseEntity<ApiResponse> getCaptcha(HttpServletRequest req ) throws NoSuchAlgorithmException {

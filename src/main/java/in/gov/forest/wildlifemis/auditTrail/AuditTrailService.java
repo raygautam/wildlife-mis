@@ -35,18 +35,18 @@ public class AuditTrailService {
                     .status(HttpStatus.OK.value())
                     .data(
                             auditTrailRepository.findAll()
-                                    .stream()
-                                    .peek(
-                                            auditTrail -> {
-                                                if(auditTrail.getUrl().equals("/public/login")){
-                                                    try {
-                                                        auditTrail.setPayload(AESEncryptionUsingSalt.decrypt(auditTrail.getPayload()));
-                                                    } catch (Exception e) {
-                                                        throw new RuntimeException(e);
-                                                    }
-                                                }
-                                            }
-                                    ).collect(Collectors.toList())
+//                                    .stream()
+//                                    .peek(
+//                                            auditTrail -> {
+//                                                if(auditTrail.getUrl().equals("/public/login")){
+//                                                    try {
+//                                                        auditTrail.setPayload(AESEncryptionUsingSalt.decrypt(auditTrail.getPayload()));
+//                                                    } catch (Exception e) {
+//                                                        throw new RuntimeException(e);
+//                                                    }
+//                                                }
+//                                            }
+//                                    ).collect(Collectors.toList())
                     ).build();
         }catch (DataRetrievalException e){
             throw new DataRetrievalException("Failed to Retrieve", new Error("",e.getMessage()));

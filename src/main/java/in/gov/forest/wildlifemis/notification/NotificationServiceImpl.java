@@ -121,8 +121,10 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                     )
 
                     )
+//            LocalDateTime.parse(addNotificationRequest.getPublishedDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                     .fileUrl(String.valueOf(destFile))
                     .createdDate(LocalDateTime.now())
+                    .publishedDate(addNotificationRequest.getPublishedDate())
                     .isActive(Boolean.TRUE)
                     .isNew(Boolean.TRUE)
                     .isArchive(Boolean.FALSE)

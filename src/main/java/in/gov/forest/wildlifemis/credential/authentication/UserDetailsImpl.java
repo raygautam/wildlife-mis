@@ -2,7 +2,6 @@ package in.gov.forest.wildlifemis.credential.authentication;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.gov.forest.wildlifemis.domian.AppUser;
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,7 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
 
     private final String username;
+    private final String name;
 
     @JsonIgnore
     private final String password;
@@ -47,9 +47,10 @@ public class UserDetailsImpl implements UserDetails {
 
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String password, Long serviceId, Integer divisionId, Integer rangeId, Boolean accountLocked, Integer failedLoginAttempts, LocalDateTime lockoutTime, List<GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String name, String password, Long serviceId, Integer divisionId, Integer rangeId, Boolean accountLocked, Integer failedLoginAttempts, LocalDateTime lockoutTime, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
+        this.name = name;
         this.password = password;
         this.serviceId = serviceId;
         this.divisionId = divisionId;
@@ -75,8 +76,7 @@ public class UserDetailsImpl implements UserDetails {
         log.info("");
         return new UserDetailsImpl(
             userDetail_t.getId(),
-            userDetail_t.getUserName(),
-            userDetail_t.getPassword(),
+            userDetail_t.getUserName(), userDetail_t.getName(), userDetail_t.getPassword(),
             userDetail_t.getService()!=null ? userDetail_t.getService().getId() :null,
             userDetail_t.getDivision() != null ? userDetail_t.getDivision().getId():null,
             userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeId():null,

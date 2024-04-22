@@ -146,54 +146,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
             }
-            RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
-            String requestBody = requestWrapper.getRequestBody();
-            if(request.getServletPath().startsWith("/public/login")) {
-                String requestBody1= null;
-                try {
-                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
-//                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
-//                    logger.info("login : {}", AESEncryptionWithoutSalt.decrypt("1oZvL3o7cr3fr+cB85Ir00ruSzwmzekzFSNfSOw85VS1KA2fI27rcvJ0F042oJUOwRm+U6wSsrQtDr4i2vGong=="));
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    filterChain.doFilter(requestWrapper, response);
-                    AuditTrail auditTrail=AuditTrail.builder()
-                            .url(request.getRequestURI())
-                            .userName(request.getRemoteUser())
-                            .payload(requestBody.isEmpty() ?"[]":requestBody1)
-                            .ipAddress(request.getRemoteAddr())
-                            .userAgent(request.getHeader("User-Agent"))
-                            .requestOn(LocalDateTime.now())
-                            .httpMethod(request.getMethod())
-                            .statusCode(response.getStatus())
-                            .build();
-                    this.auditTrailRepository.save(auditTrail);
-                } catch (Exception e) {
-                    logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
+            log.info("request {}", request);
+            try {
+                filterChain.doFilter(request, response);
+                AuditTrail auditTrail=AuditTrail.builder()
+                        .url(request.getRequestURI())
+                        .userName(request.getRemoteUser())
+//                            .payload(requestBody.isEmpty() ?"[]":requestBody)
+                        .ipAddress(request.getRemoteAddr())
+                        .userAgent(request.getHeader("User-Agent"))
+                        .requestOn(LocalDateTime.now())
+                        .httpMethod(request.getMethod())
+                        .statusCode(response.getStatus())
+                        .build();
+                this.auditTrailRepository.save(auditTrail);
+            } catch (Exception e) {
+                logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
 //                e.printStackTrace();
-                }
-                //                new JwtAuthenticationFilter().insertAuditTrailDetails(requestBody1, request, filterChain, requestWrapper, response);
-            }else{
-                try {
-                    filterChain.doFilter(requestWrapper, response);
-                    AuditTrail auditTrail=AuditTrail.builder()
-                            .url(request.getRequestURI())
-                            .userName(request.getRemoteUser())
-                            .payload(requestBody.isEmpty() ?"[]":requestBody)
-                            .ipAddress(request.getRemoteAddr())
-                            .userAgent(request.getHeader("User-Agent"))
-                            .requestOn(LocalDateTime.now())
-                            .httpMethod(request.getMethod())
-                            .statusCode(response.getStatus())
-                            .build();
-                    this.auditTrailRepository.save(auditTrail);
-                } catch (Exception e) {
-                    logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
-//                e.printStackTrace();
-                }
-//                new JwtAuthenticationFilter().insertAuditTrailDetails(requestBody, request, filterChain, requestWrapper, response);
             }
 
         } else {
@@ -324,6 +293,61 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //            response.setStatus(429);// HTTP 429 Too Many Requests
 //        }
 //     }
+
+
+
+
+
+//            RequestBodyCachingWrapper requestWrapper = new RequestBodyCachingWrapper(request);
+//            String requestBody = requestWrapper.getRequestBody();
+//            if(request.getServletPath().startsWith("/public/login")) {
+//                String requestBody1= null;
+//                try {
+//                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
+////                    requestBody1 = AESEncryptionUsingSalt.encrypt(requestBody);
+////                    logger.info("login : {}", AESEncryptionWithoutSalt.decrypt("1oZvL3o7cr3fr+cB85Ir00ruSzwmzekzFSNfSOw85VS1KA2fI27rcvJ0F042oJUOwRm+U6wSsrQtDr4i2vGong=="));
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//                try {
+//                    filterChain.doFilter(requestWrapper, response);
+//                    AuditTrail auditTrail=AuditTrail.builder()
+//                            .url(request.getRequestURI())
+//                            .userName(request.getRemoteUser())
+////                            .payload(requestBody.isEmpty() ?"[]":requestBody1)
+//                            .ipAddress(request.getRemoteAddr())
+//                            .userAgent(request.getHeader("User-Agent"))
+//                            .requestOn(LocalDateTime.now())
+//                            .httpMethod(request.getMethod())
+//                            .statusCode(response.getStatus())
+//                            .build();
+//                    this.auditTrailRepository.save(auditTrail);
+//                } catch (Exception e) {
+//                    logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
+////                e.printStackTrace();
+//                }
+//                //                new JwtAuthenticationFilter().insertAuditTrailDetails(requestBody1, request, filterChain, requestWrapper, response);
+//            }else{
+//                try {
+//                    filterChain.doFilter(requestWrapper, response);
+//                    AuditTrail auditTrail=AuditTrail.builder()
+//                            .url(request.getRequestURI())
+//                            .userName(request.getRemoteUser())
+////                            .payload(requestBody.isEmpty() ?"[]":requestBody)
+//                            .ipAddress(request.getRemoteAddr())
+//                            .userAgent(request.getHeader("User-Agent"))
+//                            .requestOn(LocalDateTime.now())
+//                            .httpMethod(request.getMethod())
+//                            .statusCode(response.getStatus())
+//                            .build();
+//                    this.auditTrailRepository.save(auditTrail);
+//                } catch (Exception e) {
+//                    logger.error("An error occurred while processing the filter chain: {}", e.getMessage());
+////                e.printStackTrace();
+//                }
+////                new JwtAuthenticationFilter().insertAuditTrailDetails(requestBody, request, filterChain, requestWrapper, response);
+//            }
+//            filterChain.doFilter(request, response);
 }
 
 

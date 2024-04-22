@@ -36,7 +36,7 @@ public class Notification {
     private LocalDateTime createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime publishedDate;
+    private String publishedDate;
 
     private Boolean isActive;
 

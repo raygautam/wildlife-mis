@@ -92,7 +92,7 @@ public class AuthenticationService {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 //                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(loginRequestDTO.getUserName());
-                String jwt = helper.generateToken(userDetails.getUsername());
+                String jwt = helper.generateToken(userDetails);
                 AppUser user = userRepo.findByUserNameAndIsActive(loginRequestDTO.getUserName(), Boolean.TRUE).orElseThrow(null);
                 if(!userService.unlockWhenTimeExpired(user)){
                     throw new AccessDeniedException("Account is locked");
@@ -107,7 +107,7 @@ public class AuthenticationService {
                                         //uncomment one refresh token is implements in front end.
 //                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
-                                        .username(userDetails.getUsername())
+                                        .name(userDetails.getName())
                                         .serviceId(userDetails.getServiceId())
                                         .rangeId(userDetails.getRangeId())
                                         .divisionId(userDetails.getDivisionId())
@@ -133,7 +133,7 @@ public class AuthenticationService {
                     .map(refreshTokenService::verifyExpiration)
                     .map(RefreshToken::getAppUser)
                     .map(userInfo -> {
-                        String accessToken = helper.generateToken(userInfo.getUserName());
+                        String accessToken = helper.generateToken(UserDetailsImpl.build(userInfo));
                         return ApiResponse.builder()
                                 .status(HttpStatus.OK.value())
                                 .error(null)

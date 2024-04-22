@@ -36,7 +36,7 @@ public class AppUserManagementController {
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody AppUserManagementDto userDetailDto) throws JsonProcessingException {
+    public ResponseEntity<?> add(@RequestBody @Valid AppUserManagementDto userDetailDto) throws JsonProcessingException {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.insertAppUser(userDetailDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
