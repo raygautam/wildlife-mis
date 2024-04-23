@@ -27,7 +27,7 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                                     ForestService.builder()
                                             .serviceName(serviceRequestDTO.getServiceName())
                                             .serviceId(serviceRequestDTO.getServiceId())
-                                            .serviceURL(serviceRequestDTO.getServiceURL())
+//                                            .serviceURL(serviceRequestDTO.getServiceURL())
                                             .build()
                             )
                     ).build();
@@ -62,7 +62,7 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                                             forestService -> {
                                                 forestService.setServiceName(forestServiceRequestDTO.getServiceName());
                                                 forestService.setServiceId(forestServiceRequestDTO.getServiceId());
-                                                forestService.setServiceURL(forestServiceRequestDTO.getServiceURL());
+//                                                forestService.setServiceURL(forestServiceRequestDTO.getServiceURL());
                                                 forestServiceRepository.save(forestService);
                                                 return "Updated Successfully";
                                             }

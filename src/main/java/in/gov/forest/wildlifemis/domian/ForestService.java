@@ -21,7 +21,8 @@ public class ForestService {
     @Column(unique = true, nullable = false)
     private String serviceName;
     private String serviceId;
-    private String serviceURL;
+//    private ServiceURL urlId;
+//    private Boolean isActive;
 
     @Override
     public final boolean equals(Object o) {
