@@ -83,8 +83,8 @@ public class GlobalException {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(JwtCustomException ex) {
-        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.FORBIDDEN.value(), Collections.singletonList(ex.getError()), null);
+    public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiResponse<Object> apiResponse = new ApiResponse<>(HttpStatus.FORBIDDEN.value(), Collections.singletonList(new Error("",ex.getMessage())), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
     }
 

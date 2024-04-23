@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -107,17 +108,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 } catch (IllegalArgumentException e) {
                 logger.info("Illegal Argument while fetching the username !!"+e.getMessage());
-                Error error = new Error("",e.getMessage());
-                throw new JwtCustomException("Illegal Argument while fetching the username !!", error);
-            } catch (ExpiredJwtException e) {
-                logger.info("Given jwt token is expired !!");
-                Error error = new Error("","JWT token has expired");
-                throw new JwtCustomException("JWT token has expired", error);
+//                Error error = new Error("",e.getMessage());
+//                throw new JwtCustomException("Illegal Argument while fetching the username !!", error);
+                    throw new AccessDeniedException("Illegal Argument while fetching the username !!");
+                } catch (ExpiredJwtException e) {
+//                logger.info("Given jwt token is expired !!");
+//                Error error = new Error("","JWT token has expired");
+                    throw new AccessDeniedException("JWT token has expired !!");
             } catch (MalformedJwtException e) {
                 logger.info("Some changed has done in token !! Invalid Token");
-                Error error = new Error("",e.getMessage());
-                throw new JwtCustomException("Some changed has done in token !! Invalid Token",error);
-
+//                Error error = new Error("",e.getMessage());
+//                throw new JwtCustomException("Some changed has done in token !! Invalid Token",error);
+                    throw new AccessDeniedException("Invalid Token !!");
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
