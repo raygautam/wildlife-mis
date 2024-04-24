@@ -1,4 +1,4 @@
-package in.gov.forest.wildlifemis.appUser;
+package in.gov.forest.wildlifemis.appUser.dto;
 
 import lombok.*;
 

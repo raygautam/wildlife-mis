@@ -1,10 +1,12 @@
 package in.gov.forest.wildlifemis.appUser;
+import in.gov.forest.wildlifemis.appUser.dto.AppUserManagementDto;
+import in.gov.forest.wildlifemis.appUser.dto.GetAppUserDetails;
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.AppUser;
 import in.gov.forest.wildlifemis.domian.ForestService;
-import in.gov.forest.wildlifemis.domian.NotificationType;
 import in.gov.forest.wildlifemis.domian.Role;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
+import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.forest_service.ForestServiceRepository;
 import in.gov.forest.wildlifemis.lgdEntities.entities.Division;
@@ -12,18 +14,16 @@ import in.gov.forest.wildlifemis.lgdEntities.entities.Range;
 import in.gov.forest.wildlifemis.lgdEntities.repository.DivisionRepository;
 import in.gov.forest.wildlifemis.lgdEntities.repository.RangeRepository;
 import in.gov.forest.wildlifemis.role.RoleRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -104,6 +104,32 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
                     ).build();
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to insert", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> get() {
+        try {
+
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                        appUserManagementRepository.findAll()
+                                .stream()
+                                .map(appUser -> {
+                                    return new GetAppUserDetails(
+                                            appUser.getName(),
+                                            appUser.getIsActive(),
+                                            appUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
+                                            appUser.getService().getServiceName(),
+                                            appUser.getDivision()!=null?appUser.getDivision().getName():null,
+                                            appUser.getRange()!=null?appUser.getRange().getRangeName():null
+                                    );
+                                }).collect(Collectors.toList())
+                    )
+                    .build();
+        }catch (DataRetrievalException e){
+            throw new DataRetrievalException("Failed to retrieve", new Error("",e.getMessage()));
         }
     }
 

@@ -1,6 +1,5 @@
 package in.gov.forest.wildlifemis.credential.authentication;
 
-import in.gov.forest.wildlifemis.appUser.AppUserManagementDto;
 import in.gov.forest.wildlifemis.appUser.AppUserManagementRepository;
 import in.gov.forest.wildlifemis.domian.AppUser;
 import lombok.extern.slf4j.Slf4j;

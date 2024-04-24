@@ -267,4 +267,19 @@ public class LGDService {
                 )
                 .build();
     }
+
+    public ResponseEntity<?> getAllRangesByDivisionId(Integer divisionId) {
+        try{
+            return ResponseEntity.ok(
+                    rangeRepository.findByDivisionId(divisionId)
+                            .stream()
+                            .map(this::convertToRangeResponseDTO)
+                            .sorted(Comparator.comparing(RangeResponseDTO::getRangeId))
+                            .toList()
+            );
+        }catch(DataAccessException e){
+            Error error=new Error("",e.getMessage());
+            throw new DataRetrievalException("Could not able to retrieved data!",error);
+        }
+    }
 }

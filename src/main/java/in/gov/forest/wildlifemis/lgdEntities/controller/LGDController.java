@@ -76,6 +76,11 @@ public class LGDController {
     public ResponseEntity<?> getAllRanges(){
         return lgdService.getAllRanges();
     }
+    @GetMapping("/getAllRanges/{divisionId}")
+    public ResponseEntity<?> getAllRangesByDivisionId(@PathVariable Integer divisionId){
+        return lgdService.getAllRangesByDivisionId(divisionId);
+    }
+
     @GetMapping("/getAllOperatedBlocks")
     public ResponseEntity<?> getAllOperationBlocks(){
         return lgdService.getAllOperationBlocks();
