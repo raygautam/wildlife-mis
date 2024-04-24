@@ -32,7 +32,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                           "Data Inserted Successfully"
                   ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to save notificationType", new Error("",e.getMessage()));
+            throw new DataInsertionException("Fail to inserted data", new Error("",e.getMessage()));
         }
     }
 
@@ -48,7 +48,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());
-            throw new DataRetrievalException("Failed to retrieve notificationType", new Error("",e.getMessage()));
+            throw new DataRetrievalException("Fail to retrieve", new Error("",e.getMessage()));
         }
     }
 
@@ -69,10 +69,10 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
                                             }
                                     )
                                     .findFirst()
-                                    .orElseThrow(()->new NotFoundException("NotificationType not found", new Error("","NotificationType not found")))
+                                    .orElseThrow(()->new NotFoundException("Not found", new Error("","Not found")))
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notificationType", new Error("",e.getMessage()));
+            throw new DataInsertionException("Failed to update", new Error("",e.getMessage()));
         }
     }
 

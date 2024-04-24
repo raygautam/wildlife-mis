@@ -87,12 +87,11 @@ public class AuthenticationController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<?> logout() {
-//        String token = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-//        tokenBlacklistService.blacklistToken(token);
-//        return ResponseEntity.ok("Logged out successfully.");
-//    }
+    @PostMapping("/logout/{id}")
+    public ResponseEntity<?> logout(@PathVariable Long id) {
+        ApiResponse<?> apiResponse = authenticationService.logout(id);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
     //    @GetMapping("/public/getpk")
 //    public ResponseEntity<ApiResponse> getCaptcha(HttpServletRequest req ) throws NoSuchAlgorithmException {

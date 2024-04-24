@@ -2,11 +2,13 @@ package in.gov.forest.wildlifemis.forest_service;
 
 import in.gov.forest.wildlifemis.common.ApiResponse;
 import in.gov.forest.wildlifemis.domian.ForestService;
+import in.gov.forest.wildlifemis.domian.ServiceURL;
 import in.gov.forest.wildlifemis.exception.DataInsertionException;
 import in.gov.forest.wildlifemis.exception.DataRetrievalException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.NotFoundException;
 import in.gov.forest.wildlifemis.forest_service.dto.ForestServiceRequestDTO;
+import in.gov.forest.wildlifemis.serviceURL.ServiceURLRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
 public class ForestService_ServiceImpl implements ForestService_ServiceInter {
     @Autowired
     private ForestServiceRepository forestServiceRepository;
+
+    @Autowired
+    private ServiceURLRepository serviceURLRepository;
     @Override
     public ApiResponse<?> add(ForestServiceRequestDTO serviceRequestDTO) {
         try{
@@ -27,7 +32,8 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                                     ForestService.builder()
                                             .serviceName(serviceRequestDTO.getServiceName())
                                             .serviceId(serviceRequestDTO.getServiceId())
-//                                            .serviceURL(serviceRequestDTO.getServiceURL())
+                                            .urlId(serviceURLRepository.findAll().stream().findFirst().get())
+                                            .isActive(Boolean.TRUE)
                                             .build()
                             )
                     ).build();

@@ -8,6 +8,7 @@ import in.gov.forest.wildlifemis.common.TokenRefreshRequest;
 import in.gov.forest.wildlifemis.credential.authentication.dto.ChangePasswordDTO;
 import in.gov.forest.wildlifemis.credential.jwt.JwtHelper;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshToken;
+import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenRepository;
 import in.gov.forest.wildlifemis.credential.refreshToken.RefreshTokenService;
 import in.gov.forest.wildlifemis.domian.AppUser;
 import in.gov.forest.wildlifemis.exception.AccessDeniedException;
@@ -29,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -61,6 +63,9 @@ public class AuthenticationService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
 
     public ApiResponse<?> userLogin(LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        if(loginRequestDTO.getUserName()==null || loginRequestDTO.getUserName()=="" && loginRequestDTO.getPassword()==null){
@@ -105,7 +110,7 @@ public class AuthenticationService {
                                         .token(jwt)
                                         .type("Bearer")
                                         //uncomment one refresh token is implements in front end.
-//                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
+                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
                                         .name(userDetails.getName())
                                         .serviceId(userDetails.getServiceId())
@@ -184,6 +189,21 @@ public class AuthenticationService {
             }
 
         }
+    @Transactional
+    public ApiResponse<?> logout(Long id) {
+        try{
+            refreshTokenRepository.deleteByAppUserId(id);
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data("Logged out successfully")
+                    .build();
+        }catch (Exception e){
+            return ApiResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .data("An unexpected error occurred.")
+                    .build();
+        }
+    }
 }
 
 //

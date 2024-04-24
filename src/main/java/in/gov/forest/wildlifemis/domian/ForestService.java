@@ -21,8 +21,10 @@ public class ForestService {
     @Column(unique = true, nullable = false)
     private String serviceName;
     private String serviceId;
-//    private ServiceURL urlId;
-//    private Boolean isActive;
+    @ManyToOne
+    @JoinColumn(name = "url_id")
+    private ServiceURL urlId;
+    private Boolean isActive;
 
     @Override
     public final boolean equals(Object o) {

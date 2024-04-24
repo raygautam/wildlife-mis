@@ -144,7 +144,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                         .build();
 
             } catch (DataInsertionException e) {
-                throw new DataInsertionException("Fail to add notification", new Error("",e.getMessage()));
+                throw new DataInsertionException("Fail to inserted data", new Error("",e.getMessage()));
             }
 
         } catch (Exception e) {
@@ -249,6 +249,7 @@ public class NotificationServiceImpl implements NotificationServiceInter {
                                                     .isArchive(notification.getIsArchive())
                                                     .isNew(notification.getIsNew())
                                                     .build();
+
                                         }
                                     )
                     ).build();

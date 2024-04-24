@@ -130,7 +130,7 @@ public class NotificationController {
 
 
     /**API to download notification resource using Notification Entity id.**/
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
 //        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
