@@ -1,11 +1,12 @@
 package in.gov.forest.wildlifemis.role;
 
 //import com.example.jwt.jwtauthenticationdemo.Uppercase;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Builder
 public class RoleDto {
     private  Integer roleId;
