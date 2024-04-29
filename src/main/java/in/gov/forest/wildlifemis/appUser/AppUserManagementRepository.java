@@ -18,4 +18,6 @@ public interface AppUserManagementRepository extends JpaRepository<AppUser, Long
     @Query(value = "UPDATE users SET failed_login_attempts = ?1 WHERE user_name = ?2",nativeQuery = true)
     @Modifying
     public void updateFailedAttempts(int failAttempts, String email);
+
+    AppUser findByUserNameAndServiceIsActive(String username, Boolean aTrue);
 }

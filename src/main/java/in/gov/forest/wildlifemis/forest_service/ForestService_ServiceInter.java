@@ -8,5 +8,7 @@ public interface ForestService_ServiceInter {
 
     ApiResponse<?> get();
 
-    ApiResponse<?> updateProduct(Long id, ForestServiceRequestDTO forestServiceRequestDTO);
+    ApiResponse<?> update(Long id, ForestServiceRequestDTO forestServiceRequestDTO);
+
+    ApiResponse<?> delete(Long id);
 }

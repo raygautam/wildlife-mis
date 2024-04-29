@@ -28,8 +28,14 @@ public class ForestServiceController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ForestServiceRequestDTO forestServiceRequestDTO) {
-        ApiResponse<?> apiResponse=service_ServiceInter.updateProduct(id, forestServiceRequestDTO);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ForestServiceRequestDTO forestServiceRequestDTO) {
+        ApiResponse<?> apiResponse=service_ServiceInter.update(id, forestServiceRequestDTO);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        ApiResponse<?> apiResponse=service_ServiceInter.delete(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

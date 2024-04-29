@@ -52,12 +52,12 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());
-            throw new DataRetrievalException("Failed to retrieve notificationType", new Error("",e.getMessage()));
+            throw new DataRetrievalException("Failed to retrieve", new Error("",e.getMessage()));
         }
     }
 
     @Override
-    public ApiResponse<?> updateProduct(Long id, ForestServiceRequestDTO forestServiceRequestDTO) {
+    public ApiResponse<?> update(Long id, ForestServiceRequestDTO forestServiceRequestDTO) {
         try{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
@@ -74,10 +74,29 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
                                             }
                                     )
                                     .findFirst()
-                                    .orElseThrow(()->new NotFoundException("NotificationType not found", new Error("","NotificationType not found")))
+                                    .orElseThrow(()->new NotFoundException("Not found", new Error("","Not found")))
                     ).build();
         }catch (DataInsertionException e){
-            throw new DataInsertionException("Failed to update notificationType", new Error("",e.getMessage()));
+            throw new DataInsertionException("Failed to update", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> delete(Long id) {
+        try{
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            forestServiceRepository.findById(id).stream().map(
+                                    forestService -> {
+                                        forestService.setIsActive(Boolean.FALSE);
+                                        forestServiceRepository.save(forestService);
+                                        return "Deleted Successfully";
+                                    }
+                            )
+                    ).build();
+        }catch (DataRetrievalException e){
+            throw new DataRetrievalException("Failed to delete", new Error("",e.getMessage()));
         }
     }
 }

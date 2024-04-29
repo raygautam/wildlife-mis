@@ -116,8 +116,22 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
                     .data(
                         appUserManagementRepository.findAll()
                                 .stream()
+                                .filter(appUser -> appUser.getRoles().stream()
+                                        .noneMatch(role -> Set.of("SUPER_ADMIN", "PCCF&HooF", "ADMIN").contains(role.getName()))
+                                )
+//                                .filter(appUser ->
+//                                                appUser.getRoles().stream()
+////                                                        .map(Role::getName)
+//                                                        .noneMatch(
+//                                                        roleName ->
+//                                                                roleName.equals("SUPER_ADMIN") ||
+//                                                                roleName.equals("PCCF&HooF")||
+//                                                                roleName.equals("ADMIN")
+//                                                        )
+//                                        )
                                 .map(appUser -> {
                                     return new GetAppUserDetails(
+                                            appUser.getId(),
                                             appUser.getName(),
                                             appUser.getIsActive(),
                                             appUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
