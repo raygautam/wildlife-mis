@@ -16,19 +16,19 @@ public class DocumentTypeController {
     @Autowired
     DocumentTypeServiceInter documentTypeServiceInter;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> saveNotificationType(@RequestBody DocumentTypeDTO typeOfDocumentDTO){
         ApiResponse<?> apiResponse=documentTypeServiceInter.add(typeOfDocumentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getNotificationType(){
         ApiResponse<?> apiResponse=documentTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateDocumentType(@PathVariable Long id, @RequestBody DocumentTypeDTO typeOfDocumentDTO) {
         ApiResponse<?> apiResponse=documentTypeServiceInter.update(id, typeOfDocumentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

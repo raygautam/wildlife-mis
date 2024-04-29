@@ -68,20 +68,20 @@ public class LGDController {
     }
 
 
-    @GetMapping("/getAllDivisions")
+    @GetMapping("/divisions")
     public ResponseEntity<?> getAllDivision(){
         return lgdService.getAllDivisions();
     }
-    @GetMapping("/getAllRanges")
+    @GetMapping("/ranges")
     public ResponseEntity<?> getAllRanges(){
         return lgdService.getAllRanges();
     }
-    @GetMapping("/getAllRanges/{divisionId}")
+    @GetMapping("/ranges/{divisionId}")
     public ResponseEntity<?> getAllRangesByDivisionId(@PathVariable Integer divisionId){
         return lgdService.getAllRangesByDivisionId(divisionId);
     }
 
-    @GetMapping("/getAllOperatedBlocks")
+    @GetMapping("/operatedBlocks")
     public ResponseEntity<?> getAllOperationBlocks(){
         return lgdService.getAllOperationBlocks();
     }

@@ -14,13 +14,13 @@ public class ServiceURLController {
     @Autowired
     ServiceURLServiceInter serviceURLServiceInter;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody ServiceURLDTO serviceURLDTO){
         ApiResponse<?> response = serviceURLServiceInter.add(serviceURLDTO);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> get(){
         ApiResponse<?> response = serviceURLServiceInter.get();
         return ResponseEntity.status(response.getStatus()).body(response);

@@ -18,19 +18,19 @@ public class NotificationTypeController {
 
 //    SuperAdmin can enter notification_type
 //    @PreAuthorize("hasRole('SuperAdmin')")
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> saveNotificationType(@RequestBody NotificationTypeDTO notificationTypeDTO){
         ApiResponse<?> apiResponse=notificationTypeServiceInter.add(notificationTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getNotificationType(){
         ApiResponse<?> apiResponse=notificationTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody NotificationTypeDTO notificationTypeDTO) {
         ApiResponse<?> apiResponse=notificationTypeServiceInter.update(id, notificationTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

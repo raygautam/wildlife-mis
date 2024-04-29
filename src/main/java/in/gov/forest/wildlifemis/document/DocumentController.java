@@ -38,7 +38,7 @@ public class DocumentController {
 //        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //    }
 
-    @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -68,14 +68,14 @@ public class DocumentController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/getAllDocument")
+    @GetMapping("/")
     public ResponseEntity<?> getAllDocument() {
         ApiResponse<?> apiResponse = documentServiceInter.getAllDocument();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
 
-    @GetMapping("/getDocument/{documentTypeId}")
+    @GetMapping("/{documentTypeId}")
     public ResponseEntity<?> getDocument(@PathVariable Long documentTypeId) {
         ApiResponse<?> apiResponse = documentServiceInter.getDocument(documentTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -89,7 +89,7 @@ public class DocumentController {
      * @return an API response indicating the status of the operation
      * on delete operation changing isActive status to false.
      **/
-    @DeleteMapping("/delete/{documentId}")
+    @DeleteMapping("/{documentId}")
     public ResponseEntity<?> deleteDocument(@PathVariable Long documentId) {
         ApiResponse<?> apiResponse = documentServiceInter.deleteDocument(documentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

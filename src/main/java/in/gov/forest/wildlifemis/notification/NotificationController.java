@@ -63,7 +63,7 @@ public class NotificationController {
      * @return an ApiResponse object indicating the status of the operation
      * @throws IOException if there is an error in reading or writing the file
      */
-    @PostMapping(value = "/add",  consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -111,7 +111,7 @@ public class NotificationController {
 //                    description = "NOt Available",
 //                    content = @Content)
 //    })
-    @GetMapping("/getActiveNotification/{notificationTypeId}")
+    @GetMapping("/{notificationTypeId}")
     public ResponseEntity<?> getActiveNotification(@PathVariable Long notificationTypeId) {
         ApiResponse<?> apiResponse = notificationServiceInter.getActiveNotification(notificationTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -121,7 +121,7 @@ public class NotificationController {
     /**
      * API to get all notifications using the specified notificationTypeId and if the isArchive is true
      * **/
-    @GetMapping("/getArchiveNotification/{notificationTypeId}")
+    @GetMapping("/archive/{notificationTypeId}")
     public ResponseEntity<?> getArchiveNotification(@PathVariable Long notificationTypeId) {
         ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotification(notificationTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -139,21 +139,21 @@ public class NotificationController {
     }
 
     /**API to archive notification using id of Notification Entity id.**/
-    @PutMapping("/archive/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> archive(@PathVariable Long id) {
         ApiResponse<?> apiResponse = notificationServiceInter.archive(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
     /**API to get all archive notification if isArchive is true.**/
-    @GetMapping("/getAllArchive")
+    @GetMapping("/archive/")
     public ResponseEntity<?> getAllArchive() {
         ApiResponse<?> apiResponse = notificationServiceInter.getAllArchive();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
     /**API to get all notification presence notifications table.**/
-    @GetMapping("/getAllNotification")
+    @GetMapping("/")
     public ResponseEntity<?> getAllNotification() {
         ApiResponse<?> apiResponse = notificationServiceInter.getAllNotification();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -162,7 +162,7 @@ public class NotificationController {
     /**
         Delete API do not delete notification permanently instead change the flag of isActive to false.
      **/
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNotification(@PathVariable Long id){
         ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

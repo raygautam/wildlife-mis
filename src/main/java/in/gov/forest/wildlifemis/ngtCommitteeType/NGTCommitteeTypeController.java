@@ -14,19 +14,19 @@ public class NGTCommitteeTypeController {
     @Autowired
     NGTCommitteeTypeServiceInter ngtCommitteeTypeServiceInter;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> saveGalleryType(@RequestBody NGTCommitteeTypeDTO ngtCommitteeTypeDTO){
         ApiResponse<?> apiResponse=ngtCommitteeTypeServiceInter.add(ngtCommitteeTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getGalleryType(){
         ApiResponse<?> apiResponse=ngtCommitteeTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateGalleryType(@PathVariable Long id, @RequestBody NGTCommitteeTypeDTO ngtCommitteeTypeDTO) {
         ApiResponse<?> apiResponse=ngtCommitteeTypeServiceInter.update(id, ngtCommitteeTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

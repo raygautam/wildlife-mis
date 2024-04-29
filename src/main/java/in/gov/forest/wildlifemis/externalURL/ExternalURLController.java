@@ -26,21 +26,21 @@ public class ExternalURLController {
     private ExternalURLServiceInter externalURLServiceInter;
 
     //Field validation is not used
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> addExternalURL(@RequestBody ExternalURL_DTO externalURLDto) throws IOException {
 //        return ResponseEntity.ok("ExternalURLController.");
         ApiResponse<?> apiResponse=externalURLServiceInter.add(externalURLDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getExternalURL() throws IOException {
 
         ApiResponse<?> apiResponse=externalURLServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/")
     public ResponseEntity<?> updateExternalURL( @RequestBody ExternalURL_DTO externalURLDto) throws IOException {
 //        return ResponseEntity.ok("ExternalURLController.");
         ApiResponse<?> apiResponse=externalURLServiceInter.update(externalURLDto);

@@ -23,13 +23,13 @@ public class AppUserManagementController {
 
 
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody @Valid AppUserManagementDto userDetailDto) throws JsonProcessingException {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.insertAppUser(userDetailDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getUserDetails() {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

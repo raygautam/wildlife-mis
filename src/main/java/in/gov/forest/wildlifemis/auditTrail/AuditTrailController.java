@@ -15,7 +15,7 @@ public class AuditTrailController {
     @Autowired
     private AuditTrailService auditTrailService;
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getAuditTrailData() {
         ApiResponse<?> apiResponse = auditTrailService.getAuditTrailData();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

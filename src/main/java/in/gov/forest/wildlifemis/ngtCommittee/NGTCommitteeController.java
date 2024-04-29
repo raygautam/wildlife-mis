@@ -28,7 +28,7 @@ public class NGTCommitteeController {
     @Autowired
     JsonMapper jsonMapper;
 
-    @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -59,14 +59,14 @@ public class NGTCommitteeController {
 //        return ResponseEntity.status(200).body(ngtCommitteeDTO);
     }
 
-    @GetMapping("/getAllNGTCommittee")
+    @GetMapping("/")
     public ResponseEntity<?> getAllNGTCommittee() {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.getAllNGTCommittee();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
 
-    @GetMapping("/getNGTCommittee/{ngtCommitteeTypeId}")
+    @GetMapping("/{ngtCommitteeTypeId}")
     public ResponseEntity<?> getNGTCommittee(@PathVariable Long ngtCommitteeTypeId) {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.getNGTCommittee(ngtCommitteeTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -80,7 +80,7 @@ public class NGTCommitteeController {
      * @return an API response indicating the status of the operation
      * on delete operation changing isActive status to false.
      **/
-    @DeleteMapping("/delete/{ngtCommitteeId}")
+    @DeleteMapping("/{ngtCommitteeId}")
     public ResponseEntity<?> deleteNGTCommittee(@PathVariable Long ngtCommitteeId) {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.deleteNGTCommittee(ngtCommitteeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

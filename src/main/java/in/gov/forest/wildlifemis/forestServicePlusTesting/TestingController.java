@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/public/application")
 @CrossOrigin("*")
 public class TestingController {
 
@@ -39,7 +39,7 @@ public class TestingController {
         return objectMapper.convertValue(result, Object.class);
     }
 
-    @GetMapping("/getDistrictWiseApplicationCount")
+    @GetMapping("/districtCount")
     public List<?> getDistrictWiseApplicationCount() throws JsonProcessingException {
 //        String sql = "SELECT district_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd " +
 //                "Inner join districts d on d.district_code=ffd.district_code " +
@@ -55,7 +55,7 @@ public class TestingController {
 //        return objectMapper.convertValue(, Object[].class);
     }
 
-    @GetMapping("/getDivisionWiseApplicationCount")
+    @GetMapping("/divisionCount")
     public Object getDivisionWiseApplicationCount() throws JsonProcessingException {
 //        String sql = "SELECT d.name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
 //                "Inner join division d on d.id=ffd.division_id\n" +
@@ -69,7 +69,7 @@ public class TestingController {
         // Convert the result to YourObject using ObjectMapper
         return jdbcTemplate.queryForList(sql);
     }
-    @GetMapping("/getRangeWiseApplicationCount")
+    @GetMapping("/rangeCount")
     public Object getRangeWiseApplicationCount() throws JsonProcessingException {
 //        String sql = "SELECT d.range_name, count(fish_farmer_id) as application_count FROM fish_farmer_details ffd\n" +
 //                "Inner join range d on d.range_id=ffd.range_id\n" +
@@ -87,7 +87,7 @@ public class TestingController {
         return jdbcTemplate.queryForList(sql);
     }
 //    @SuppressWarnings("unchecked")
-    @GetMapping("/getAllApplicationsByDivisionId/{id}")
+    @GetMapping("/division/{id}")
     public Object getAllApplicationsByDivisionId(@PathVariable Long id) throws JsonProcessingException {
 //        String sql = "SELECT * FROM fish_farmer_details ffd\n" +
 //                "Where ffd.division_id="+id;
@@ -116,7 +116,7 @@ public class TestingController {
 
 
     }
-    @GetMapping("/getAllApplicationsByRangeId/{id}")
+    @GetMapping("/range/{id}")
     public Object getAllApplicationsByRangeId(@PathVariable Long id) throws JsonProcessingException {
         String sql = "SELECT * FROM fish_farmer_details ffd\n" +
                 "Where ffd.range_id = ? ";
@@ -127,7 +127,7 @@ public class TestingController {
         return jdbcTemplate.queryForList(sql,id);
     }
 
-    @GetMapping("/getAllApplicationsByDistrictCode/{id}")
+    @GetMapping("/district/{id}")
     public Object getAllApplicationsByDistrictCode(@PathVariable Long id) throws JsonProcessingException {
         String sql = "SELECT * FROM fish_farmer_details ffd\n" +
                 "Where ffd.district_code= ?";
@@ -139,7 +139,7 @@ public class TestingController {
     }
 
 
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheDistricts")
+    @GetMapping("/districtMonthWiseCount")
     public Object getApplicationsCountForAllMonthForAllTheDistrict() throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "    COALESCE(d.district_name, 'Total') AS DistrictName,\n" +
@@ -186,7 +186,7 @@ public class TestingController {
     }
 
 
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisions")
+    @GetMapping("/divisionMonthWiseCount")
     public Object getApplicationsCountForAllMonthForAllTheDivisions() throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "    COALESCE(d.name, 'Total') AS DivisionName, \n" +
@@ -226,7 +226,7 @@ public class TestingController {
         return jdbcTemplate.queryForList(sql);
     }
 
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheRanges")
+    @GetMapping("/rangeMonthWiseCount")
     public Object getApplicationsCountForAllMonthForAllTheRanges() throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "COALESCE(d.range_name, 'Total') AS RangeName,\n" +
@@ -271,7 +271,7 @@ public class TestingController {
         // Convert the result to YourObject using ObjectMapper
         return jdbcTemplate.queryForList(sql);
     }
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheDistrictsYearWise/{year}")
+    @GetMapping("/districtMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheDistrictsYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "    d.district_name AS DistrictName,\n" +
@@ -317,7 +317,7 @@ public class TestingController {
         return jdbcTemplate.queryForList(sql, year);
     }
 
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheDivisionsYearWise/{year}")
+    @GetMapping("/divisionMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheDivisionsYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "    d.name AS DivisionName,\n" +
@@ -363,7 +363,7 @@ public class TestingController {
         return jdbcTemplate.queryForList(sql, year);
     }
 
-    @GetMapping("/getApplicationsCountForAllMonthForAllTheRangesYearWise/{year}")
+    @GetMapping("/rangeMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheRangesYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
                 "    d.range_name AS RangeName,\n" +

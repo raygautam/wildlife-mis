@@ -52,7 +52,7 @@ public class GalleryController {
 //        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //    }
 
-    @PostMapping(value = "/add", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -82,21 +82,21 @@ public class GalleryController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/getGallery/{galleryTypeId}")
+    @GetMapping("/{galleryTypeId}")
     public ResponseEntity<?> getGallery(@PathVariable Long galleryTypeId) {
         ApiResponse<?> apiResponse = galleryServiceInter.getGallery(galleryTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
 
-    @GetMapping("/getAllGallery")
+    @GetMapping("/")
     public ResponseEntity<?> getAllGallery() {
         ApiResponse<?> apiResponse = galleryServiceInter.getAllGallery();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
 
-    @DeleteMapping("/delete/{galleryId}")
+    @DeleteMapping("/{galleryId}")
     public ResponseEntity<?> delete(@PathVariable Long galleryId) {
         ApiResponse<?> apiResponse = galleryServiceInter.delete(galleryId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -120,11 +120,11 @@ public class GalleryController {
 //
 //    }
 
-    @GetMapping("/download/{id}")
-    public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
-        return galleryServiceInter.download(id);
-
-    }
+//    @GetMapping("/download/{id}")
+//    public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
+//        return galleryServiceInter.download(id);
+//
+//    }
 
 
 

@@ -26,7 +26,7 @@ public class OfficialController {
     private OfficialServiceInter officialServiceInter;
     @Autowired
     private JsonMapper jsonMapper;
-    @PostMapping(value = "/add",  consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -56,7 +56,7 @@ public class OfficialController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/")
     public ResponseEntity<?> getAllOfficial() {
         ApiResponse<?> apiResponse = officialServiceInter.getAllOfficial();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
