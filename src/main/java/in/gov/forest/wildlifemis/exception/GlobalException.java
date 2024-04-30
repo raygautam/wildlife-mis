@@ -32,15 +32,15 @@ public class GlobalException {
         return new ResponseEntity<>(apiResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ResponseEntity<Object> handleForbiddenException(AccessDeniedException e) {
-////        Error error = new Error("",e.getMessage());
-//        ApiResponse<Object> apiResponse = new ApiResponse<>(
-//                HttpStatus.FORBIDDEN.value(),
-//                Collections.singletonList(new Error("",e.getMessage())),
-//                null);
-//        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
-//    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleForbiddenException(DataIntegrityViolationException e) {
+//        Error error = new Error("",e.getMessage());
+        ApiResponse<Object> apiResponse = new ApiResponse<>(
+                HttpStatus.CONFLICT.value(),
+                Collections.singletonList(new Error("",e.getMessage())),
+                null);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {

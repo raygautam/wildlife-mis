@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -26,12 +28,39 @@ public class UserDetailsServiceImpl implements UserDetailsService {
            .orElseThrow(() -> new UsernameNotFoundException("user not found " + username));;
     log.info("AppUser : "+appUser);
 
-    if(appUser.getService().getIsActive())
-    {
-        return UserDetailsImpl.build(appUser);
-    }else{
-        throw new AccessDeniedException("Service is deactivated");
-    }
+//    appUser.getRoles().stream()
+//            .map(role-> {
+//                        if(!role.getName().contains("SUPER_ADMIN") || !role.getName().contains("ADMIN")) {
+//                            if(appUser.getService().getIsActive())
+//                            {
+//                                return UserDetailsImpl.build(appUser);
+//                            }else{
+//                                throw new AccessDeniedException("Service is deactivated");
+//                            }
+//                        }
+//                        return UserDetailsImpl.build(appUser);
+//                    }
+//            );
+
+
+//      return appUser.getRoles().stream()
+//              .filter(role -> !role.getName().contains("SUPER_ADMIN") && !role.getName().contains("ADMIN"))
+//              .findFirst() // Assuming you want to return UserDetails for the first matching role
+//              .map(role -> {
+//                  if (appUser.getService().getIsActive()) {
+//                      return UserDetailsImpl.build(appUser);
+//                  } else {
+//                      throw new AccessDeniedException("Service is deactivated");
+//                  }
+//              })
+//              .orElse(UserDetailsImpl.build(appUser));
+
+      if (appUser.getService().getIsActive()) {
+          return UserDetailsImpl.build(appUser);
+      } else {
+          throw new AccessDeniedException("Service is deactivated");
+      }
+
 //      AppUserManagementDto.builder()
 //              .service(appUser.getService().getServiceName())
 //              .roleId(appUser.getRoles())

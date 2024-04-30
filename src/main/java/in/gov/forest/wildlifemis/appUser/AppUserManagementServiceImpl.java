@@ -147,6 +147,32 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
         }
     }
 
+    @Override
+    public ApiResponse<?> unlockedUser(Long id) {
+        try {
+
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            appUserManagementRepository.findById(id)
+                                    .stream()
+                                    .map(
+                                            appUser -> {
+                                                    appUser.setAccountLocked(false);
+                                                    appUser.setFailedLoginAttempts(0);
+                                                    appUser.setLockoutTime(null);
+                                                    appUserManagementRepository.save(appUser);
+                                                    return "User unlocked successfully";
+                                            }
+                                    )
+
+                    )
+                    .build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to unlocked user", new Error("",e.getMessage()));
+        }
+    }
+
 
 //    public AppUser ConvertAppUserDtoToAppUser(AppUserManagementDto appUserDto)  {
 //        appUserDto.setPassword(passwordEncoder.encode(appUserDto.getPassword()));

@@ -79,7 +79,7 @@ public class RoleController {
         try {
             List<RoleDto> roleMDto=roleMRepository.findAll()
                     .stream()
-                    .filter(role -> role.getName().equalsIgnoreCase("RFO ") || role.getName().equalsIgnoreCase("DFO"))
+                    .filter(role -> role.getName().equalsIgnoreCase("RFO") || role.getName().equalsIgnoreCase("DFO"))
                     .map(role_m -> modelMapper.map(role_m, RoleDto.class))
                     .collect(Collectors.toList());
             ApiResponse<?> apiResponse = ApiResponse.builder()

@@ -1,11 +1,15 @@
 package in.gov.forest.wildlifemis.credential.refreshToken;
 
 import in.gov.forest.wildlifemis.appUser.AppUserManagementRepository;
+import in.gov.forest.wildlifemis.exception.DataIntegrityViolationException;
 import in.gov.forest.wildlifemis.exception.Error;
 import in.gov.forest.wildlifemis.exception.JwtCustomException;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +32,7 @@ public class RefreshTokenService {
   }
 
   public RefreshToken createRefreshToken(Long userId) {
-    RefreshToken refreshToken = new RefreshToken();
+//    RefreshToken refreshToken = new RefreshToken();
 
 //    refreshToken.setId(userRepository.findById(userId).orElseThrow(()->new RuntimeException(userId+" Data not found??")).getId());
 //    refreshToken.setExpiryDate(Instant.now().plusMillis(60*60*1000));
@@ -41,13 +45,26 @@ public class RefreshTokenService {
 //                    .token(UUID.randomUUID().toString())
 //                    .build()
 //    );
-    return refreshTokenRepository.save(
-            RefreshToken.builder()
-                    .appUser(userRepository.getReferenceById(userId))
-                    .expiryDate(Instant.now().plusMillis(60*60*1000))
-                    .token(UUID.randomUUID().toString())
-                    .build()
-    );
+
+    try{
+      deleteByUserId(userId);
+      return refreshTokenRepository.save(
+              RefreshToken.builder()
+                      .appUser(userRepository.getReferenceById(userId))
+                      .expiryDate(Instant.now().plusMillis(60*60*1000))
+                      .token(UUID.randomUUID().toString())
+                      .build()
+      );
+    }catch (DataIntegrityViolationException  e){
+      throw new DataIntegrityViolationException(e.getMessage());
+    }
+//    return refreshTokenRepository.save(
+//            RefreshToken.builder()
+//                    .appUser(userRepository.getReferenceById(userId))
+//                    .expiryDate(Instant.now().plusMillis(60*60*1000))
+//                    .token(UUID.randomUUID().toString())
+//                    .build()
+//    );
   }
 
 
