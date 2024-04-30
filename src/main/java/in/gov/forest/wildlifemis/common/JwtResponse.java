@@ -16,7 +16,7 @@ public class JwtResponse {
     private String type;
     private String refreshToken;
     private Long id;
-    private String name;
+    private String userName;
     private  Integer divisionId;
     private  Long serviceId;
     private  Integer rangeId;

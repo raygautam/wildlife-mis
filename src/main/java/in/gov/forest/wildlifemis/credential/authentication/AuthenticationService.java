@@ -112,7 +112,7 @@ public class AuthenticationService {
                                         //uncomment one refresh token is implements in front end.
                                         .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
-                                        .name(userDetails.getName())
+                                        .userName(userDetails.getUsername())
                                         .serviceId(userDetails.getServiceId())
                                         .rangeId(userDetails.getRangeId())
                                         .divisionId(userDetails.getDivisionId())

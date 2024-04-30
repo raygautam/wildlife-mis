@@ -119,20 +119,11 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
                                 .filter(appUser -> appUser.getRoles().stream()
                                         .noneMatch(role -> Set.of("SUPER_ADMIN", "PCCF&HooF", "ADMIN").contains(role.getName()))
                                 )
-//                                .filter(appUser ->
-//                                                appUser.getRoles().stream()
-////                                                        .map(Role::getName)
-//                                                        .noneMatch(
-//                                                        roleName ->
-//                                                                roleName.equals("SUPER_ADMIN") ||
-//                                                                roleName.equals("PCCF&HooF")||
-//                                                                roleName.equals("ADMIN")
-//                                                        )
-//                                        )
+                                .filter(appUser -> appUser.getIsActive().equals(Boolean.TRUE))
                                 .map(appUser -> {
                                     return new GetAppUserDetails(
                                             appUser.getId(),
-                                            appUser.getName(),
+                                            appUser.getUserName(),
                                             appUser.getIsActive(),
                                             appUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
                                             appUser.getService().getServiceName(),
@@ -170,6 +161,30 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
                     .build();
         }catch (DataInsertionException e){
             throw new DataInsertionException("Failed to unlocked user", new Error("",e.getMessage()));
+        }
+    }
+
+    @Override
+    public ApiResponse<?> deleteUser(Long id) {
+        try {
+
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            appUserManagementRepository.findById(id)
+                                    .stream()
+                                    .map(
+                                            appUser -> {
+                                                appUser.setIsActive(Boolean.FALSE);
+                                                appUserManagementRepository.save(appUser);
+                                                return "User deleted successfully";
+                                            }
+                                    )
+
+                    )
+                    .build();
+        }catch (DataInsertionException e){
+            throw new DataInsertionException("Failed to deleted user", new Error("",e.getMessage()));
         }
     }
 

@@ -18,5 +18,5 @@ import java.util.Set;
 //    private String range;
 //}
 
-public record GetAppUserDetails(Long Id,String name,Boolean isActive,Set<?> roles,String service,String division,String range) {
+public record GetAppUserDetails(Long Id,String userName,Boolean isActive,Set<?> roles,String service,String division,String range) {
 }

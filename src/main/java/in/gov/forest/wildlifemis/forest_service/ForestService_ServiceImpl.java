@@ -48,7 +48,7 @@ public class ForestService_ServiceImpl implements ForestService_ServiceInter {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            forestServiceRepository.findAll()
+                            forestServiceRepository.findAllByIsActive(Boolean.TRUE)
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());

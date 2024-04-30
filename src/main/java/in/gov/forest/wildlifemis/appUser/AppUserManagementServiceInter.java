@@ -11,6 +11,8 @@ public interface AppUserManagementServiceInter {
 
     ApiResponse<?> unlockedUser(Long id);
 
+    ApiResponse<?> deleteUser(Long id);
+
 //    List<GetAppUserDto> getUserDetails();
 //
 //    List<GetUserIdAndRoleNameDTO> getUserIdAndRoleName();

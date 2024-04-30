@@ -23,7 +23,7 @@ public class AppUserManagementController {
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody AppUserManagementDto userDetailDto) throws JsonProcessingException {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.insertAppUser(userDetailDto);
@@ -39,9 +39,15 @@ public class AppUserManagementController {
 
 
 //    API to unlock the AppUser
-    @GetMapping("/unlocked/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> unlockedUser(@PathVariable Long id) {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.unlockedUser(id);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        ApiResponse<?> apiResponse=appUserManagementServiceInter.deleteUser(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
