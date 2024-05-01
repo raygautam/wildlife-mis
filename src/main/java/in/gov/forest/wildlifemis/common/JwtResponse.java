@@ -18,8 +18,11 @@ public class JwtResponse {
     private Long id;
     private String userName;
     private  Integer divisionId;
+    private  String divisionName;
     private  Long serviceId;
+    private  String serviceName;
     private  Integer rangeId;
+    private  String rangeName;
     private List<String> roles;
 //    private Boolean isActive;
 //    private  String stateName;

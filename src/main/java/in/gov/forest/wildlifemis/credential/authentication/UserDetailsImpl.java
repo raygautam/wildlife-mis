@@ -27,17 +27,18 @@ public class UserDetailsImpl implements UserDetails {
     private final Long id;
 
     private final String username;
-    private final String name;
+//    private final String name;
 
     @JsonIgnore
     private final String password;
 
     private final Long serviceId;
+    private final String serviceName;
 
     private final Integer divisionId;
-
+    private final String divisionName;
     private final Integer rangeId;
-
+    private final String rangeName;
     private Boolean accountLocked; ////default value false
 
     private Integer failedLoginAttempts; //default value 0
@@ -47,14 +48,17 @@ public class UserDetailsImpl implements UserDetails {
 
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String name, String password, Long serviceId, Integer divisionId, Integer rangeId, Boolean accountLocked, Integer failedLoginAttempts, LocalDateTime lockoutTime, List<GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String password, Long serviceId, String serviceName, Integer divisionId, String divisionName, Integer rangeId, String rangeName, Boolean accountLocked, Integer failedLoginAttempts, LocalDateTime lockoutTime, List<GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
-        this.name = name;
+//        this.name = name;
         this.password = password;
         this.serviceId = serviceId;
+        this.serviceName = serviceName;
         this.divisionId = divisionId;
+        this.divisionName = divisionName;
         this.rangeId = rangeId;
+        this.rangeName = rangeName;
         this.accountLocked = accountLocked;
         this.failedLoginAttempts=failedLoginAttempts;
         this.lockoutTime=lockoutTime;
@@ -76,10 +80,14 @@ public class UserDetailsImpl implements UserDetails {
         log.info("");
         return new UserDetailsImpl(
             userDetail_t.getId(),
-            userDetail_t.getUserName(), userDetail_t.getName(), userDetail_t.getPassword(),
+            userDetail_t.getUserName(),
+            userDetail_t.getPassword(),
             userDetail_t.getService()!=null ? userDetail_t.getService().getId() :null,
+            userDetail_t.getService()!=null ? userDetail_t.getService().getServiceName():null,
             userDetail_t.getDivision() != null ? userDetail_t.getDivision().getId():null,
+            userDetail_t.getDivision() != null ? userDetail_t.getDivision().getName():null,
             userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeId():null,
+            userDetail_t.getRange() != null ? userDetail_t.getRange().getRangeName():null,
             userDetail_t.getAccountLocked(),
             userDetail_t.getFailedLoginAttempts(),
             userDetail_t.getLockoutTime(),

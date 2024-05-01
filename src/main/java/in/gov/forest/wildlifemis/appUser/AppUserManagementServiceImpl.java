@@ -84,7 +84,6 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
             }
             appUserManagementRepository.save(
                     AppUser.builder()
-                            .name(appUserManagementDto.getName())
                             .userName(appUserManagementDto.getUserName())
                             .password(passwordEncoder.encode(appUserManagementDto.getPassword()))
                             .accountLocked(Boolean.FALSE)

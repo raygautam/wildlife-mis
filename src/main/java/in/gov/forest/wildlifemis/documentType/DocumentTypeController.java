@@ -16,18 +16,21 @@ public class DocumentTypeController {
     @Autowired
     DocumentTypeServiceInter documentTypeServiceInter;
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PostMapping("/")
     public ResponseEntity<?> saveNotificationType(@RequestBody DocumentTypeDTO typeOfDocumentDTO){
         ApiResponse<?> apiResponse=documentTypeServiceInter.add(typeOfDocumentDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getNotificationType(){
         ApiResponse<?> apiResponse=documentTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateDocumentType(@PathVariable Long id, @RequestBody DocumentTypeDTO typeOfDocumentDTO) {
         ApiResponse<?> apiResponse=documentTypeServiceInter.update(id, typeOfDocumentDTO);

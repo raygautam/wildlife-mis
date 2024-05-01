@@ -25,7 +25,7 @@ public class AppUser {
     private Long id;
     private String userName;
     private String password;
-    private String name;
+//    private String name;
     private Boolean isActive; //default value true
     @Column(name = "account_locked")
     private Boolean accountLocked; ////default value false

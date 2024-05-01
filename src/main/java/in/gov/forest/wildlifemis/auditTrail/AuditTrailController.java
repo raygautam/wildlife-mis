@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuditTrailController {
     @Autowired
     private AuditTrailService auditTrailService;
-
+    //    @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getAuditTrailData() {
         ApiResponse<?> apiResponse = auditTrailService.getAuditTrailData();

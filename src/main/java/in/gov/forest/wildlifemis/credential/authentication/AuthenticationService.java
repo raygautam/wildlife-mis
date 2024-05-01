@@ -110,12 +110,15 @@ public class AuthenticationService {
                                         .token(jwt)
                                         .type("Bearer")
                                         //uncomment one refresh token is implements in front end.
-                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
+//                                        .refreshToken(refreshTokenService.createRefreshToken(userDetails.getId()).getToken())
                                         .id(userDetails.getId())
                                         .userName(userDetails.getUsername())
                                         .serviceId(userDetails.getServiceId())
+                                        .serviceName(userDetails.getServiceName())
                                         .rangeId(userDetails.getRangeId())
+                                        .rangeName(userDetails.getRangeName())
                                         .divisionId(userDetails.getDivisionId())
+                                        .divisionName(userDetails.getDivisionName())
                                         .roles(Collections.singletonList(userDetails.getAuthorities().toString()))
                                         .build()
                         ).build();

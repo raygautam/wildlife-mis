@@ -15,24 +15,28 @@ public class ForestServiceController {
     @Autowired
     private ForestService_ServiceInter service_ServiceInter;
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody ForestServiceRequestDTO serviceRequestDTO){
         ApiResponse<?> apiResponse=service_ServiceInter.add(serviceRequestDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> get(){
         ApiResponse<?> apiResponse=service_ServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ForestServiceRequestDTO forestServiceRequestDTO) {
         ApiResponse<?> apiResponse=service_ServiceInter.update(id, forestServiceRequestDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         ApiResponse<?> apiResponse=service_ServiceInter.delete(id);

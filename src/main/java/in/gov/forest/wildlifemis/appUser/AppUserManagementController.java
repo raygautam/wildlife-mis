@@ -30,6 +30,7 @@ public class AppUserManagementController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getUserDetails() {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.get();
@@ -39,32 +40,18 @@ public class AppUserManagementController {
 
 
 //    API to unlock the AppUser
+//@PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> unlockedUser(@PathVariable Long id) {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.unlockedUser(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.deleteUser(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @PreAuthorize("hasRole('ROLE_USER')")
-//    @GetMapping("/getUserDetails")
-//    public ResponseEntity<?> getUserDetails() {
-//        return new ResponseEntity<>(appUserManagementServiceInter.getUserDetails(), HttpStatus.OK);
-//    }
-
-//    @GetMapping("/getUserDetailsByLevelName")
-
-    //get userId and roleName
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @GetMapping("/getUserIdAndRoleName")
-//    public ResponseEntity<?> getUserIdAndRoleName(){
-//        return new ResponseEntity<>(userDetailServiceInter.getUserIdAndRoleName(), HttpStatus.OK);
-//    }
 }

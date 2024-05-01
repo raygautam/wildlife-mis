@@ -38,6 +38,7 @@ public class DocumentController {
 //        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //    }
 
+//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
@@ -68,6 +69,7 @@ public class DocumentController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getAllDocument() {
         ApiResponse<?> apiResponse = documentServiceInter.getAllDocument();
@@ -75,6 +77,7 @@ public class DocumentController {
 
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/{documentTypeId}")
     public ResponseEntity<?> getDocument(@PathVariable Long documentTypeId) {
         ApiResponse<?> apiResponse = documentServiceInter.getDocument(documentTypeId);
@@ -89,12 +92,14 @@ public class DocumentController {
      * @return an API response indicating the status of the operation
      * on delete operation changing isActive status to false.
      **/
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @DeleteMapping("/{documentId}")
     public ResponseEntity<?> deleteDocument(@PathVariable Long documentId) {
         ApiResponse<?> apiResponse = documentServiceInter.deleteDocument(documentId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+    //    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
         return documentServiceInter.download(id);
