@@ -40,7 +40,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeServiceInter {
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            typeOfDocumentRepository.findByOrderById()
+                            typeOfDocumentRepository.findByOrderByName()
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());

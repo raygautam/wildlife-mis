@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface GalleryTypeRepository extends JpaRepository<GalleryType, Long> {
     List<GalleryType> findByOrderById();
+
+    List<GalleryType> findByOrderByName();
 }

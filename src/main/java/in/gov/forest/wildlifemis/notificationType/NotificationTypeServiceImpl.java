@@ -44,7 +44,7 @@ public class NotificationTypeServiceImpl implements NotificationTypeServiceInter
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            notificationTypeRepository.findByOrderById()
+                            notificationTypeRepository.findByOrderByName()
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());

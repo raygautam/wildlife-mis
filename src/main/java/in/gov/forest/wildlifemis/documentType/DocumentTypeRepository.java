@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface DocumentTypeRepository extends JpaRepository<DocumentType, Long> {
     List<DocumentType> findByOrderById();
+
+    List<DocumentType> findByOrderByName();
 }

@@ -43,7 +43,7 @@ public class NGTCommitteeTypeServiceImpl implements NGTCommitteeTypeServiceInter
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            ngtCommitteeTypeRepository.findByOrderById()
+                            ngtCommitteeTypeRepository.findByOrderByName()
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());

@@ -51,7 +51,7 @@ public class GalleryTypeServiceImpl implements GalleryTypeServiceInter{
             return ApiResponse.builder()
                     .status(HttpStatus.OK.value())
                     .data(
-                            galleryTypeRepository.findByOrderById()
+                            galleryTypeRepository.findByOrderByName()
                     ).build();
         }catch (DataRetrievalException e){
 //            Error error=new Error(e.getMessage());

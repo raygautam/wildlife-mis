@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface NotificationTypeRepository extends JpaRepository<NotificationType, Long> {
     List<NotificationType> findByOrderById();
+
+    List<NotificationType> findByOrderByName();
 }
