@@ -5,10 +5,11 @@ import in.gov.forest.wildlifemis.notificationType.dto.NotificationTypeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notification_type")
+//@RequestMapping("/notification_type")
 @CrossOrigin("*")
 //@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class NotificationTypeController {
@@ -16,21 +17,22 @@ public class NotificationTypeController {
     @Autowired
     private NotificationTypeServiceInter notificationTypeServiceInter;
 
-//    SuperAdmin can enter notification_type
-//    @PreAuthorize("hasRole('SuperAdmin')")
-    @PostMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PostMapping("/notification_type/")
     public ResponseEntity<?> saveNotificationType(@RequestBody NotificationTypeDTO notificationTypeDTO){
         ApiResponse<?> apiResponse=notificationTypeServiceInter.add(notificationTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/")
+
+    @GetMapping("/public/notification_type/")
     public ResponseEntity<?> getNotificationType(){
         ApiResponse<?> apiResponse=notificationTypeServiceInter.get();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PutMapping("/notification_type/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody NotificationTypeDTO notificationTypeDTO) {
         ApiResponse<?> apiResponse=notificationTypeServiceInter.update(id, notificationTypeDTO);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

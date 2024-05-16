@@ -13,12 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
-@RequestMapping(value = "/official")
+//@RequestMapping(value = "/official")
 @CrossOrigin("*")
 public class OfficialController {
 
@@ -26,7 +27,8 @@ public class OfficialController {
     private OfficialServiceInter officialServiceInter;
     @Autowired
     private JsonMapper jsonMapper;
-    @PostMapping(value = "/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PostMapping(value = "/official/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -56,7 +58,7 @@ public class OfficialController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/")
+    @GetMapping("/public/official/")
     public ResponseEntity<?> getAllOfficial() {
         ApiResponse<?> apiResponse = officialServiceInter.getAllOfficial();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

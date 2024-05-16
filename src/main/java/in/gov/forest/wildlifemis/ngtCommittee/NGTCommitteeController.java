@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,15 +21,15 @@ import java.io.IOException;
 
 @RestController
 @Slf4j
-@RequestMapping("/ngtCommittee")
+//@RequestMapping("/ngtCommittee")
 @CrossOrigin("*")
 public class NGTCommitteeController {
     @Autowired
     NGTCommitteeServiceInter ngtCommitteeServiceInter;
     @Autowired
     JsonMapper jsonMapper;
-
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PostMapping(value = "/ngtCommittee/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -59,14 +60,13 @@ public class NGTCommitteeController {
 //        return ResponseEntity.status(200).body(ngtCommitteeDTO);
     }
 
-    @GetMapping("/")
+    @GetMapping("/public/ngtCommittee/")
     public ResponseEntity<?> getAllNGTCommittee() {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.getAllNGTCommittee();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
-
     }
 
-    @GetMapping("/{ngtCommitteeTypeId}")
+    @GetMapping("/public/ngtCommittee/{ngtCommitteeTypeId}")
     public ResponseEntity<?> getNGTCommittee(@PathVariable Long ngtCommitteeTypeId) {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.getNGTCommittee(ngtCommitteeTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -80,13 +80,15 @@ public class NGTCommitteeController {
      * @return an API response indicating the status of the operation
      * on delete operation changing isActive status to false.
      **/
-    @DeleteMapping("/{ngtCommitteeId}")
+
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @DeleteMapping("/ngtCommittee/{ngtCommitteeId}")
     public ResponseEntity<?> deleteNGTCommittee(@PathVariable Long ngtCommitteeId) {
         ApiResponse<?> apiResponse = ngtCommitteeServiceInter.deleteNGTCommittee(ngtCommitteeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/download/{id}")
+    @GetMapping("/public/ngtCommittee/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
         return ngtCommitteeServiceInter.download(id);
 

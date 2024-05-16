@@ -187,6 +187,37 @@ public class AppUserManagementServiceImpl implements AppUserManagementServiceInt
         }
     }
 
+    @Override
+    public ApiResponse<?> getById(Long id) {
+        try {
+
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK.value())
+                    .data(
+                            appUserManagementRepository.findById(id)
+                                    .stream()
+//                                    .filter(appUser -> appUser.getRoles().stream()
+//                                            .noneMatch(role -> Set.of("SUPER_ADMIN", "PCCF&HooF", "ADMIN").contains(role.getName()))
+//                                    )
+//                                    .filter(appUser -> appUser.getIsActive().equals(Boolean.TRUE))
+                                    .map(appUser -> {
+                                        return new GetAppUserDetails(
+                                                appUser.getId(),
+                                                appUser.getUserName(),
+                                                appUser.getIsActive(),
+                                                appUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()),
+                                                appUser.getService().getServiceName(),
+                                                appUser.getDivision()!=null?appUser.getDivision().getName():null,
+                                                appUser.getRange()!=null?appUser.getRange().getRangeName():null
+                                        );
+                                    })
+                    )
+                    .build();
+        }catch (DataRetrievalException e){
+            throw new DataRetrievalException("Failed to retrieve", new Error("",e.getMessage()));
+        }
+    }
+
 
 //    public AppUser ConvertAppUserDtoToAppUser(AppUserManagementDto appUserDto)  {
 //        appUserDto.setPassword(passwordEncoder.encode(appUserDto.getPassword()));

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
-@RequestMapping("/notification")
+//@RequestMapping("/notification")
 @CrossOrigin("*")
 //@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class NotificationController {
@@ -63,7 +63,8 @@ public class NotificationController {
      * @return an ApiResponse object indicating the status of the operation
      * @throws IOException if there is an error in reading or writing the file
      */
-    @PostMapping(value = "/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PostMapping(value = "/notification/",  consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -111,7 +112,7 @@ public class NotificationController {
 //                    description = "NOt Available",
 //                    content = @Content)
 //    })
-    @GetMapping("/{notificationTypeId}")
+    @GetMapping("/public/notification/{notificationTypeId}")
     public ResponseEntity<?> getActiveNotification(@PathVariable Long notificationTypeId) {
         ApiResponse<?> apiResponse = notificationServiceInter.getActiveNotification(notificationTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -121,7 +122,7 @@ public class NotificationController {
     /**
      * API to get all notifications using the specified notificationTypeId and if the isArchive is true
      * **/
-    @GetMapping("/archive/{notificationTypeId}")
+    @GetMapping("/public/archive/{notificationTypeId}")
     public ResponseEntity<?> getArchiveNotification(@PathVariable Long notificationTypeId) {
         ApiResponse<?> apiResponse = notificationServiceInter.getArchiveNotification(notificationTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -131,7 +132,7 @@ public class NotificationController {
 
     /**API to download notification resource using Notification Entity id.**/
 //    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/download/{id}")
+    @GetMapping("/public/notification/download/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) throws IOException {
 //        ApiResponse<?> apiResponse=notificationServiceInter.downloadPDf(id);
         return notificationServiceInter.downloadPDf(id);
@@ -139,6 +140,7 @@ public class NotificationController {
     }
 
     /**API to archive notification using id of Notification Entity id.**/
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> archive(@PathVariable Long id) {
         ApiResponse<?> apiResponse = notificationServiceInter.archive(id);
@@ -146,14 +148,14 @@ public class NotificationController {
     }
 
     /**API to get all archive notification if isArchive is true.**/
-    @GetMapping("/archive/")
+    @GetMapping("/public/notification/archive/")
     public ResponseEntity<?> getAllArchive() {
         ApiResponse<?> apiResponse = notificationServiceInter.getAllArchive();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
     /**API to get all notification presence notifications table.**/
-    @GetMapping("/")
+    @GetMapping("/public/notification/")
     public ResponseEntity<?> getAllNotification() {
         ApiResponse<?> apiResponse = notificationServiceInter.getAllNotification();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
@@ -162,7 +164,8 @@ public class NotificationController {
     /**
         Delete API do not delete notification permanently instead change the flag of isActive to false.
      **/
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @DeleteMapping("/notification/{id}")
     public ResponseEntity<?> deleteNotification(@PathVariable Long id){
         ApiResponse<?> apiResponse = notificationServiceInter.deleteNotification(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

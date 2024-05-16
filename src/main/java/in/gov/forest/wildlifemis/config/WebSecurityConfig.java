@@ -111,24 +111,24 @@ public class WebSecurityConfig { //extends WebSecurityConfigurerAdapter
                 .authorizeHttpRequests(
                     auth->
                             auth
-//                                    .requestMatchers("/public/**").permitAll()
+                                    .requestMatchers("/public/**").permitAll()
 //                                    .requestMatchers("/notification/downloadPDf/**").permitAll()
-                                    .requestMatchers(
-                                            //**Add version url like /api/v1/
-                                            "/**"
-//                                            "/official/**",
-//                                            "/lgd/**",
-//                                            "/public/**",
-//                                            "/notification/**",
-//                                            "/notification_type/**",
-//                                            "/forestServices/**",
-//                                            "/documentType/**",
-//                                            "/document/**",
-//                                            "/galleryType/**",
-//                                            "/gallery/**",
-//                                            "/servicePlusStatus"
-                                    )
-                                    .permitAll()
+//                                    .requestMatchers(
+//                                            //**Add version url like /api/v1/
+////                                            "/**"
+////                                            "/official/**",
+////                                            "/lgd/**",
+////                                            "/public/**",
+////                                            "/notification/**",
+////                                            "/notification_type/**",
+////                                            "/forestServices/**",
+////                                            "/documentType/**",
+////                                            "/document/**",
+////                                            "/galleryType/**",
+////                                            "/gallery/**",
+////                                            "/servicePlusStatus"
+//                                    )
+//                                    .permitAll()
 //                                    auth.requestMatchers("/notification/download/{id}").permitAll()
                             .anyRequest().authenticated()
                 )

@@ -13,6 +13,8 @@ public interface AppUserManagementServiceInter {
 
     ApiResponse<?> deleteUser(Long id);
 
+    ApiResponse<?> getById(Long id);
+
 //    List<GetAppUserDto> getUserDetails();
 //
 //    List<GetUserIdAndRoleNameDTO> getUserIdAndRoleName();

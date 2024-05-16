@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 
 @RestController
 @Slf4j
-@RequestMapping("/gallery")
+//@RequestMapping("/gallery")
 @CrossOrigin("*")
 public class GalleryController {
 
@@ -51,8 +52,8 @@ public class GalleryController {
 //        ApiResponse<?> apiResponse = galleryServiceInter.save(file, galleryTypeId, title);
 //        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 //    }
-
-    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PostMapping(value = "/gallery/", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
     })
@@ -82,21 +83,21 @@ public class GalleryController {
         return ResponseEntity.status(500).body(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/{galleryTypeId}")
+    @GetMapping("/public/gallery/{galleryTypeId}")
     public ResponseEntity<?> getGallery(@PathVariable Long galleryTypeId) {
         ApiResponse<?> apiResponse = galleryServiceInter.getGallery(galleryTypeId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
 
-    @GetMapping("/")
+    @GetMapping("/public/gallery/")
     public ResponseEntity<?> getAllGallery() {
         ApiResponse<?> apiResponse = galleryServiceInter.getAllGallery();
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
 
     }
-
-    @DeleteMapping("/{galleryId}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @DeleteMapping("/gallery/{galleryId}")
     public ResponseEntity<?> delete(@PathVariable Long galleryId) {
         ApiResponse<?> apiResponse = galleryServiceInter.delete(galleryId);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

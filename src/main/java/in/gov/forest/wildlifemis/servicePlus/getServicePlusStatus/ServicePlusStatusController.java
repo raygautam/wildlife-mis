@@ -36,7 +36,7 @@ public class ServicePlusStatusController {
 
 
 
-    @GetMapping("/servicePlusStatus")
+    @GetMapping("/public/servicePlusStatus")
     public String serviceDetails() throws MalformedURLException, IOException {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -108,7 +108,7 @@ public class ServicePlusStatusController {
     }
 
 
-    @GetMapping("servicePlus/district/data/{districtCode}")
+    @GetMapping("/public/servicePlus/district/data/{districtCode}")
     public ResponseEntity<ApiResponse<?>> getAllDistrictWiseDetail(@PathVariable(value = "districtCode",required = true) Integer districtCode ) throws JSONException, JSONException {
 
         ApiResponse<?> apiResponse = servicePlusStatusService.getDistrictWiseStatusOfApplication(districtCode);

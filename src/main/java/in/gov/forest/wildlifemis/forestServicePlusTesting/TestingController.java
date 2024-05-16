@@ -274,7 +274,7 @@ public class TestingController {
     @GetMapping("/districtMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheDistrictsYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.district_name AS DistrictName,\n" +
+                "    COALESCE(d.district_name, 'Total') AS DistrictName,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
@@ -287,6 +287,7 @@ public class TestingController {
                 "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "\t,SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
                 "    (SELECT DISTINCT district_name FROM districts) d\n" +
                 "CROSS JOIN \n" +
@@ -307,7 +308,7 @@ public class TestingController {
                 "ON \n" +
                 "    calendar.month = counts.month AND d.district_name = counts.district_name\n" +
                 "GROUP BY \n" +
-                "    d.district_name\n" +
+                "    GROUPING SETS ((d.district_name), ())\n" +
                 "ORDER BY \n" +
                 "    d.district_name;";
 
@@ -320,7 +321,7 @@ public class TestingController {
     @GetMapping("/divisionMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheDivisionsYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.name AS DivisionName,\n" +
+                "    COALESCE(d.name, 'Total') AS DivisionName,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
@@ -332,7 +333,8 @@ public class TestingController {
                 "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December,\n" +
+                "    SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
                 "    (SELECT DISTINCT name FROM division) d\n" +
                 "CROSS JOIN \n" +
@@ -353,7 +355,7 @@ public class TestingController {
                 "ON \n" +
                 "    calendar.month = counts.month AND d.name = counts.name\n" +
                 "GROUP BY \n" +
-                "    d.name\n" +
+                "    GROUPING SETS ((d.name), ())\n" +
                 "ORDER BY \n" +
                 "    d.name;";
 
@@ -366,7 +368,7 @@ public class TestingController {
     @GetMapping("/rangeMonthWiseCount/{year}")
     public Object getApplicationsCountForAllMonthForAllTheRangesYearWise(@PathVariable Integer year) throws JsonProcessingException {
         String sql = "SELECT \n" +
-                "    d.range_name AS RangeName,\n" +
+                "    COALESCE(d.range_name, 'Total') AS RangeName,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 1 THEN Application_Count END), 0) AS January,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 2 THEN Application_Count END), 0) AS February,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 3 THEN Application_Count END), 0) AS March,\n" +
@@ -378,7 +380,8 @@ public class TestingController {
                 "    COALESCE(MAX(CASE WHEN calendar.month = 9 THEN Application_Count END), 0) AS September,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 10 THEN Application_Count END), 0) AS October,\n" +
                 "    COALESCE(MAX(CASE WHEN calendar.month = 11 THEN Application_Count END), 0) AS November,\n" +
-                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December\n" +
+                "    COALESCE(MAX(CASE WHEN calendar.month = 12 THEN Application_Count END), 0) AS December,\n" +
+                "    SUM(COALESCE(Application_Count, 0)) AS Total\n" +
                 "FROM \n" +
                 "    (SELECT DISTINCT range_name FROM range) d\n" +
                 "CROSS JOIN \n" +
@@ -399,7 +402,7 @@ public class TestingController {
                 "ON \n" +
                 "    calendar.month = counts.month AND d.range_name = counts.range_name\n" +
                 "GROUP BY \n" +
-                "    d.range_name\n" +
+                "    GROUPING SETS ((d.range_name), ())\n" +
                 "ORDER BY \n" +
                 "    d.range_name;";
         // Retrieve the result of the SQL query

@@ -12,11 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-@RequestMapping("/role")
+//@RequestMapping("/role")
 @RestController
 @CrossOrigin("*")
 public class RoleController {
@@ -35,8 +36,9 @@ public class RoleController {
 //        return new ResponseEntity<>(roleMRepository.save(modelMapper.map(roleMDto, Role_m.class)), HttpStatus.CREATED);
 //    }
 
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Transactional
-    @PostMapping("/")
+    @PostMapping("/role/")
     public ResponseEntity<?> insertRole(@RequestBody List<RoleDto> roleMDto) {
 
         if (roleMDto.size() > 1) {
@@ -74,7 +76,8 @@ public class RoleController {
         }
     }
 
-    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @GetMapping("/role/")
     public ResponseEntity<?> getRoles(){
         try {
             List<RoleDto> roleMDto=roleMRepository.findAll()

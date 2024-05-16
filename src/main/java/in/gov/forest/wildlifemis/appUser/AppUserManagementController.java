@@ -23,14 +23,14 @@ public class AppUserManagementController {
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @PostMapping("/")
     public ResponseEntity<?> add(@RequestBody AppUserManagementDto userDetailDto) throws JsonProcessingException {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.insertAppUser(userDetailDto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getUserDetails() {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.get();
@@ -38,16 +38,24 @@ public class AppUserManagementController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserDetailsById(@PathVariable Long id) {
+        ApiResponse<?> apiResponse=appUserManagementServiceInter.getById(id);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
+    }
+
 
 //    API to unlock the AppUser
-//@PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> unlockedUser(@PathVariable Long id) {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.unlockedUser(id);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-//    @PreAuthorize("hasRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         ApiResponse<?> apiResponse=appUserManagementServiceInter.deleteUser(id);
